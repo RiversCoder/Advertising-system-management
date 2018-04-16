@@ -20,3 +20,57 @@ extend-click()
     left: -10px
     right: -10px
     bottom: -10px
+
+//公共方法定义
+
+/* 宽高 */
+
+wh(w,h){
+    width:w;
+    height:h;
+}
+
+whp($w,$h){
+    width:$w;
+    height:$h;
+}
+
+whn(w,h){
+    width:w;
+    height:h;
+}
+
+
+/* 位置 */
+ab(l,t){
+  position:absolute;
+  left:l;
+  top:t;
+}
+
+mpInit(){
+  margin:0;
+  padding:0;
+}
+
+rp(){
+  position:relative;
+  left:0;
+  top:0;
+}
+
+hh(h){
+  height:h;
+  line-height:h;
+}
+
+/* 背景 */
+bgImg(src){
+  background-image:url(src);
+  background-repeat:no-repeat;
+  background-size:38px 38px;
+}
+
+bgColor(color){
+  background-color:color;
+}

@@ -6,6 +6,9 @@ import SourceManage from '@/components/source-manage/source-manage'
 import ProgramProduction from '@/components/program-production/program-production'
 import DraftBox from '@/components/draft-box/draft-box'
 import Terminal from '@/components/terminal/terminal'
+import Login from '@/components/login/login'
+import Store from '@/components/store/store'
+import Help from '@/components/help/help'
 
 Vue.use(Router)
 
@@ -33,10 +36,23 @@ export default new Router({
           component: Terminal
         },
         {
+          path: 'help',
+          component: Help
+        },
+        {
+          path: 'store',
+          component: Store
+        },
+        {
           path: 'draft-box',
           component: DraftBox
         }
       ]
+    },
+    {
+      path: '/login',
+      component: Login
     }
-  ]
+  ],
+  linkActiveClass: 'menuActive'
 })

@@ -1,6 +1,5 @@
 <template>
     <div class="containers">
-        <admin-header></admin-header>
         <div class="admin-b">
             <admin-menu></admin-menu>
             <admin-content></admin-content>
@@ -60,7 +59,7 @@
     
     .containers
         width:100%;height:100%;position:relative;
-    .admin-b
-        left:0;right:0;top:50px;bottom:0;background:#fff;position:absolute;
-        
+    
+    
+
 </style>
