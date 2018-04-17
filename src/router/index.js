@@ -9,6 +9,9 @@ import Terminal from '@/components/terminal/terminal'
 import Login from '@/components/login/login'
 import Store from '@/components/store/store'
 import Help from '@/components/help/help'
+import WorkTime from '@/components/work-time/work-time'
+import NoworkTime from '@/components/nowork-time/nowork-time'
+import FullScreen from '@/components/full-screen/full-screen'
 
 Vue.use(Router)
 
@@ -25,7 +28,22 @@ export default new Router({
         },
         {
           path: 'program-production',
-          component: ProgramProduction
+          component: ProgramProduction,
+          redirect: '/program-production/work-time',
+          children:[
+            {
+              path:'work-time',
+              component: WorkTime
+            },
+            {
+              path:'nowork-time',
+              component: NoworkTime
+            },
+            {
+              path:'full-screen',
+              component: FullScreen
+            }
+          ]
         },
         {
           path: 'source-manage',

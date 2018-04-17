@@ -15,43 +15,43 @@
       <div class="menuList">
           <ul class="Lists">
               <li class="mitem mitem1">
-                  <router-link to="home">
+                  <router-link to="/home">
                       <span class="micon"></span>
                       <span class="mtext">About DBS</span>
                   </router-link>
               </li>
               <li class="mitem mitem2">
-                  <router-link to="source-manage">
+                  <router-link to="/source-manage">
                       <span class="micon"></span>
                       <span class="mtext">资源管理</span>
                   </router-link>
               </li>
               <li class="mitem mitem3">
-                  <router-link to="program-production">
+                  <router-link to="/program-production">
                         <span class="micon"></span>
                         <span class="mtext">节目控制</span>
                   </router-link>
               </li>
               <li class="mitem mitem4">
-                  <router-link to="draft-box">
+                  <router-link to="/draft-box">
                       <span class="micon"></span>
                       <span class="mtext">草稿箱</span>
                   </router-link>
               </li>
               <li class="mitem mitem5">
-                  <router-link to="store">
+                  <router-link to="/store">
                       <span class="micon"></span>
                       <span class="mtext">存储与账号</span>
                   </router-link>
               </li>
               <li class="mitem mitem6">
-                  <router-link to="terminal">
+                  <router-link to="/terminal">
                       <span class="micon"></span>
                       <span class="mtext">利率填写</span>
                   </router-link>
               </li>
               <li class="mitem mitem7">
-                  <router-link to="help">
+                  <router-link to="/help">
                       <span class="micon"></span>
                       <span class="mtext">帮助</span>
                   </router-link>
