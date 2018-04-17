@@ -64,11 +64,27 @@ hh(h){
   line-height:h;
 }
 
+mg(l,t){
+  margin-left:l;
+  margin-top:t;
+}
+
+initp(){
+  padding:0;
+}
+
+abcenterX(l,t,x){
+  position:absolute;
+  left:l;
+  top:t;
+  margin-left:x;
+}
+
 /* 背景 */
 bgImg(src){
   background-image:url(src);
   background-repeat:no-repeat;
-  background-size:38px 38px;
+  background-size:cover;
 }
 
 bgColor(color){
