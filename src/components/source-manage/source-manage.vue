@@ -127,7 +127,7 @@
     .el-main
         background-color:none;color: #333;text-align: left;line-height: none;padding:0;
     .scrollWrap
-        width:100%;overflow:hidden;background:#DEDEDE;
+        width:100%;overflow:hidden;background:#fff;
         .cwrap
             width:100%;height:1600px;box-sizing:border-box;height:auto;background:#fff;padding:0 30px;
     .el-header

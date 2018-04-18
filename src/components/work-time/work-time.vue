@@ -123,7 +123,7 @@
     }
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus">
+<style scoped lang="stylus" rel="stylesheet/stylus">
     
     @import "~common/stylus/variable" 
     @import "~common/stylus/mixin"    
@@ -204,8 +204,11 @@
                     wh(51px,29px);width:51px !important;border-radius:25px;
                     .el-switch__button
                         wh(25px,25px);
-        .inputGameBox
-            .el-textarea__inner
-                wh(304px,86px);bgColor(#F4F4F4);border-radius:10px;font-size:12px;line-height:14px;color:#999;margin:0 auto;margin-top:10px;
                                                        
+</style>
+
+<style lang="stylus" rel="stylesheet/stylus">
+    .inputGameBox
+        .el-textarea__inner
+            wh(304px,86px);bgColor(#F4F4F4);border-radius:10px;font-size:12px;line-height:14px;color:#999;margin:0 auto;margin-top:10px;
 </style>

@@ -8,13 +8,10 @@
               <div class="formBox">
                   <form method="get" action="">
                     
-                    <h3 class="loginTitle"> 登陆 </h3>
+                    <h3 class="loginTitle"> 重置密码 </h3>
                     
-                    <el-input v-model="email" placeholder="Email" type="text" class="inputs" name="user_name"></el-input>  
-                    <el-input v-model="password" placeholder="Password" type="password" class="inputs" name="user_password"></el-input> 
-                    <el-input  @click.native="loginfn" value="Login" type="button" class="inputs submit" ></el-input> 
-                    <a class="forgetInfo" href="javascript:;">忘记密码?</a>
-
+                    <el-input v-model="email" placeholder="Email" type="email" class="inputs" name="user"></el-input>  
+                    <el-input  value="Reset" type="submit" class="inputs submit" ></el-input>  
                   </form>
               </div>
           </el-main>
@@ -28,20 +25,6 @@
         return {
           email: '',
           password: '',
-          url:'http://www.hmproperty.cn/hm_test/api/request/user.php'
-        }
-      },
-      methods:{
-        loginfn(){
-          console.log(this.$axios);
-          /*this.$axios.post(this.url,{
-            user_name: this.email,
-            user_password: this.password
-          }).then((res)=>{
-            console.log(res);
-          }).catch((err)=>{
-            console.log(err)
-          });*/
         }
       }
     }
@@ -53,6 +36,7 @@
     @import "~common/stylus/variable"
     @import "~common/stylus/mixin"
     
+
     .loginContainer
         whp(100%,100%);bgColor(#fff);rp();
         
@@ -71,7 +55,7 @@
                 input
                     margin-top:0;height:48px;line-height:48px;border-radius:10px;bgColor(rgba(244,244,244,1));color:#999;border:1px solid #DEDEDE;out-line:none;
                     &:hover
-                      opacity:0.8;
+                      opacity:0.8
             .submit
                 height:53px;margin-top:54px;
                     

@@ -7,11 +7,15 @@ import ProgramProduction from '@/components/program-production/program-productio
 import DraftBox from '@/components/draft-box/draft-box'
 import Terminal from '@/components/terminal/terminal'
 import Login from '@/components/login/login'
+import Reset from '@/components/reset/reset'
 import Store from '@/components/store/store'
 import Help from '@/components/help/help'
 import WorkTime from '@/components/work-time/work-time'
 import NoworkTime from '@/components/nowork-time/nowork-time'
 import FullScreen from '@/components/full-screen/full-screen'
+
+import ListView from '@/base/list-view/list-view'
+
 
 Vue.use(Router)
 
@@ -70,6 +74,14 @@ export default new Router({
     {
       path: '/login',
       component: Login
+    },
+    {
+      path: '/reset',
+      component: Reset
+    },
+    {
+      path: '/list',
+      component: ListView
     }
   ],
   linkActiveClass: 'menuActive'
