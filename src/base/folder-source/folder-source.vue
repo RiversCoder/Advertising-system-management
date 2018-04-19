@@ -10,9 +10,9 @@
                   </dt>
                   <dd class="cc-item-textbox">
                       <ul class="citms">
-                          <li class="cit cit1">重命名</li>
-                          <li class="cit cit2">移动文件</li>
-                          <li class="cit cit3">删除</li>
+                          <li class="cit cit1" @click="renameFile(item.id)">重命名</li>
+                          <li class="cit cit2" @click="moveFile(item.id)">移动文件</li>
+                          <li class="cit cit3" @click="deleteFile(item.id)">删除</li>
                       </ul>
                   </dd>
               </dl>
@@ -46,10 +46,14 @@
 
 
 <script type="text/ecmascript-6">
+    
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
+
+
     export default{
         data(){
             return{
-                
+                getDatas: []
             }
         },
         props: {
@@ -58,7 +62,73 @@
             default: function(){
                 return []
             }
+          },
+          allsources:{
+            type: Array,
+            default: function(){
+                return []
+            }
           }
+        },
+        methods:{
+          renameFile(id){
+             this.$prompt('请输入文件夹名称', 'DBS温馨提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消'
+              }).then(({ value }) => {
+
+                console.log(this.source)
+
+                //修改数据
+                for(var i=0;i<this.source.length;i++){
+                  if(this.source[i].id == id){
+                    this.source[i]['name'] = value;
+                  }
+                }
+
+                this.setSource = this.source;
+
+                this.$message({
+                  type: 'success',
+                  message: '重命名成功!'
+                });
+
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '取消输入'
+                });       
+              });
+          },
+          moveFile(id){
+
+          },
+          deleteFile(id){
+              this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.$message({
+
+
+
+                  type: 'success',
+                  message: '删除成功!'
+                });
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消删除'
+                });          
+              });
+          },
+          ...mapMutations({
+            setSource : 'source'
+          })
+        },
+        computed:{
+          ...mapGetters(['source'])
         }
     }
 </script>
@@ -79,13 +149,13 @@
                 content:'';@extend .block;wh(9px,24px);bgColor(#ED1C24);position:absolute;left:0px;top:23px;
         
         .column-content
-            wh(100%,auto); display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;-webkit-flex-wrap: wrap;flex-wrap: wrap;
+            wh(100%,auto); display:-webkit-flex;display:flex;-webkit-justify-content:flex-start;justify-content:flex-start;-webkit-flex-wrap: wrap;flex-wrap: wrap;
             
             .cc-item
-                wh(238px,184px);box-sizing:border-box;border:1px solid #DEDEDE;border-radius:6px 6px 0 0;margin-top:30px;
+                wh(238px,184px);box-sizing:border-box;border:1px solid #DEDEDE;border-radius:6px 6px 0 0;margin-top:30px;margin-left:8px;
                 
                 .cc-item-previewbox
-                    wh(236px,135px);position:relative;background:#F4F4F4;box-sizing:border-box;border-bottom:1px solid #DEDEDE;
+                    wh(236px,135px);position:relative;background:#F4F4F4;box-sizing:border-box;border-bottom:1px solid #DEDEDE;cursor:pointer;
                     .cip-icon
                         wh(32px,28px);bgImg('~common/images/source/folder_copy.png');abcenterX(50%,59px,-16px);
                     .cip-name

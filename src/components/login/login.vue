@@ -13,7 +13,8 @@
                     <el-input v-model="email" placeholder="Email" type="text" class="inputs" name="user_name"></el-input>  
                     <el-input v-model="password" placeholder="Password" type="password" class="inputs" name="user_password"></el-input> 
                     <el-input  @click.native="loginfn" value="Login" type="button" class="inputs submit" ></el-input> 
-                    <a class="forgetInfo" href="javascript:;">忘记密码?</a>
+                    
+                    <a class="forgetInfo" href="javascript:;" @click="forgetpw">忘记密码?</a>
 
                   </form>
               </div>
@@ -23,6 +24,10 @@
 </template>
 
 <script type="text/javascript">
+    
+    import qs from 'qs';
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
+
     export default {
       data() {
         return {
@@ -33,19 +38,44 @@
       },
       methods:{
         loginfn(){
-          console.log(this.$axios);
-          /*this.$axios.post(this.url,{
-            user_name: this.email,
-            user_password: this.password
+          //console.log(this.$axios);
+          this.$axios.post(this.url,qs.stringify({
+            'user_name': this.email,
+            'user_password': this.password
+          }),{
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
           }).then((res)=>{
-            console.log(res);
+            this.loginCheck(res.data);
           }).catch((err)=>{
             console.log(err)
-          });*/
-        }
+          });
+        },
+        loginCheck(data){
+          let code = data.code;
+          if(code == 400){
+            console.log(data);
+            //写入vuex状态树中
+            this.setToken(data.token);
+            //去到首页
+            this.$router.push({'path':'/home'})
+
+          }else{
+            //弹出提示信息 登陆失败
+             this.$message.error(data.msg);
+          }
+        },
+        forgetpw(){
+          this.$router.push({'path':'/reset'})
+        },
+        ...mapMutations({
+            setToken: 'login'  
+        })
       }
     }
+
+
 </script>
+
 
 
 <style lang="stylus" rel="stylesheet/stylus">

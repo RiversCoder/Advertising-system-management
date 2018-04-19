@@ -60,7 +60,7 @@
       </div>
 
 
-      <div class="outLoginbox">
+      <div class="outLoginbox" @click="logoutFn">
           <span class="outloginimg"></span>
           <span class="outlogintext">退出登录</span>
       </div>
@@ -124,6 +124,7 @@
 <script>
     
     import AlertInfo from '@/components/alert-info/alert-info'
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
 
     export default{
         data(){
@@ -153,7 +154,21 @@
           },
           closeInfoBox(){
             this.dialogVisible = false;
-          }
+          },
+          logoutFn(){
+            this.$alert('是否要退出后台？', 'DBS温馨提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+                 console.log('清除token');
+                 this.setToken(null);
+                 localStorage.setItem('token','');
+                 this.$router.push({path:'/login'});
+              }
+            });
+          },
+          ...mapMutations({
+            setToken: 'login'
+          })
         },
         computed: {
           

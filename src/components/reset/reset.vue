@@ -6,12 +6,15 @@
           </el-header>
           <el-main class="content">
               <div class="formBox">
-                  <form method="get" action="">
+                  <form method="get" action="" id="emailBox">
                     
                     <h3 class="loginTitle"> 重置密码 </h3>
                     
-                    <el-input v-model="email" placeholder="Email" type="email" class="inputs" name="user"></el-input>  
-                    <el-input  value="Reset" type="submit" class="inputs submit" ></el-input>  
+                    <el-input  v-model="email" placeholder="Email" type="email" class="inputs" name="user"></el-input>
+
+                    <el-input  @click.native="resetPW" value="Reset" type="button" class="inputs submit" ></el-input>
+
+                    <a class="forgetInfo" href="javascript:;" @click="backLogin">返回</a>  
                   </form>
               </div>
           </el-main>
@@ -25,6 +28,28 @@
         return {
           email: '',
           password: '',
+        }
+      },
+      methods: {
+        backLogin(){
+          this.$router.back(-1);
+        },
+        resetPW(){
+          let form = document.getElementById('emailBox');
+          var userv = form.getElementsByTagName('input')[0];
+          var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+
+          if(reg.test(userv.value)){
+            this.$message({
+              message: '修改密码邮件已发送至您的邮箱，请查收！',
+              type: 'success'
+            });
+          }else{
+            this.$message({
+              message: '邮箱格式错误!',
+              type: 'warning'
+            });
+          }
         }
       }
     }

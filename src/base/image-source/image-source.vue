@@ -67,13 +67,13 @@
                 content:'';@extend .block;wh(9px,24px);bgColor(#ED1C24);position:absolute;left:0px;top:23px;
         
         .column-content
-            wh(100%,auto); display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;-webkit-flex-wrap: wrap;flex-wrap: wrap;
+            wh(100%,auto); display:-webkit-flex;display:flex;-webkit-justify-content:flex-start;justify-content:flex-start;-webkit-flex-wrap: wrap;flex-wrap: wrap;
             
             .cc-con-box
                wh(236px,182px);border-radius:6px 6px 0 0;background:red;ab(0,0);bgColor(rgba(237,28,36,0.2));
                
             .cc-item
-                wh(238px,184px);box-sizing:border-box;border:1px solid #DEDEDE;border-radius:6px 6px 0 0;margin-top:30px;position:relative;z-index:100;
+                wh(238px,184px);box-sizing:border-box;border:1px solid #DEDEDE;border-radius:6px 6px 0 0;margin-top:30px;position:relative;z-index:100;margin-left:8px;
                 
                 .cc-item-previewbox
                     wh(236px,135px);position:relative;background:#F4F4F4;box-sizing:border-box;border-bottom:1px solid #DEDEDE;

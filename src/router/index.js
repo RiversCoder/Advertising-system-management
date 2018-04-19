@@ -16,10 +16,13 @@ import FullScreen from '@/components/full-screen/full-screen'
 
 import ListView from '@/base/list-view/list-view'
 
+import store from '../store/index'
+import * as types from '../store/mutation-types'
+
 
 Vue.use(Router)
 
-export default new Router({
+const router =  new Router({
     routes: [
     {
         path: '/',
@@ -28,12 +31,18 @@ export default new Router({
         children: [
         {
           path: 'home',
-          component: Home
+          component: Home,
+          meta: { 
+            requireAuth: true
+          }
         },
         {
           path: 'program-production',
           component: ProgramProduction,
           redirect: '/program-production/work-time',
+          meta: { 
+            requireAuth: true
+          },
           children:[
             {
               path:'work-time',
@@ -51,23 +60,38 @@ export default new Router({
         },
         {
           path: 'source-manage',
-          component: SourceManage
+          component: SourceManage,
+          meta: { 
+            requireAuth: true
+          }
         },
         {
           path: 'terminal',
-          component: Terminal
+          component: Terminal,
+          meta: { 
+            requireAuth: true
+          }
         },
         {
           path: 'help',
-          component: Help
+          component: Help,
+          meta: { 
+            requireAuth: true
+          }
         },
         {
           path: 'store',
-          component: Store
+          component: Store,
+          meta: { 
+            requireAuth: true
+          }
         },
         {
           path: 'draft-box',
-          component: DraftBox
+          component: DraftBox,
+          meta: { 
+            requireAuth: true
+          }
         }
       ]
     },
@@ -86,3 +110,25 @@ export default new Router({
   ],
   linkActiveClass: 'menuActive'
 })
+
+// 页面刷新时，重新赋值token
+if (window.localStorage.getItem('token')) {
+    store.commit(types.LOGIN, window.localStorage.getItem('token'))
+}
+
+// 判断是否需要登录权限 以及是否登录
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(res => res.meta.requireAuth)) { // 判断是否需要登录权限
+    if (localStorage.getItem('token')) { // 判断是否登录
+      next()
+    } else { // 没登录则跳转到登录界面
+      next({
+        path: '/login'
+      })
+    }
+  } else {
+    next()
+  }
+})
+
+export default router

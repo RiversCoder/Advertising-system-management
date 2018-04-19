@@ -21,9 +21,9 @@
               <el-main>
                   <div class="scrollWrap" ref="menuScroll">
                       <div class="cwrap">
-                          <folder-source :sources="data"></folder-source>
-                          <video-source :videos="videoDatas"></video-source>
-                          <image-source :images="videoDatas"></image-source>
+                          <folder-source :sources="folderData" :allsources="datas"></folder-source>
+                          <video-source :videos="videoData"></video-source>
+                          <image-source :images="imageData"></image-source>
                       </div>
                   </div>
               </el-main>
@@ -40,29 +40,18 @@
     import FolderSource from '@/base/folder-source/folder-source';
     import VideoSource from '@/base/video-source/video-source';
     import ImageSource from '@/base/image-source/image-source';
+    import datas from './data.js'
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
+
 
     export default{
         data(){
             return {
                 input: '',
-                data: [
-                    {name: 'java',status: true},
-                    {name:'javaScript',status: false},
-                    {name:'曹操',status: true},
-                    {name:'孙权',status: false},
-                    {name:'刘备',status: true},
-                    {name:'孙尚香',status: true},
-                    {name:'李白',status: true}
-                ],
-                videoDatas: [
-                    {name: 'java',status: true,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862138&di=5b67169c66a3e51b5d9fa7eac4190c39&imgtype=0&src=http%3A%2F%2Fimg1.3lian.com%2F2015%2Fa1%2F78%2Fd%2F151.jpg'},
-                    {name:'javaScript',status: false,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862136&di=4abcaae736a05a2572e4db3a61d461c8&imgtype=0&src=http%3A%2F%2Fimg1.3lian.com%2F2015%2Fa1%2F95%2Fd%2F148.jpg'},
-                    {name:'曹操',status: true,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862134&di=d1299b430488adda7b9766fb11c95199&imgtype=0&src=http%3A%2F%2Fup.enterdesk.com%2Fedpic_source%2F63%2F9d%2F2c%2F639d2c2aa8f71fe6979897b93d37519d.jpg'},
-                    {name:'孙权',status: false,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862133&di=0b39b978456b00b4d511e49e46321ce4&imgtype=0&src=http%3A%2F%2Fimg.tupianzj.com%2Fuploads%2Fallimg%2F160317%2F9-16031H11K7.jpg'},
-                    {name:'刘备',status: true,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862131&di=de18ab2031afc9a3843bdb9329aa5151&imgtype=0&src=http%3A%2F%2Fimg1.3lian.com%2F2015%2Fa1%2F95%2Fd%2F149.jpg'},
-                    {name:'孙尚香',status: true,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862130&di=3de9ff7912d845ace7db0d5cd4482dbe&imgtype=0&src=http%3A%2F%2Fimg1.3lian.com%2F2015%2Fa1%2F98%2Fd%2F206.jpg'},
-                    {name:'李白',status: true,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862129&di=fb51ee2432e4f48af76693a2a42a8787&imgtype=0&src=http%3A%2F%2Fwww.wmpic.me%2Fwp-content%2Fuploads%2F2013%2F11%2F2013112717214942.jpg'}
-                ]
+                imageData: [],
+                folderData: [],
+                videoData: [],
+                datas: datas
             }
         },
         methods:{
@@ -78,15 +67,48 @@
                 let headHeight = 108;
 
                 wrap.style.height = (winHeight - headHeight) + "px";
-            }
+            },
+            handleSource(){
+                // /let sous = null;
+                
+                this.setSource = datas;
+
+                console.log(this.source);
+
+                this.source.forEach((item)=>{
+                    switch(item.type){
+                        case 'folder' :
+                            this.folderData.push(item);
+                        break;
+                        case 'image' :
+                            this.imageData.push(item);
+                        break;
+                        case 'video' :
+                            this.videoData.push(item);
+                        break;    
+                    }
+                });
+            },
+            ...mapMutations({
+                setSource: 'source'
+            })
+            
+        },
+        computed: {
+            ...mapGetters(['source'])
         },
         mounted(){
             this.initScrollHeight();
+            setTimeout(()=>{
+                console.log(this.source);
+            },200);
         },
         created(){
             this.$nextTick(() => {
               this._initScroll()
             });
+            console.log(this.source);
+            this.handleSource();
         },
         components:{
             Scroll,

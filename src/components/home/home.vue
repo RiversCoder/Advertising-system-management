@@ -8,8 +8,21 @@
 
 
 <script>
-    export default{
+    
+    //import store from '../../store/index'
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
 
+    //console.log(store.state.token);
+    //console.log(store.state.token)
+    export default{
+        computed:{
+            ...mapGetters([
+                'token'
+            ])
+        },
+        created(){
+            console.log(this.token)
+        }
     }
 </script>
 

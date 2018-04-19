@@ -27,7 +27,14 @@
 <script>
 
     import BScroll from 'better-scroll';
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
+
     export default {
+        data(){
+            return {
+
+            }
+        },
         methods:{
             initContainer(){
                 let con = this.$refs.content;
@@ -39,7 +46,8 @@
               this.menuScroll = new BScroll(this.$refs.content, {
                 click: true
               })
-            },
+            }
+            
         },
         created(){
             /*this.$nextTick(() => {
@@ -75,6 +83,6 @@
         
 
     .con-container
-        overflow:hidden;width:100%;background:#f4f4f4;clear:both;       
+        overflow:hidden;width:100%;background:#fff;clear:both;       
 
 </style>
