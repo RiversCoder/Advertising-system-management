@@ -89,7 +89,7 @@
                       class="switchbox">
                     </el-switch>
                 </div>
-                <el-input type="textarea" class="inputGameBox"></el-input>
+                <textarea class="inputGameBox"></textarea>
             </div>
         </div>
     
@@ -205,7 +205,6 @@
                     .el-switch__button
                         wh(25px,25px);
         .inputGameBox
-            .el-textarea__inner
-                wh(304px,86px);bgColor(#F4F4F4);border-radius:10px;font-size:12px;line-height:14px;color:#999;margin:0 auto;margin-top:10px;
+            display:block;wh(304px,86px);padding:3px 5px;bgColor(#F4F4F4);border-radius:10px;font-size:12px;line-height:14px;color:#999;margin:0 auto;margin-top:10px;
                                                        
 </style>

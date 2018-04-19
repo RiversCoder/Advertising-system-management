@@ -6,14 +6,15 @@
                   <el-row>
                     <el-col :span="12">
                         <div class="grid-content">
-                           <el-input v-model="input" placeholder="Search" class="searchbox"></el-input>
-                           <el-button plain class="searchbtn">搜索</el-button>
+                           <el-input v-model="searchValue" placeholder="Search" class="searchbox"></el-input>
+                           <el-button plain class="searchbtn" @click.native="searchClick">搜索</el-button>
                         </div>
                     </el-col>
                     <el-col :span="12">
                         <div class="grid-content">
-                            <el-button plain class="rbtn uploadFile" >上传文件</el-button>
-                            <el-button plain class="rbtn newFolder" >新建文件夹</el-button>
+                            <p style="display:none"><input name="file" type="file" value="选择" size="20" id="fileUpload1" accept="image/png,image/gif,image/jpeg,video/mp4,application/ogg, audio/ogg,video/3gpp" @change ="changeUploadFile($event)" /></p>  
+                            <el-button plain class="rbtn uploadFile" @click.native="uploadFileBtn">上传文件</el-button>
+                            <el-button plain class="rbtn newFolder" @click.native="newFolder">新建文件夹</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -40,7 +41,8 @@
     import FolderSource from '@/base/folder-source/folder-source';
     import VideoSource from '@/base/video-source/video-source';
     import ImageSource from '@/base/image-source/image-source';
-    import datas from './data.js'
+    import datas from './data.js';
+    import dataSearch from './data-search.js';
     import {mapGetters, mapMutations, mapActions} from 'vuex';
 
 
@@ -48,6 +50,7 @@
         data(){
             return {
                 input: '',
+                searchValue : '',
                 imageData: [],
                 folderData: [],
                 videoData: [],
@@ -55,11 +58,52 @@
             }
         },
         methods:{
+            //初始化绑定 better-scroll 
             _initScroll() {
               this.menuScroll = new BScroll(this.$refs.menuScroll, {
                 click: true
               })
             },
+            //搜索数据
+            searchClick(){
+                let svalue = this.searchValue.replace(/(^\s*)|(\s*$)/g, "");;
+
+                if(svalue == ''){
+                    this.setSource(datas);
+                }else{
+                    this.setSource(dataSearch);
+                }
+            },
+            //新建文件夹
+            newFolder(){
+                this.$prompt('请输入文件夹名称', 'DBS温馨提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消'
+              }).then(({ value }) => {
+
+                var objs = {
+                    'name' : value,
+                    'type' : 'folder',
+                    'content' : false,
+                    'dir' : '/',
+                    'src' : ''
+                };
+
+                this.source.push(objs);
+
+                this.$message({
+                  type: 'success',
+                  message: '新建文件夹成功!'
+                });
+
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '取消输入'
+                });       
+              });
+            },
+            //初始化滚动包裹盒子的高度
             initScrollHeight(){
                 
                 let wrap = this.$refs.menuScroll;
@@ -68,13 +112,39 @@
 
                 wrap.style.height = (winHeight - headHeight) + "px";
             },
-            handleSource(){
-                // /let sous = null;
+            //上传文件按钮
+            uploadFileBtn(){
+                var fileInput = document.querySelector('#fileUpload1');
+                fileInput.click();
+            },
+            //文件上传
+            changeUploadFile(ev){
+                let file = ev.srcElement.files[0];
+                let form = new FormData();
+                form.append('file',file);
+
+                let url = '';
+                let attr = {
+                    'file': ''
+                } 
+               
+                let config = {
+                    headers:{'Content-Type':'multipart/form-data'}
+                };  //添加请求头
                 
-                this.setSource = datas;
+            },
+            //集中分发处理
+            handleSource(){
+                
+                //清空数据
+                this.folderData = [];
+                this.imageData = [];
+                this.videoData = [];
 
-                console.log(this.source);
-
+                if(this.source.length == 0){
+                    this.setSource(datas);
+                }
+                    
                 this.source.forEach((item)=>{
                     switch(item.type){
                         case 'folder' :
@@ -94,20 +164,24 @@
             })
             
         },
+        watch: {
+          source: {
+            deep: true,
+            handler (v) {
+              this.handleSource();
+            }
+          }
+        },
         computed: {
             ...mapGetters(['source'])
         },
         mounted(){
             this.initScrollHeight();
-            setTimeout(()=>{
-                console.log(this.source);
-            },200);
         },
         created(){
             this.$nextTick(() => {
               this._initScroll()
             });
-            console.log(this.source);
             this.handleSource();
         },
         components:{

@@ -1,19 +1,7 @@
 <template>
    <div class="con-container">
       <div class="Column">
-          <!--文件夹区域-->
-         <div v-if="folderExist">
-            <h3 class="column-title">文件夹</h3>
-            <div class="column-content" >
-                <dl class="cc-item" v-for="(item,index) in folderSources" >
-                    <dt class="cc-item-previewbox">
-                        <img :src="item.src" class="cip-img"/>
-                        <span class="cip-name">{{item.name}}</span>
-                    </dt>
-                    <span class="maskImg" ></span>
-                </dl>
-            </div>
-          </div>
+        <!--文件夹区域-->
           
          <div v-if="videoExist">
            <h3 class="column-title">视频</h3>

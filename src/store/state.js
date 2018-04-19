@@ -3,7 +3,8 @@ const state = {
     user: {},
     token: null,
     title: '',
-    source: ['1','2']
+    source: [],
+    selectid: []
 }
 
 export default state;

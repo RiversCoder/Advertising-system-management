@@ -85,9 +85,7 @@
                     this.source[i]['name'] = value;
                   }
                 }
-
-                this.setSource = this.source;
-
+                
                 this.$message({
                   type: 'success',
                   message: '重命名成功!'
@@ -101,7 +99,13 @@
               });
           },
           moveFile(id){
-
+              var allFiles = this.source;
+              
+              /*for(var i=0;i<allFiles.length;i++){
+                if(allFiles[i]['id'] == id){
+                  allFiles.splice(i,1);
+                }
+              } */
           },
           deleteFile(id){
               this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -109,10 +113,16 @@
                 cancelButtonText: '取消',
                 type: 'warning'
               }).then(() => {
+
+                for(var i=0;i<this.source.length;i++){
+                  if(this.source[i]['id'] == id){
+                    this.source.splice(i,1);
+                  }
+                } 
+
+                console.log(id,this.source);
+
                 this.$message({
-
-
-
                   type: 'success',
                   message: '删除成功!'
                 });
@@ -129,6 +139,9 @@
         },
         computed:{
           ...mapGetters(['source'])
+        },
+        mounted(){
+          //console.log(this.source)
         }
     }
 </script>

@@ -7,3 +7,5 @@ export const TITLE = 'title'
 export const SINGER = 'singer'
 
 export const SOURCE = 'source'
+
+export const SELECT = 'select'

@@ -13,8 +13,12 @@ import Help from '@/components/help/help'
 import WorkTime from '@/components/work-time/work-time'
 import NoworkTime from '@/components/nowork-time/nowork-time'
 import FullScreen from '@/components/full-screen/full-screen'
+import SelectFile from '@/components/select-file/select-file'
+import DragFile from '@/components/drag-file/drag-file'
 
 import ListView from '@/base/list-view/list-view'
+
+
 
 import store from '../store/index'
 import * as types from '../store/mutation-types'
@@ -106,6 +110,14 @@ const router =  new Router({
     {
       path: '/list',
       component: ListView
+    },
+    {
+      path: '/select',
+      component: SelectFile
+    },
+    {
+      path: '/order',
+      component: DragFile
     }
   ],
   linkActiveClass: 'menuActive'
