@@ -40,7 +40,7 @@
     import FolderSource from '@/base/folder-source/folder-source';
     import VideoSource from '@/base/video-source/video-source';
     import ImageSource from '@/base/image-source/image-source';
-    import datas from './data.js';
+    import datas from '../../common/js/data.js';
     import dataSearch from './data-search.js';
     import {mapGetters, mapMutations, mapActions} from 'vuex';
 
@@ -131,6 +131,8 @@
                 let config = {
                     headers:{'Content-Type':'multipart/form-data'}
                 };  //添加请求头
+                
+                
                 
             },
             //集中分发处理

@@ -20,9 +20,9 @@
           <div class="user-manage">
 
             <el-row :gutter="20">
-              <el-col :span="7"><div class="grid-content bg-purple"><span class="btn-intro">创建子账户</span><el-input class="input-intro" v-model="input" placeholder="E-mail"></el-input></div></el-col>
-              <el-col :span="7"><div class="grid-content bg-purple"><span class="btn-intro">@DBS.COM</span><el-input class="input-intro" v-model="input" placeholder="代号"></el-input></div></el-col>
-              <el-col :span="3"><div class="grid-content bg-purple"><el-button type="danger">确认添加</el-button></div></el-col>
+              <el-col :span="7"><div class="grid-content bg-purple"><span class="btn-intro">创建子账户</span><el-input class="input-intro" v-model="input" placeholder="E-mail" type="email"></el-input></div></el-col>
+              <el-col :span="7"><div class="grid-content bg-purple"><span class="btn-intro">@DBS.COM</span><el-input class="input-intro" v-model="password" placeholder="Password" type="password"></el-input></div></el-col>
+              <el-col :span="3"><div class="grid-content bg-purple"><el-button type="danger" @click="clickAddUser">确认添加</el-button></div></el-col>
               <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
             </el-row>
 
@@ -61,24 +61,53 @@
             return{
                 title: '',
                 input: '',
+                password: '',
                 tableData: [{
                     title: '已有子账户',
                     email: '123.tang@163.com',
                     alias: 'longTang',
                     time: '2018.04.11 13:14:23',
                     address: '上海市普陀区金沙江路 1518 弄'
-                  }, {
-                    title: '已有子账户',
-                    email: '123.tang@163.com',
-                    alias: 'xiaohua',
-                    time: '2018.03.11 13:14:23',
-                    address: '上海市普陀区金沙江路 1517 弄'
-                  }]
+                  }],
+                  url: this.$baseUrl+'/api/addSubAccount',
+                  attr:{
+                    name: this.input+'@dbs.com',
+                    password: this.password
+                  }
             }
         },
         props: {
         },
         methods:{
+          init(){
+
+            //验证数据
+            this.$axios.post(this.url,this.attr).then((res)=>{
+              console.log(res)
+            }).catch((error)=>{
+              console.log(error)
+            })
+          },
+          clickAddUser(){
+            if(!this.input || !this.password){
+              this.$message.error('邮箱或密码不能为空!');
+
+            }else{
+
+              if(!/^\w+$/.test(this.input)){
+                this.$message.error('邮箱或格式错误!');
+                return;
+              }
+
+              this.tableData.push({
+                title: '已有子账户',
+                email: this.input+'@dbs.com',
+                alias: 'xiaohua',
+                time: (new Date()).toLocaleTimeString(),
+                address: '北京西二旗百度大厦正门'
+              })
+            }
+          },
           selectFn(index){
             var items = document.querySelectorAll('.cc-item');
             items[index].classList.toggle('cactive');
@@ -137,6 +166,7 @@
         },
         mounted(){
             this.drawPie();
+            this.init();
         }
     }
 </script>
@@ -171,7 +201,7 @@
             .chartBoxPie
                 wh(50%,430px);
         .user-manage
-            wh(100%,351px);box-sizing:border-box;border-radius:6px;border:1px solid #DEDEDE;padding-left:54px;padding-top:26px;       
+            width:100%;min-height:351px;box-sizing:border-box;border-radius:6px;border:1px solid #DEDEDE;padding-left:54px;padding-top:26px;       
             .el-button--danger
                 background-color: #ed1c24;border-color: #ed1c24;
                 &:hover

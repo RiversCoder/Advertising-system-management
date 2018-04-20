@@ -12,7 +12,7 @@
                     
                     <el-input  v-model="email" placeholder="Email" type="email" class="inputs" name="user"></el-input>
 
-                    <el-input  @click.native="resetPW" value="Reset" type="button" class="inputs submit" ></el-input>
+                    <el-input  @click.native="resetPW" value="发送验证" type="button" class="inputs submit" ></el-input>
 
                     <a class="forgetInfo" href="javascript:;" @click="backLogin">返回登陆</a>  
                   </form>

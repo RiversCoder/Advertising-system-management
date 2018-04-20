@@ -60,14 +60,6 @@ const data = [
         dir: '/'       
     },
     {
-        id: 9,
-        name: '小花',
-        src: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524135607463&di=6dca9e21431cb8b41b9c975cc64bf3cd&imgtype=0&src=http%3A%2F%2Fimg4.duitang.com%2Fuploads%2Fitem%2F201303%2F21%2F20130321121333_5danv.thumb.700_0.jpeg',
-        type: 'video',
-        content: false,
-        dir: '/'       
-    },
-    {
         id: 10,
         name: '小泽',
         src: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524135607462&di=ffb041f21496b0d7ace4358c0071d66e&imgtype=0&src=http%3A%2F%2Fimg1.3lian.com%2F2015%2Fa1%2F114%2Fd%2F42.jpg',
