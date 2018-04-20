@@ -10,7 +10,8 @@ console.log(store.state.token);
 axios.interceptors.request.use(
     config => {
         if (store.state.token) {
-            config.headers.Authorization = `token:${store.state.token}`;
+            config.headers['Authorization'] = store.state.token;
+            config.headers['Accept'] = 'application/json';
         }
         return config;
     },
@@ -26,7 +27,7 @@ axios.interceptors.response.use(
     error => {
         if (error.response) {
             switch (error.response.status) {
-                case 401:
+                case 404:
                     // 401 清除token信息并跳转到登录页面
                     store.commit(types.LOGOUT);
                     router.replace({

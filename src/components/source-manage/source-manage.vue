@@ -36,7 +36,6 @@
 
 <script>
     
-    import Scroll from '@/base/scroll/scroll';
     import BScroll from 'better-scroll';
     import FolderSource from '@/base/folder-source/folder-source';
     import VideoSource from '@/base/video-source/video-source';
@@ -54,7 +53,8 @@
                 imageData: [],
                 folderData: [],
                 videoData: [],
-                datas: datas
+                datas: datas,
+                webDatas: []
             }
         },
         methods:{
@@ -185,7 +185,6 @@
             this.handleSource();
         },
         components:{
-            Scroll,
             FolderSource,
             VideoSource,
             ImageSource

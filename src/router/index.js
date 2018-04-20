@@ -17,7 +17,9 @@ import SelectFile from '@/components/select-file/select-file'
 import DragFile from '@/components/drag-file/drag-file'
 
 import ListView from '@/base/list-view/list-view'
-
+import On from '@/base/on/on'
+import Off from '@/base/off/off'
+import Full from '@/base/full/full'
 
 
 import store from '../store/index'
@@ -50,15 +52,35 @@ const router =  new Router({
           children:[
             {
               path:'work-time',
-              component: WorkTime
+              component: WorkTime,
+              meta: { 
+                requireAuth: true
+              },
+              redirect: '/program-production/work-time/on',
+              children: [{
+                path:'on',
+                component: On
+              },{
+                path:'off',
+                component: Off
+              },{
+                path:'full',
+                component: Full
+              }]
             },
             {
-              path:'nowork-time',
-              component: NoworkTime
+              path: 'select',
+              component: SelectFile,
+              meta: { 
+                requireAuth: true
+              }
             },
             {
-              path:'full-screen',
-              component: FullScreen
+              path: 'order',
+              component: DragFile,
+              meta: { 
+                requireAuth: true
+              }
             }
           ]
         },
@@ -110,14 +132,6 @@ const router =  new Router({
     {
       path: '/list',
       component: ListView
-    },
-    {
-      path: '/select',
-      component: SelectFile
-    },
-    {
-      path: '/order',
-      component: DragFile
     }
   ],
   linkActiveClass: 'menuActive'

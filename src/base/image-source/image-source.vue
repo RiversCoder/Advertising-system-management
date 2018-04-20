@@ -16,9 +16,9 @@
                       
                       <dd class="cc-item-textbox">
                           <ul class="citms">
-                              <li class="cit cit1">重命名</li>
-                              <li class="cit cit2">移动文件</li>
-                              <li class="cit cit3">删除</li>
+                              <li class="cit cit1" @click="renameFile(item.id)">重命名</li>
+                              <li class="cit cit2" @click="moveFile(item.id)">移动文件</li>
+                              <li class="cit cit3" @click="deleteFile(item.id)">删除</li>
                           </ul>
                       </dd>
 
@@ -33,10 +33,12 @@
 
 
 <script type="text/ecmascript-6">
+
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
     export default{
         data(){
             return{
-                
+                getDatas: []
             }
         },
         props: {
@@ -45,7 +47,86 @@
             default: function(){
                 return []
             }
+          },
+          allsources:{
+            type: Array,
+            default: function(){
+                return []
+            }
           }
+        },
+        methods:{
+          renameFile(id){
+             this.$prompt('请输入文件名称', 'DBS温馨提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消'
+              }).then(({ value }) => {
+
+                console.log(this.source)
+
+                //修改数据
+                for(var i=0;i<this.source.length;i++){
+                  if(this.source[i].id == id){
+                    this.source[i]['name'] = value;
+                  }
+                }
+                
+                this.$message({
+                  type: 'success',
+                  message: '重命名成功!'
+                });
+
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '取消输入'
+                });       
+              });
+          },
+          moveFile(id){
+              var allFiles = this.source;
+              
+              /*for(var i=0;i<allFiles.length;i++){
+                if(allFiles[i]['id'] == id){
+                  allFiles.splice(i,1);
+                }
+              } */
+          },
+          deleteFile(id){
+              this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+
+                for(var i=0;i<this.source.length;i++){
+                  if(this.source[i]['id'] == id){
+                    this.source.splice(i,1);
+                  }
+                } 
+
+                console.log(id,this.source);
+
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消删除'
+                });          
+              });
+          },
+          ...mapMutations({
+            setSource : 'source'
+          })
+        },
+        computed:{
+          ...mapGetters(['source'])
+        },
+        mounted(){
+          //console.log(this.source)
         }
     }
 </script>

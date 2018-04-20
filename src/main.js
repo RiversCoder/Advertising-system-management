@@ -14,7 +14,7 @@ import store from './store/index'
 
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
-
+Vue.prototype.$baseUrl = 'http://hn.skylandertech.cn'
 
 /* eslint-disable no-new */
 Vue.use(ElementUI)

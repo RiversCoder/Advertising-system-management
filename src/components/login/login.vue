@@ -10,7 +10,7 @@
                     
                     <h3 class="loginTitle"> 登陆 </h3>
                     
-                    <el-input v-model="email" placeholder="Email" type="text" class="inputs" name="user_name"></el-input>  
+                    <el-input v-model="email" placeholder="Email" type="email" class="inputs" name="user_name"></el-input>  
                     <el-input v-model="password" placeholder="Password" type="password" class="inputs" name="user_password"></el-input> 
                     <el-input  @click.native="loginfn" value="Login" type="button" class="inputs submit" ></el-input> 
                     
@@ -33,35 +33,37 @@
         return {
           email: '',
           password: '',
-          url:'http://www.hmproperty.cn/hm_test/api/request/user.php'
+          url: this.$baseUrl+'/api/login'
         }
       },
       methods:{
         loginfn(){
-          //console.log(this.$axios);
+          
           this.$axios.post(this.url,qs.stringify({
-            'user_name': this.email,
-            'user_password': this.password
+            'name': this.email,
+            'password': this.password
           }),{
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
           }).then((res)=>{
             this.loginCheck(res.data);
           }).catch((err)=>{
             console.log(err)
           });
         },
-        loginCheck(data){
-          let code = data.code;
-          if(code == 400){
-            console.log(data);
+        loginCheck(res){  
+          
+          
+          if(res.status == 'success'){
             //写入vuex状态树中
-            this.setToken(data.token);
+            this.setToken(res.data[0].token);
             //去到首页
             this.$router.push({'path':'/home'})
 
           }else{
             //弹出提示信息 登陆失败
-             this.$message.error(data.msg);
+            this.$message.error(res.message);
           }
         },
         forgetpw(){
@@ -78,7 +80,7 @@
 
 
 
-<style lang="stylus" rel="stylesheet/stylus">
+<style scoped lang="stylus" rel="stylesheet/stylus">
     
     @import "~common/stylus/variable"
     @import "~common/stylus/mixin"
@@ -103,8 +105,7 @@
                     &:hover
                       opacity:0.8;
             .submit
-                height:53px;margin-top:54px;
-                    
+                height:53px;margin-top:54px;  
                 .el-input__inner
                         hh(53px);bgColor(#ED1C24);color:#fff;font-size:21px;cursor:pointer;
             .forgetInfo
@@ -122,4 +123,11 @@
             margin-left:-66px;
         }
     }
+
+    .submit .el-input__inner{
+      background-color:#ED1C24;height:54px;line-height:54px;color:#fff;font-size:21px;cursor:pointer;border-radius:10px;
+    }
+    .submit .el-input__inner:hover{
+      opacity: .8;
+    }                 
 </style>

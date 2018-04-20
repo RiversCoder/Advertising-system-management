@@ -19,10 +19,12 @@
       </el-header>
 
       <el-main>
-            <div class="cwrap">
-                <list-view :folderExist="true" :folderSources="folderData"></list-view>
-                <list-view @select1="selectData1" :videoExist="true" :videoSources="videoData"></list-view>
-                <list-view @select2="selectData2" :imageExist="true" :imageSources="imageData"></list-view>
+            <div class="cwrap" ref="cwrap">
+                <div>
+                  <list-view :folderExist="true" :folderSources="folderData"></list-view>
+                  <list-view @select1="selectData1" :videoExist="true" :videoSources="videoData"></list-view>
+                  <list-view @select2="selectData2" :imageExist="true" :imageSources="imageData"></list-view>
+               </div>
             </div>
       </el-main>
    </div>
@@ -34,6 +36,7 @@
     import {mapGetters, mapMutations, mapActions} from 'vuex';
     import datas from 'common/js//data';
     import tool from 'common/js/tool';
+    import BScroll from 'better-scroll';
 
     export default{
         data(){
@@ -48,6 +51,12 @@
             }
         },
         methods:{
+            //初始化绑定 better-scroll 
+            _initScroll() {
+              this.menuScroll = new BScroll(this.$refs.cwrap, {
+                click: true
+              })
+            },
             init(){
               var arr = this.source;
               //清空数据
@@ -90,16 +99,24 @@
             },
             ...mapMutations({
               setSelect: 'select'
-            })
+            }),
+            countHeight(){
+              var box = this.$refs.cwrap;
+              var h = document.body.offsetHeight - 108;
+              box.style.height = h + 'px';
+            }
         },
         computed:{
           ...mapGetters(['source'])
         },
         created(){
           this.init();
+          this.$nextTick(() => {
+            this._initScroll()
+          });
         },
         mounted(){
-          
+          this.countHeight();
         },
         components:{
           ListView
@@ -126,7 +143,9 @@
         .rbtn
             float:right;margin-right:20px;margin-top:34px;width:128px;hh(40px);@extend .btnStyle;
         .uploadFile
-            bgColor(#ED1C24);color:#fff;
+            bgColor(#ED1C24);color:#fff;      
       .cwrap
-        width:100%;height:auto;                       
+        width:100%;height:auto;overflow:hidden; 
+    .el-main
+      padding:0;padding-left:20px;box-sizing:border-box;                          
 </style>

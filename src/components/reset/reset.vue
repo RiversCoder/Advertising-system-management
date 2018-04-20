@@ -14,7 +14,7 @@
 
                     <el-input  @click.native="resetPW" value="Reset" type="button" class="inputs submit" ></el-input>
 
-                    <a class="forgetInfo" href="javascript:;" @click="backLogin">返回</a>  
+                    <a class="forgetInfo" href="javascript:;" @click="backLogin">返回登陆</a>  
                   </form>
               </div>
           </el-main>
@@ -56,7 +56,7 @@
 </script>
 
 
-<style lang="stylus" rel="stylesheet/stylus">
+<style scoped lang="stylus" rel="stylesheet/stylus">
     
     @import "~common/stylus/variable"
     @import "~common/stylus/mixin"
@@ -101,4 +101,10 @@
             margin-left:-66px;
         }
     }
+    .submit .el-input__inner{
+      background-color:#ED1C24;height:54px;line-height:54px;color:#fff;font-size:21px;cursor:pointer;border-radius:10px;
+    }
+    .submit .el-input__inner:hover{
+      opacity: .8;
+    }     
 </style>

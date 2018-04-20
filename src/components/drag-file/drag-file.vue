@@ -19,7 +19,9 @@
 
       <el-main>
             <div class="cwrap" id="cwrap" ref="cwrap">
-                <item-view :sources="selectData"></item-view>
+                <div>
+                   <item-view :sources="selectData"></item-view>
+                </div>
             </div>
       </el-main>
    </div>
@@ -32,7 +34,7 @@
     import datas from 'common/js/data';
     import tool from 'common/js/tool';
     import tools from 'common/js/lgc_tools';
-
+    import BScroll from 'better-scroll';
 
     export default{
         data(){
@@ -49,6 +51,13 @@
             }
         },
         methods:{
+            //初始化绑定 better-scroll 
+            _initScroll() {
+              this.menuScroll = new BScroll(this.$refs.cwrap, {
+                click: true
+              })
+            },
+            //初始化数据
             init(){
                //console.log(this.source);
               //console.log(this.selectid);
@@ -77,13 +86,10 @@
             },
             initPos(cindex,dindex){
               
-              //console.log(this.selectData);  
               console.log(cindex,dindex);
               //重新计算位置
               this.countPos(cindex,dindex);
-              
-              //this.setResults(this.selectData);
-              //console.log(data);
+
               //替换DOM位置
               var parent = document.getElementById('item-drag-box-wrap');
               var childs = parent.getElementsByClassName('item-drag-box');
@@ -116,7 +122,7 @@
               for(var i=0;i<newData.length;i++){
                 this.selectData[i] = newData[i];
               }
-              console.log(this.selectData);
+              this.setResults(this.selectData);
             },
             arrangePos(parent,clsn,initBoolean){
               var childs = parent.getElementsByClassName(clsn);
@@ -160,7 +166,7 @@
             //提交
             nextBtn(){
               //跳转到拖拽面板页面
-              this.$router.push({path:'order'})    
+              this.$router.back(-2);
             }
         },
         watch:{
@@ -171,6 +177,9 @@
         },
         created(){
           this.init();
+          this.$nextTick(() => {
+            this._initScroll()
+          });
         },
         mounted(){
           this.arrangePos(this.$refs.cwrap,'item-drag-box');

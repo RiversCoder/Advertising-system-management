@@ -1,18 +1,5 @@
 <template>
     <div class="program-control">
-        <header class="pc-header">
-            <ul class="control-menu">
-                <router-link to="/program-production/work-time">
-                    <li class="item worktime">工作时间</li>
-                </router-link>
-                <router-link to="/program-production/nowork-time">
-                    <li class="item notworktime">非工作时间</li>
-                </router-link>
-                <router-link to="/program-production/full-screen">
-                    <li class="item fullscreen">全屏</li>
-                </router-link>
-            </ul>
-        </header>
         
         <div class="con-container" ref="content" >
             <div>
@@ -39,7 +26,7 @@
             initContainer(){
                 let con = this.$refs.content;
                 var bh = document.body.offsetHeight;
-                var hh = 108;
+                var hh = 0;
                 con.style.height = ( bh - hh ) + 'px';
             },
             _initScroll() {

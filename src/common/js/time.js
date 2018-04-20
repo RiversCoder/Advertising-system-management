@@ -1,0 +1,91 @@
+export const worktime = [{
+    id:1,
+    date:"Sun,Mon,Tue",
+    time:"AM00:45-PM12:30"
+},{
+    id:2,
+    date:"Sun,Mon,Tue,Web,Thu,Fri",
+    time:"AM01:00-PM12:00",
+},{
+    id:3,
+    date:"Sun,Mon,",
+    time:"AM01:15-PM12:25"
+},{
+    id:4,
+    date:"Sun,Mon,Tue,Web",
+    time:"AM02:15-PM15:25"
+},{
+    id:5,
+    date:"Sun,Mon,Tue,Web,Thu,Fri",
+    time:"AM01:00-PM12:00",
+},{
+    id:6,
+    date:"Sun,Mon,",
+    time:"AM01:15-PM12:25"
+},{
+    id:7,
+    date:"Sun,Mon,Tue,Web",
+    time:"AM02:15-PM15:25"
+}];
+
+
+export const noworktime = [{
+    id:1,
+    date:"Sun,Mon,Tue",
+    time:"AM00:45-PM12:30"
+},{
+    id:2,
+    date:"Sun,Mon,Tue,Web,Thu,Fri",
+    time:"AM01:00-PM12:00",
+},{
+    id:3,
+    date:"Sun,Mon,",
+    time:"AM01:15-PM12:25"
+},{
+    id:4,
+    date:"Sun,Mon,Tue,Web",
+    time:"AM02:15-PM15:25"
+},{
+    id:5,
+    date:"Sun,Mon,Tue,Web,Thu,Fri",
+    time:"AM01:00-PM12:00",
+},{
+    id:6,
+    date:"Sun,Mon,",
+    time:"AM01:15-PM12:25"
+},{
+    id:7,
+    date:"Sun,Mon,Tue,Web",
+    time:"AM02:15-PM15:25"
+}];
+
+
+export const full = [{
+    id:1,
+    date:"Sun,Mon,Tue",
+    time:"AM00:45-PM12:30"
+},{
+    id:2,
+    date:"Sun,Mon,Tue,Web,Thu,Fri",
+    time:"AM01:00-PM12:00",
+},{
+    id:3,
+    date:"Sun,Mon,",
+    time:"AM01:15-PM12:25"
+},{
+    id:4,
+    date:"Sun,Mon,Tue,Web",
+    time:"AM02:15-PM15:25"
+},{
+    id:5,
+    date:"Sun,Mon,Tue,Web,Thu,Fri",
+    time:"AM01:00-PM12:00",
+},{
+    id:6,
+    date:"Sun,Mon,",
+    time:"AM01:15-PM12:25"
+},{
+    id:7,
+    date:"Sun,Mon,Tue,Web",
+    time:"AM02:15-PM15:25"
+}];
