@@ -4,7 +4,8 @@ const state = {
     token: null,
     title: '',
     source: [],
-    selectid: []
+    selectid: [],
+    results: []
 }
 
 export default state;

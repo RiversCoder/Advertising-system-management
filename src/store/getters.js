@@ -13,3 +13,8 @@ export const source = function(state){
 export const selectid = function(state){
     return state.selectid;
 }
+
+
+export const results = function(state){
+    return state.results;
+}

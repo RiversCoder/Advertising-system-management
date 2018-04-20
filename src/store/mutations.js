@@ -17,6 +17,9 @@ const mutations = {
     },
     [types.SELECT]: (state,data) => {
         state.selectid = data;
+    },
+    [types.RESULTS]: (state,data) => {
+        state.results = data;
     }
 };
 

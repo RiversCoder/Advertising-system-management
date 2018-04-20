@@ -1,13 +1,5 @@
 const data = [
     {   
-        id: 1,
-        name: '我的英雄文件夹',
-        src: 'http://img3.imgtn.bdimg.com/it/u=816908173,652574552&fm=27&gp=0.jpg',
-        type: 'folder',
-        content: false,
-        dir: '/'
-    },
-    {   
         id: 2,
         name: '漂亮小姐姐',
         src: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524135480120&di=2bfe86b5ab5e8ddb22f23164ce1ec83d&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2Fb%2F58461e1468e62.jpg%3Fdown',

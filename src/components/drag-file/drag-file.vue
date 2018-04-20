@@ -18,8 +18,8 @@
       </el-header>
 
       <el-main>
-            <div class="cwrap">
-               
+            <div class="cwrap" id="cwrap" ref="cwrap">
+                <item-view :sources="selectData"></item-view>
             </div>
       </el-main>
    </div>
@@ -27,10 +27,12 @@
 
 <script type="text/ecmascript-6">
     
-    import ListView from '@/base/list-view/list-view';
     import {mapGetters, mapMutations, mapActions} from 'vuex';
-    //import datas from './data';
+    import ItemView from '@/base/item-view/item-view';
+    import datas from 'common/js/data';
     import tool from 'common/js/tool';
+    import tools from 'common/js/lgc_tools';
+
 
     export default{
         data(){
@@ -41,65 +43,141 @@
               imageData: [],
               selectVideoId: [],
               selectImageId: [],
-              fileId: []
+              fileId: [],
+              selectData: [],
+              source: datas
             }
         },
         methods:{
             init(){
-              var arr = this.source;
-              //清空数据
-              this.folderData = [];
-              this.imageData = [];
-              this.videoData = [];
-              
-              datas.forEach((item)=>{
-                  switch(item.type){
-                      case 'folder' :
-                          this.folderData.push(item);
-                      break;
-                      case 'image' :
-                          this.imageData.push(item);
-                      break;
-                      case 'video' :
-                          this.videoData.push(item);
-                      break;    
+               //console.log(this.source);
+              //console.log(this.selectid);
+              this.selectData = [];
+              for(var i=0;i<this.selectid.length;i++){
+                for(var j=0;j<this.source.length;j++){
+                  if(this.selectid[i] == this.source[j].id){
+                    this.source[j]['order'] = i;
+                    this.selectData.push(this.source[j]);
                   }
-              });
+                }
+              }
+
+              for(var i=0;i<this.selectData.length;i++){
+                this.selectData[i]['order'] = i;
+              }
+
+              this.setResults(this.selectData);
             },
-            selectData1(v){
-              this.selectVideoId = v;
+            ...mapMutations({
+              setSelect: 'select',
+              setResults: 'results'
+            }),
+            arrangeSource(){
+
             },
-            selectData2(v){
-              this.selectImageId = v;
+            initPos(cindex,dindex){
+              
+              //console.log(this.selectData);  
+              console.log(cindex,dindex);
+              //重新计算位置
+              this.countPos(cindex,dindex);
+              
+              //this.setResults(this.selectData);
+              //console.log(data);
+              //替换DOM位置
+              var parent = document.getElementById('item-drag-box-wrap');
+              var childs = parent.getElementsByClassName('item-drag-box');
+              //console.log(cindex,dindex)
+              parent.insertBefore(childs[cindex],childs[dindex]);
+              
+              //重新排列位置
+              this.arrangePos(parent,'item-drag-box');
+              //重新绑定
+              this.bindDrag();  
+            },
+            countPos(ci,di){
+              
+              var data = [];
+              for(var i=0;i<this.selectData.length;i++){
+                data[i] = this.selectData[i];
+              }
+              
+              var newData = [];
+              var i = 0,j = 0;
+
+              newData = data;
+              if(ci > di){
+                newData.splice(di,0,data[ci]);
+                newData.splice(ci+1,1);
+              }else{
+                newData.splice(di,0,data[ci]);
+                newData.splice(ci,1);
+              }
+              for(var i=0;i<newData.length;i++){
+                this.selectData[i] = newData[i];
+              }
+              console.log(this.selectData);
+            },
+            arrangePos(parent,clsn,initBoolean){
+              var childs = parent.getElementsByClassName(clsn);
+              var bh = document.body.offsetHeight;
+              var hh = 108;
+              var row = 0;
+              parent.style.height = bh-hh + 'px';
+              row = Math.floor(parent.offsetWidth/(childs[0].offsetWidth+10));
+
+              if(!childs[0]){
+                return;
+              }
+
+              for(var i=0;i<childs.length;i++){
+                childs[i].style.left = (i%row) * (childs[i].offsetWidth +10)  + 'px';
+                childs[i].style.top = Math.floor(i/row) * ( childs[i].offsetHeight + 10 ) + 'px';
+              }
+            },
+            bindDrag(){
+
+              let box = this.$refs.cwrap;
+              var childs = box.getElementsByClassName('item-drag-box');
+              
+              if(!childs[0]){
+                return;
+              }
+
+              for(var i=0;i<childs.length;i++){
+                //设置拖拽
+                childs[i].index = i;
+                tools.drag(childs[i],childs,'desktopIcons',(cindex,index)=>{
+                    this.initPos(cindex,index);
+                });
+              }
+
             },
             //上一步
             lastBtn(){
               this.$router.back(-1);
             },
-            //下一步
+            //提交
             nextBtn(){
-              //获取当前的数据
-              this.fileId = tool.concatArray(this.selectVideoId,this.selectImageId);
-              this.setSelect(this.fileId);
-
               //跳转到拖拽面板页面
-                  
-            },
-            ...mapMutations({
-              setSelect: 'select'
-            })
+              this.$router.push({path:'order'})    
+            }
+        },
+        watch:{
+          
         },
         computed:{
-          ...mapGetters(['source'])
+          ...mapGetters(['selectid'])
         },
         created(){
           this.init();
         },
         mounted(){
-          
+          this.arrangePos(this.$refs.cwrap,'item-drag-box');
+          this.bindDrag();
         },
         components:{
-          ListView
+          ItemView
         }
     }
 </script>
@@ -109,8 +187,6 @@
     @import "~common/stylus/variable" 
     @import "~common/stylus/mixin"                    
     
-    
-
     .btnStyle{
         bgColor(#F4F4F4);color:#333;font-size:18px;initp();border-radius:10px;
      }
@@ -133,5 +209,5 @@
         .uploadFile
             bgColor(#ED1C24);color:#fff;
       .cwrap
-        width:100%;height:auto;                       
+        width:100%;position:relative;                       
 </style>

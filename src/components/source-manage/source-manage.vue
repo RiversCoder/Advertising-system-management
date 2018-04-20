@@ -193,7 +193,7 @@
     }
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus">
+<style scoped lang="stylus" rel="stylesheet/stylus">
     
     @import "~common/stylus/variable" 
     @import "~common/stylus/mixin"

@@ -32,7 +32,7 @@
     
     import ListView from '@/base/list-view/list-view';
     import {mapGetters, mapMutations, mapActions} from 'vuex';
-    import datas from './data';
+    import datas from 'common/js//data';
     import tool from 'common/js/tool';
 
     export default{
@@ -86,7 +86,7 @@
               this.setSelect(this.fileId);
 
               //跳转到拖拽面板页面
-                  
+              this.$router.push({path:'order'})    
             },
             ...mapMutations({
               setSelect: 'select'
