@@ -165,8 +165,16 @@
             },
             //提交
             nextBtn(){
+
+              //首先把数据保存然后提交到数据库
+
               //跳转到拖拽面板页面
-              this.$router.back(-2);
+              this.$router.push({
+                path: '/program-production/work-time/'+this.$route.query.direct,
+                query:{
+                  results: this.selectData
+                }
+              });
             }
         },
         watch:{

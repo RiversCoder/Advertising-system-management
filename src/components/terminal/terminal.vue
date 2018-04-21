@@ -12,21 +12,21 @@
                   </el-row>
                   <el-row>
                      <el-col :span="24"><div class="grid-content">
-                         <el-input class="input-lilv" v-model="input" placeholder="星展兴盛理财新客户尊享"></el-input>
+                         <el-input class="input-lilv" v-model="input1_1" placeholder="星展兴盛理财新客户尊享"></el-input>
                      </div></el-col>
                   </el-row>
                   <el-row>
                      <el-col :span="9"><div class="grid-content">
-                         <el-input class="input-lilv input-lilvTwo" v-model="input" placeholder="请输入内容"></el-input>
+                         <el-input class="input-lilv input-lilvTwo" v-model="input1_2" placeholder="港元"></el-input>
                      </div></el-col>
                      <el-col :span="4"><div class="grid-content">&nbsp;</div></el-col>
                      <el-col :span="9"><div class="grid-content">
-                         <el-input class="input-lilv input-lilvTwo" v-model="input" placeholder="请输入内容"></el-input>
+                         <el-input class="input-lilv input-lilvTwo" v-model="input1_3" placeholder="总回报"></el-input>
                      </div></el-col> 
                   </el-row>
                   <el-row>
                      <el-col :span="24"><div class="grid-content">
-                         <el-input class="input-lilv" v-model="input" placeholder="请输入内容"></el-input>
+                         <el-input class="input-lilv" v-model="input1_4" placeholder="请输入百分比"></el-input>
                      </div></el-col>
                   </el-row>
               </div><!--//end formBox1-->
@@ -38,26 +38,26 @@
                   </el-row>
                   <el-row>
                      <el-col :span="24"><div class="grid-content">
-                         <el-input class="input-lilv" v-model="input" placeholder="定期存款客户尊享"></el-input>
+                         <el-input class="input-lilv" v-model="input2_1" placeholder="定期存款客户尊享"></el-input>
                      </div></el-col>
                   </el-row>
                   <el-row>
                      <el-col :span="9"><div class="grid-content">
-                         <el-input class="input-lilv input-lilvTwo" v-model="input" placeholder="请输入内容"></el-input>
+                         <el-input class="input-lilv input-lilvTwo" v-model="input2_2" placeholder="纽元"></el-input>
                      </div></el-col>
                      <el-col :span="4"><div class="grid-content">&nbsp;</div></el-col>
                      <el-col :span="9"><div class="grid-content">
-                         <el-input class="input-lilv input-lilvTwo" v-model="input" placeholder="请输入内容"></el-input>
+                         <el-input class="input-lilv input-lilvTwo" v-model="input2_3" placeholder="总回报"></el-input>
                      </div></el-col> 
                   </el-row>
                   <el-row>
                      <el-col :span="24"><div class="grid-content">
-                         <el-input class="input-lilv" v-model="input" placeholder="请输入内容"></el-input>
+                         <el-input class="input-lilv" v-model="input2_4" placeholder="请输入百分比"></el-input>
                      </div></el-col>
                   </el-row>
               </div> <!--//end formBox2-->
 
-              <el-button class="tiJiaoBtn">提交</el-button>
+              <el-button class="tiJiaoBtn" @click="submit">提交</el-button>
 
           </div><!-- //end  lilv-content-->
 
@@ -75,14 +75,70 @@
         data(){
             return{
                 title: '',
-                input: ''
+                url: this.$baseUrl+'/api/interestRate',
+                input1_1: '',
+                input1_2: '',
+                input1_3: '',
+                input1_4: '',
+                input2_1: '',
+                input2_2: '',
+                input2_3: '',
+                input2_4: ''
             }
         },
         props: {
 
         },
         methods:{
-         
+            submit(){
+              
+               //1. 获取参数
+              
+               var attr = {
+                'title_left': this.input1_1,
+                'currency_left': this.input1_2,
+                'item_left': this.input1_3,
+                'data_left' : this.input1_4,
+                'title_right': this.input2_1,
+                'currency_right': this.input2_2,
+                'item_right': this.input2_3,
+                'data_right' : this.input2_4,
+               };
+
+               //2.验证规则
+               var re = /(^\s*)|(\s*$)/g;
+               var item = '';
+
+              for(var key in attr){
+                 item = attr[key].replace(/(^\s*)|(\s*$)/g, "");
+                 console.log(item)
+                 if(item!==0 && !item){
+                    this.$message.error('亲，表单内容不能为空，请仔细检查！');
+                    return;
+                  }else{
+                    attr[key] = item;
+                  }
+              }
+
+
+                //3. 向服务器发送数据
+               this.$axios.post(this.url,attr).then((res)=>{
+                    console.log(res);
+                    //success
+                    if(res.data.status == 'success'){
+                        this.$message({
+                          message: '恭喜你，利率信息提交成功！',
+                          type: 'success'
+                        });
+                    }else{
+                        this.$message.error('提交数据失败!');
+                    }
+                }); 
+
+            }
+        },
+        created(){
+
         },
         mounted(){
            

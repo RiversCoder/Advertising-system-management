@@ -4,7 +4,22 @@
         <h4 class="column-title column-title-top">模块控制</h4>
         <div class="timebox">
             <div class="tbox tbox1">
-                <div class="add-file-box" @click="addFileBtn"></div>
+                
+                <!-- 新增加的 -->
+
+                <div class="add-file-box">
+                    <div class="add-source-wrap">
+                        <ul class="imgWrap" ref="imgWrap">
+                            <li v-for="(item,index) in cresults" :width="liw+'px'">
+                                <img :src="item.src" alt="" :width="liw+'px'">
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="add-source-btn" ref="addSourceBox" @click="addFileBtn">
+                    </div>
+
+
+                </div>
             </div>
             <div class="tbox tbox2" ref="timeListBox">
                 <div class="tlistwrap" >
@@ -49,6 +64,8 @@
     
     import {worktime} from 'common/js/time';
     import BScroll from 'better-scroll';
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
+
 
     export default{
         data(){
@@ -58,7 +75,9 @@
                 value2:'',
                 checkList: [],
                 dialogFormVisible: false,
-                worktimes: worktime
+                worktimes: worktime,
+                cresults: this.$route.query.results ? this.$route.query.results : [],
+                liw:0
             }
         },
         methods:{
@@ -68,8 +87,15 @@
                 click: true
               })
             },
+            //初始化已经选择的素材
+            init(){
+                var box = this.$refs.imgWrap;
+                this.liw = Math.ceil(box.clientWidth/this.cresults.length);
+
+                console.log(this.cresults);
+            },
             addFileBtn(){
-                this.$router.push({'path':'/program-production/select'})
+                this.$router.push({'path':'/program-production/select',query:{direct:'on'}});
             },
             //添加时间和星期
             closeSure(){
@@ -96,7 +122,26 @@
                 });
             }
         },
+        compouted:{
+            ...mapGetters(['results'])
+        },
+        watch:{
+            cresults:{
+               handler(newValue, oldValue) {
+　　　　　　　　  for (let i = 0; i < newValue.length; i++) {
+　　　　　　　　    if (oldValue[i] != newValue[i]) {
+　　　　　　　　　　    console.log(newValue)
+　　　　　　　　    }
+                }
+        　　　　},
+        　　　　deep: true
+            }
+        },
         created(){
+            
+        },
+        mounted(){
+            this.init();
         },
         created(){
             this.$nextTick(() => {
@@ -139,8 +184,20 @@
             border:4px dashed #DEDEDE;overflow:hidden;
         .tbox2
             border:1px solid #DEDEDE;border-left:0;height:398px;overflow:hidden;
+        .add-source-wrap
+            wh(253px,152px);position:absolute;bottom:0;left:0; 
+            .imgWrap
+                wh(100%,100%);list-style:none;
+                li
+                    display:block;float:left;
+                    img
+                       display:block;       
+        .add-source-btn
+            wh(253px,152px);position:absolute;bottom:0;left:0;bgImg('~common/images/worktime/addBtn1.png');cursor:pointer;
+               
     .add-file-box
-        wh(510px,200px);bgImg('~common/images/worktime/worktime.jpg');cursor:pointer;margin: 0 auto;position:relative;top:94px;
+        wh(510px,200px);bgImg('~common/images/worktime/worktime.jpg');margin: 0 auto;position:relative;top:94px;
+  
     .tlists
         wh(100%,auto);list-style:none;
         .bitem

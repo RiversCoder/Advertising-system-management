@@ -4,7 +4,9 @@
         <h4 class="column-title column-title-top">模块控制</h4>
         <div class="timebox">
             <div class="tbox tbox1">
-                <div class="add-file-box" @click="addFileBtn"></div>
+                <div class="add-file-box" >
+                    <div class="add-source-btn" @click="addFileBtn"></div>
+                </div>
             </div>
             <div class="tbox tbox2" ref="timeListBox">
                 <div class="tlistwrap" >
@@ -74,8 +76,10 @@
             border:4px dashed #DEDEDE;overflow:hidden;
         .tbox2
             border:1px solid #DEDEDE;border-left:0;height:398px;overflow:hidden;
+        .add-source-btn
+            wh(253px,152px);position:absolute;bottom:0;left:0;bgImg('~common/images/worktime/addBtn3.png');cursor:pointer;      
     .add-file-box
-        wh(510px,200px);bgImg('~common/images/worktime/fullscreen.jpg');cursor:pointer;margin: 0 auto;position:relative;top:94px;
+        wh(510px,200px);bgImg('~common/images/worktime/worktime.jpg');margin: 0 auto;position:relative;top:94px;
     .tlists
         wh(100%,auto);list-style:none;
         .bitem

@@ -30,6 +30,11 @@
               </el-main>
             </el-container>
         </div>
+        
+        <template>
+          <el-button plain>使用 HTML 片段</el-button>
+        </template>
+
     </div>
 </template>
 
@@ -40,10 +45,11 @@
     import FolderSource from '@/base/folder-source/folder-source';
     import VideoSource from '@/base/video-source/video-source';
     import ImageSource from '@/base/image-source/image-source';
-    import datas from '../../common/js/data.js';
+    import datas from 'common/js/data.js';
+    import tool from 'common/js/tool.js';
     import dataSearch from './data-search.js';
     import {mapGetters, mapMutations, mapActions} from 'vuex';
-
+    import qs from 'qs';
 
     export default{
         data(){
@@ -54,7 +60,16 @@
                 folderData: [],
                 videoData: [],
                 datas: datas,
-                webDatas: []
+                webDatas: [],
+                url_1: this.$baseUrl + '/api/webget',
+                url_2: this.$baseUrl + '/api/callbackUpload',
+                url_cnew_folder: this.$baseUrl + '/api/createFolder',
+                url_get_sources_by_dir: this.$baseUrl + '/api/getFile',
+                url_get_search_sources: this.$baseUrl + '/api/searchFile',
+                ossData : null,
+                progress: 0,
+                onoff: true,
+                cdir: '/'
             }
         },
         methods:{
@@ -64,19 +79,50 @@
                 click: true
               })
             },
-            //搜索数据
-            searchClick(){
-                let svalue = this.searchValue.replace(/(^\s*)|(\s*$)/g, "");;
+            //向数据库请求 初始化资源管理的所有数据
+            initSources(){
+                this.$axios.post(this.url_get_sources_by_dir,{
+                    dir: this.cdir
+                }).then((res)=>{
 
+                    //success
+                    if(res.data.status == 'success'){
+                        this.setSource(res.data.data);
+                    }else{
+                        this.$message({
+                          type: 'danger',
+                          message: '获取资源失败!'
+                        });
+                    }
+                });
+            },
+            //搜索请求数据
+            searchClick(){
+                let svalue = this.searchValue.replace(/(^\s*)|(\s*$)/g, "");
+                console.log(svalue)
+                //验证是否为空
                 if(svalue == ''){
-                    this.setSource(datas);
+                    this.initSources()
                 }else{
-                    this.setSource(dataSearch);
+                    this.$axios.post(this.url_get_search_sources,{
+                    fileName: svalue
+                    }).then((res)=>{
+                        console.log(res);
+                        //success
+                        /*if(res.data.status == 'success'){
+                            this.setSource(res.data.data);
+                        }else{
+                            this.$message({
+                              type: 'danger',
+                              message: '搜索资源失败!'
+                            });
+                        }*/
+                    });
                 }
             },
             //新建文件夹
             newFolder(){
-                this.$prompt('请输入文件夹名称', 'DBS温馨提示', {
+              this.$prompt('请输入文件夹名称', 'DBS温馨提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消'
               }).then(({ value }) => {
@@ -88,13 +134,13 @@
                     'dir' : '/',
                     'src' : ''
                 };
-
+                
+                //添加假数据
                 this.source.push(objs);
 
-                this.$message({
-                  type: 'success',
-                  message: '新建文件夹成功!'
-                });
+                //向服务器发送新建文件夹请求
+                var attr = {'name':value,'dir':this.cdir};
+                this.newFolderRequest(attr);
 
               }).catch(() => {
                 this.$message({
@@ -102,6 +148,22 @@
                   message: '取消输入'
                 });       
               });
+            },
+            //新建文件夹请求
+            newFolderRequest(attr){
+                this.$axios.post(this.url_cnew_folder,attr).then((res)=>{
+                    
+                    //success
+                    if(res.data.status == 'success'){
+                        this.$message({
+                          type: 'success',
+                          message: '新建文件夹成功!'
+                        });
+                        //再次重新加载数据
+                        this.initSources();
+                    }
+
+                });
             },
             //初始化滚动包裹盒子的高度
             initScrollHeight(){
@@ -117,23 +179,97 @@
                 var fileInput = document.querySelector('#fileUpload1');
                 fileInput.click();
             },
-            //文件上传
-            changeUploadFile(ev){
-                let file = ev.srcElement.files[0];
-                let form = new FormData();
-                form.append('file',file);
+            //获取钥匙
+            getKey(ev){
 
-                let url = '';
-                let attr = {
-                    'file': ''
-                } 
-               
-                let config = {
-                    headers:{'Content-Type':'multipart/form-data'}
-                };  //添加请求头
+                let file = ev.srcElement.files[0];
+
+                //获取正常post的参数
+                tool.getUploadAttr(file,(attr)=>{
+                    //console.log(attr);
+                    //请求钥匙数据
+                    this.$axios.post(this.url_1,qs.stringify(attr),{
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'
+                          }
+                    }).then((res)=>{
+                        this.ossData = res.data;
+
+                        //开始上传文件
+                        this.uploadsRequest(res.data,file);
+
+                    }).catch((err)=>{
+                        console.log(err);
+                    })
+
+                });
+
+
                 
-                
-                
+            },
+            //点击按钮 文件执行上传
+            changeUploadFile(ev){
+
+                //获取钥匙 上传文件
+                this.getKey(ev);
+   
+            },
+            //向数据库发送文件数据
+            uploadsRequest(data,file){
+
+                let form = new FormData();   
+                var fname = tool.randomString(12) + tool.getBackname(file);
+
+                var attr = {
+                    'OSSAccessKeyId': data.accessid, 
+                    'callback' : data.callback,
+                    'key' : data.dir+fname,
+                    'policy': data.policy,
+                    'signature': data.signature,                  
+                    'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
+                    'file': file,   
+                };
+
+                for(var key in attr){
+                    form.append(key,attr[key]);
+                }
+
+                var config = {
+                    onUploadProgress: progressEvent => {
+                        var complete = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%'
+                        this.progress = complete
+                        
+                        if(this.onoff){
+                           /* this.$message({
+                              message: '正在上传请稍等……',
+                              duration: 500
+                            });*/
+                            this.onoff = false;
+                        }
+                        
+
+                        if(this.progress == '100%'){
+                            this.onoff = true;
+                            this.$notify({
+                              title: '成功',
+                              message: '恭喜你，上传文件成功！',
+                              type: 'success',
+                              duration: 1500
+                            });
+                        }
+
+                    },
+                    headers: {
+                        'Content-Type':'multipart/form-data'
+                    }
+                }
+
+                this.$axios.post(data.host,form,config).then((res)=>{
+                    console.log(res);
+                    //重新刷新当前页面数据
+                    
+                }).catch((err)=>{
+                    console.log(err);
+                });
             },
             //集中分发处理
             handleSource(){
@@ -146,16 +282,18 @@
                 if(this.source.length == 0){
                     this.setSource(datas);
                 }
+
+                //console.log('line271'+this.source)
                     
                 this.source.forEach((item)=>{
-                    switch(item.type){
-                        case 'folder' :
+                    switch(item.fileType){
+                        case 2 :
                             this.folderData.push(item);
                         break;
-                        case 'image' :
+                        case 0 :
                             this.imageData.push(item);
                         break;
-                        case 'video' :
+                        case 1 :
                             this.videoData.push(item);
                         break;    
                     }
@@ -164,7 +302,6 @@
             ...mapMutations({
                 setSource: 'source'
             })
-            
         },
         watch: {
           source: {
@@ -181,10 +318,15 @@
             this.initScrollHeight();
         },
         created(){
+
+            //向数据库拿数据
+            this.initSources();
+            //初始化better-scroll
             this.$nextTick(() => {
               this._initScroll()
             });
             this.handleSource();
+            //this.getKeyModel();
         },
         components:{
             FolderSource,

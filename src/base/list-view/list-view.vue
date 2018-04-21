@@ -102,6 +102,11 @@
             }
           }
         },
+        initSelects(){
+          //初始化已经被选中的资源数据
+          //this.recordVideoId = tool.getSelect(item,'cactive',id,this.recordVideoId);
+         // this.recordImageId = tool.getSelect(item,'cactive',id,this.recordImageId);
+        },
         methods:{
           selectFn1(ev,id){
             var item = ev.srcElement;
@@ -116,6 +121,9 @@
           ...mapMutations({
             setSelect:'select'
           })
+        },
+        computed:{
+          ...mapGetters(['results'])
         },
         mounted(){
 

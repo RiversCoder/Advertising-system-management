@@ -26,7 +26,7 @@ axios.interceptors.response.use(
     },
     error => {
         if (error.response) {
-            switch (error.response.status) {
+            switch (error.response.status == 'error') {
                 case 404:
                     // 401 清除token信息并跳转到登录页面
                     store.commit(types.LOGOUT);

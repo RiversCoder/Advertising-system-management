@@ -8,7 +8,7 @@
                       
                       <dt class="cc-item-previewbox">
                           <span class="cip-img">
-                              <img :src="item.src" />
+                              <img :src="'http://'+item.img" />
                           </span>
                           <span class="cip-icon"></span>
                           <span class="cip-name">{{item.name}}</span>

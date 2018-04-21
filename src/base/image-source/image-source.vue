@@ -8,10 +8,10 @@
                       
                       <dt class="cc-item-previewbox">
                           <span class="cip-img">
-                              <img :src="item.src" />
+                              <img :src="'http://'+item.img" />
                           </span>
-                          <!-- <span class="cip-icon"></span>
-                          <span class="cip-name">{{item.name}}</span> -->
+                          <span class="cip-icon cip-picon"></span>
+                          <span class="cip-name">{{item.name}}</span>
                       </dt>
                       
                       <dd class="cc-item-textbox">
@@ -160,8 +160,9 @@
                     wh(236px,135px);position:relative;background:#F4F4F4;box-sizing:border-box;border-bottom:1px solid #DEDEDE;
                     
                     .cip-icon
-                        wh(20px,19px);bgImg('~common/images/source/video@2x.png');ab(14px,105px);
-                    
+                        wh(20px,20px);bgImg('~common/images/source/video@2x.png');ab(14px,105px);
+                    .cip-picon
+                          bgImg('~common/images/source/img@2x.png');
                     .cip-name
                         wh(100%,16px);hh(16px);ab(40px,106px);text-align:left;font-size:16px;color:#fff;
                     .cip-img

@@ -59,6 +59,7 @@
             },
             init(){
               var arr = this.source;
+              
               //清空数据
               this.folderData = [];
               this.imageData = [];
@@ -95,7 +96,7 @@
               this.setSelect(this.fileId);
 
               //跳转到拖拽面板页面
-              this.$router.push({path:'order'})    
+              this.$router.push({path:'order',query:{direct:this.$route.query.direct}})    
             },
             ...mapMutations({
               setSelect: 'select'

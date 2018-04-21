@@ -21,19 +21,19 @@
 
             <el-row :gutter="20">
               <el-col :span="7"><div class="grid-content bg-purple"><span class="btn-intro">创建子账户</span><el-input class="input-intro" v-model="input" placeholder="E-mail" type="email"></el-input></div></el-col>
-              <el-col :span="7"><div class="grid-content bg-purple"><span class="btn-intro">@DBS.COM</span><el-input class="input-intro" v-model="password" placeholder="Password" type="password"></el-input></div></el-col>
+              <el-col :span="7"><div class="grid-content bg-purple"><span class="btn-intro">@DBS.COM</span><el-input class="input-intro" v-model="passwords" placeholder="Password" type="password"></el-input></div></el-col>
               <el-col :span="3"><div class="grid-content bg-purple"><el-button type="danger" @click="clickAddUser">确认添加</el-button></div></el-col>
               <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
             </el-row>
 
             <el-table :data="tableData" style="width: 100%">
-              <el-table-column prop="title" width="220"></el-table-column>
-              <el-table-column prop="email" width="220"></el-table-column>
-              <el-table-column prop="alias" width="220"></el-table-column>
-              <el-table-column prop="time" width="220"></el-table-column>
+              <el-table-column prop="id" width="220"></el-table-column>
+              <el-table-column prop="name" width="220"></el-table-column>
+              <el-table-column prop="nickname" width="220"></el-table-column>
+              <el-table-column prop="updated_at" width="220"></el-table-column>
               <el-table-column prop="address" width="220">
-                    <template slot-scope="scope">
-                        <el-button size="medium" type="danger" @click="handleDelete()">删除</el-button>
+                    <template slot-scope="scope" >
+                        <el-button size="medium" type="danger" @click="handleDelete(scope.row)">删除</el-button>
                     </template>
               </el-table-column>
             </el-table>
@@ -61,35 +61,36 @@
             return{
                 title: '',
                 input: '',
-                password: '',
-                tableData: [{
-                    title: '已有子账户',
-                    email: '123.tang@163.com',
-                    alias: 'longTang',
-                    time: '2018.04.11 13:14:23',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                  }],
-                  url: this.$baseUrl+'/api/addSubAccount',
-                  attr:{
-                    name: this.input+'@dbs.com',
-                    password: this.password
-                  }
+                passwords: '',
+                tableData: [],
+                url: this.$baseUrl+'/api/addSubAccount',
+                get_url: this.$baseUrl+'/api/subAccount',
+                attr:{}
             }
         },
         props: {
         },
         methods:{
+
+          //初始化获取存储账户的子账户
           init(){
 
             //验证数据
-            this.$axios.post(this.url,this.attr).then((res)=>{
-              console.log(res)
+            this.$axios.post(this.get_url).then((res)=>{
+              
+              if(res.data.status == 'success'){
+                 console.log(res.data.data)
+                 this.tableData = res.data.data;
+              }
+
             }).catch((error)=>{
               console.log(error)
             })
+
+
           },
           clickAddUser(){
-            if(!this.input || !this.password){
+            if(!this.input || !this.passwords){
               this.$message.error('邮箱或密码不能为空!');
 
             }else{
@@ -99,13 +100,35 @@
                 return;
               }
 
-              this.tableData.push({
-                title: '已有子账户',
-                email: this.input+'@dbs.com',
-                alias: 'xiaohua',
-                time: (new Date()).toLocaleTimeString(),
-                address: '北京西二旗百度大厦正门'
+              this.attr['name'] = this.input+'@dbs.com';
+              this.attr['password'] = this.passwords;
+
+              this.$axios.post(this.url,this.attr).then((res)=>{
+
+                if(res.data.code == 200){
+                  this.$message({
+                    showClose: true,
+                    message: res.data.message,
+                    type: 'success'
+                  });
+
+                  this.tableData.push({
+                    title: '已有子账户',
+                    email: this.input+'@dbs.com',
+                    alias: 'xiaohua',
+                    time: (new Date()).toLocaleTimeString(),
+                    address: '北京西二旗百度大厦正门'
+                  })
+
+                }else{
+                  this.$message.error(res.data.message);
+                }
+              
+              }).catch((error)=>{
+                
+                console.log(error)
               })
+
             }
           },
           selectFn(index){
@@ -160,13 +183,15 @@
                 };
                 myChart.setOption(option);
             },
-            handleDelete(){
-                
+            handleDelete(index){
+                console.log(index);
             }
+        },
+        created(){
+          this.init();
         },
         mounted(){
             this.drawPie();
-            this.init();
         }
     }
 </script>
