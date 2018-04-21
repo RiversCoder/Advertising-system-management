@@ -13,8 +13,9 @@
                     <el-col :span="12">
                         <div class="grid-content">
                             <p style="display:none"><input name="file" type="file" value="选择" size="20" id="fileUpload1" accept="image/png,image/gif,image/jpeg,video/mp4,application/ogg, audio/ogg,video/3gpp" @change ="changeUploadFile($event)" /></p>  
-                            <el-button plain class="rbtn uploadFile" @click.native="uploadFileBtn">上传文件</el-button>
-                            <el-button plain class="rbtn newFolder" @click.native="newFolder">新建文件夹</el-button>
+                            <el-button plain class="rbtn uploadFile" @click.native="uploadFileBtn" >上传文件</el-button>
+                            <el-button plain class="rbtn newFolder" @click.native="newFolder" >新建文件夹</el-button>
+                            <el-button plain class="rbtn newFolder" @click.native="backLast" v-show="backBtnShow">返回上一级</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -22,18 +23,25 @@
               <el-main>
                   <div class="scrollWrap" ref="menuScroll">
                       <div class="cwrap">
-                          <folder-source :sources="folderData" :allsources="datas"></folder-source>
-                          <video-source :videos="videoData"></video-source>
-                          <image-source :images="imageData"></image-source>
+                          <folder-source @movefile="moveFileFn" :sources="folderData" :allsources="datas"></folder-source>
+                          <video-source @movefile="moveFileFn" :videos="videoData"></video-source>
+                          <image-source @movefile="moveFileFn" :images="imageData"></image-source>
                       </div>
                   </div>
               </el-main>
             </el-container>
         </div>
         
-        <template>
-          <el-button plain>使用 HTML 片段</el-button>
-        </template>
+     <el-dialog  :visible.sync="dialogTableVisible" width="30%">
+         <el-table :data="folderSelctsData" width="500">
+          <el-table-column property="name" label="文件夹名称" align="center"></el-table-column>
+          <el-table-column property="name" label="点击选择" align="center">
+              <template slot-scope="scope">
+                <el-button size="mini" type="danger" @click="handleDelete(scope.row)">选择</el-button>
+              </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>        
 
     </div>
 </template>
@@ -58,6 +66,7 @@
                 searchValue : '',
                 imageData: [],
                 folderData: [],
+                folderSelctsData: [],
                 videoData: [],
                 datas: datas,
                 webDatas: [],
@@ -66,10 +75,16 @@
                 url_cnew_folder: this.$baseUrl + '/api/createFolder',
                 url_get_sources_by_dir: this.$baseUrl + '/api/getFile',
                 url_get_search_sources: this.$baseUrl + '/api/searchFile',
-                ossData : null,
+                move_url: this.$baseUrl+'/api/move',
+                move_folder_url: this.$baseUrl+'/api/moveFolder',
+                //ossData : null,
                 progress: 0,
                 onoff: true,
-                cdir: '/'
+                cdir: '/',
+                dialogTableVisible: false,
+                gridData: [],
+                moveFoder: {},
+                backBtnShow: false
             }
         },
         methods:{
@@ -80,14 +95,19 @@
               })
             },
             //向数据库请求 初始化资源管理的所有数据
-            initSources(){
+            initSources(pdir){
                 this.$axios.post(this.url_get_sources_by_dir,{
-                    dir: this.cdir
+                    dir: pdir ? pdir : this.dir
                 }).then((res)=>{
 
                     //success
                     if(res.data.status == 'success'){
+                        //console.log(res.data)
                         this.setSource(res.data.data);
+
+                        //检测是否在根目录
+                        this.checkDir();
+
                     }else{
                         this.$message({
                           type: 'danger',
@@ -99,24 +119,21 @@
             //搜索请求数据
             searchClick(){
                 let svalue = this.searchValue.replace(/(^\s*)|(\s*$)/g, "");
-                console.log(svalue)
+               
                 //验证是否为空
                 if(svalue == ''){
-                    this.initSources()
+                    this.initSources();
                 }else{
                     this.$axios.post(this.url_get_search_sources,{
                     fileName: svalue
                     }).then((res)=>{
-                        console.log(res);
-                        //success
-                        /*if(res.data.status == 'success'){
+                        
+                        if(res.data.status == 'success'){
                             this.setSource(res.data.data);
+
                         }else{
-                            this.$message({
-                              type: 'danger',
-                              message: '搜索资源失败!'
-                            });
-                        }*/
+                            this.$message.error(res.data.message);
+                        }
                     });
                 }
             },
@@ -139,7 +156,7 @@
                 this.source.push(objs);
 
                 //向服务器发送新建文件夹请求
-                var attr = {'name':value,'dir':this.cdir};
+                var attr = {'name':value,'dir':this.dir};
                 this.newFolderRequest(attr);
 
               }).catch(() => {
@@ -185,7 +202,7 @@
                 let file = ev.srcElement.files[0];
 
                 //获取正常post的参数
-                tool.getUploadAttr(file,(attr)=>{
+                tool.getUploadAttr(file,this.dir,(attr)=>{
                     //console.log(attr);
                     //请求钥匙数据
                     this.$axios.post(this.url_1,qs.stringify(attr),{
@@ -202,9 +219,6 @@
                     })
 
                 });
-
-
-                
             },
             //点击按钮 文件执行上传
             changeUploadFile(ev){
@@ -255,6 +269,8 @@
                               type: 'success',
                               duration: 1500
                             });
+                            //重新加载数据
+                            this.initSources();
                         }
 
                     },
@@ -266,7 +282,7 @@
                 this.$axios.post(data.host,form,config).then((res)=>{
                     console.log(res);
                     //重新刷新当前页面数据
-                    
+                    this.initSources();
                 }).catch((err)=>{
                     console.log(err);
                 });
@@ -299,8 +315,95 @@
                     }
                 });
             },
+            //移动文件到文件夹
+            moveFileFn(attr){
+                this.dialogTableVisible = true;
+                
+                //设置数据
+                if(attr.fileType != 2){
+                    for(var i=0;i<this.folderData.length;i++){
+                        this.folderSelctsData[i] = this.folderData[i];
+                    }
+                }else{
+                    var data = [];
+                    for(i=0;i<this.folderData.length;i++){
+                        data[i] = this.folderData[i];
+                    }
+                    for(i=0;i<data.length;i++){
+                        if(data[i]['id'] == attr.fileId){
+                            data.splice(i,1);
+                        }
+                    }
+                    this.folderSelctsData = data;
+                    this.moveFoder['fileName'] = attr.fileName;
+                    this.moveFoder['dir'] = attr.dir;
+                }
+
+                this.moveFoder['fileType'] = attr.fileType;
+                this.moveFoder['fileId'] = attr.fileId;
+            },
+            //点击选择按钮 选择文件夹
+            handleDelete(attr){
+                //1. 关闭dialog
+                this.dialogTableVisible = false;
+                //2. 拼凑dir
+                var cdir = this.dir+attr.name+'/';
+
+                //3. 移动图片,视频request请求
+                this.requestCdir(cdir);
+            },
+            //获取当前dir文件夹信息 向服务器发送移动文件和文件夹请求
+            requestCdir(cdir){
+
+                var config = {};
+                var url = '';
+
+                if(this.moveFoder.fileType != 2){
+                    //配置请求host和参数
+                    config = {
+                        'fileId': this.moveFoder.fileId,
+                        'dir': cdir
+                    };
+                    url = this.move_url;
+                }else{
+                    config = {
+                        'newDir': cdir,
+                        'foldName': this.moveFoder.fileName,
+                        'dir': this.moveFoder.dir
+                    };
+                    url = this.move_folder_url;
+                }
+
+                this.$axios.post(url,config).then((res)=>{
+                   if(res.data.status == 'success'){
+                      console.log(res.data)
+                      this.$message({message: res.data.message,type: 'success'});
+                       this.initSources();
+                   }
+                }).catch((err)=>{
+                    this.$message({message: res.data.message,type: 'error'});
+                });
+            },
+            //返回上一级
+            backLast(){
+                var diss = this.dir;
+                var arr = diss.split('/');
+                var newArr = arr.splice(0,arr.length-2);
+                var newDir = newArr.join('/')+'/';
+                this.setDir(newDir);
+                this.initSources(newDir);
+            },
+            //检测是否在根目录
+            checkDir(){
+              if(this.dir != '/'){
+                this.backBtnShow = true;
+              }else{
+                this.backBtnShow = false;
+              }
+            },
             ...mapMutations({
-                setSource: 'source'
+                setSource: 'source',
+                setDir: 'dir'
             })
         },
         watch: {
@@ -309,10 +412,20 @@
             handler (v) {
               this.handleSource();
             }
+          },
+          dir:{
+            deep: true,
+            handler (v) {
+              if(v != '/'){
+                this.backBtnShow = true;
+              }else{
+                this.backBtnShow = false;
+              }
+            }
           }
         },
         computed: {
-            ...mapGetters(['source'])
+            ...mapGetters(['source','dir'])
         },
         mounted(){
             this.initScrollHeight();
@@ -326,7 +439,7 @@
               this._initScroll()
             });
             this.handleSource();
-            //this.getKeyModel();
+            
         },
         components:{
             FolderSource,

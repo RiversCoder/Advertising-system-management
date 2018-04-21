@@ -60,11 +60,11 @@ var tool = {
         }
     },
     //配置文件上传获取签名的参数
-    getUploadAttr: function(file,fn){
+    getUploadAttr: function(file,cdir,fn){
         //默认参数
         let attr = {
             fileName: '',
-            dir: '/',
+            dir: cdir,
             fileType: 0,
             videoTime: 0
         }; 

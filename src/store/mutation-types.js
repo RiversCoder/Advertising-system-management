@@ -11,3 +11,5 @@ export const SOURCE = 'source'
 export const SELECT = 'select'
 
 export const RESULTS = 'results'
+
+export const DIR = 'dir'

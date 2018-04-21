@@ -16,8 +16,8 @@
                       
                       <dd class="cc-item-textbox">
                           <ul class="citms">
-                              <li class="cit cit1" @click="renameFile(item.id)">重命名</li>
-                              <li class="cit cit2" @click="moveFile(item.id)">移动文件</li>
+                              <li class="cit cit1" @click="renameFile(item.dir,item.name,item.id)">重命名</li>
+                              <li class="cit cit2" @click="moveFile(item.fileType,item.id)">移动文件</li>
                               <li class="cit cit3" @click="deleteFile(item.id)">删除</li>
                           </ul>
                       </dd>
@@ -27,18 +27,29 @@
                 </dl>
              
           </div>
+        
       </div>
+      
+
+      <!-- <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button> -->
+
+      
+
     </div>
 </template>
 
 
-<script type="text/ecmascript-6">
+<script scoped type="text/ecmascript-6">
 
     import {mapGetters, mapMutations, mapActions} from 'vuex';
     export default{
         data(){
             return{
-                getDatas: []
+                getDatas: [],
+                remove_url: this.$baseUrl+'/api/deleteFiles',
+                rename_url: this.$baseUrl+'/api/renameFile',
+                move_url:this.$baseUrl+'/api/move',
+                select_dir: '/'
             }
         },
         props: {
@@ -56,24 +67,40 @@
           }
         },
         methods:{
-          renameFile(id){
-             this.$prompt('请输入文件名称', 'DBS温馨提示', {
+
+          //点击重命名图片
+          renameFile(cdir,cname,cid){
+             this.$prompt('请输入图片名称', 'DBS温馨提示', {
                 confirmButtonText: '确定',
-                cancelButtonText: '取消'
+                cancelButtonText: '取消',
+                inputValue: cname
               }).then(({ value }) => {
 
-                console.log(this.source)
+                //发送修改名称请求
+                this.$axios.post(this.rename_url,{
+                    fileId: cid,
+                    name: value
+                }).then((res)=>{
 
-                //修改数据
-                for(var i=0;i<this.source.length;i++){
-                  if(this.source[i].id == id){
-                    this.source[i]['name'] = value;
-                  }
-                }
-                
-                this.$message({
-                  type: 'success',
-                  message: '重命名成功!'
+                    //success
+                    if(res.data.status == 'success'){
+                         this.$message({
+                          type: 'success',
+                          message: res.data.message
+                        });
+                        //修改本地数据
+                        for(var i=0;i<this.source.length;i++){
+                          if(this.source[i].id == cid){
+                            this.source[i]['name'] = value;
+                          }
+                        }
+
+                    }else{
+                        this.$message({
+                          type: 'danger',
+                          message: res.data.message
+                        });
+                    }
                 });
 
               }).catch(() => {
@@ -83,15 +110,12 @@
                 });       
               });
           },
-          moveFile(id){
-              var allFiles = this.source;
-              
-              /*for(var i=0;i<allFiles.length;i++){
-                if(allFiles[i]['id'] == id){
-                  allFiles.splice(i,1);
-                }
-              } */
+          //移动文件到指定文件夹
+          moveFile(type,id){
+              //向父级派发事件
+              this.$emit('movefile',{'fileType':type,'fileId':id});
           },
+          //删除文件
           deleteFile(id){
               this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                 confirmButtonText: '确定',
@@ -99,17 +123,31 @@
                 type: 'warning'
               }).then(() => {
 
-                for(var i=0;i<this.source.length;i++){
-                  if(this.source[i]['id'] == id){
-                    this.source.splice(i,1);
-                  }
-                } 
+                //请求删除操作
+                this.$axios.post(this.remove_url,{
+                    'fileId': id
+                }).then((res)=>{
 
-                console.log(id,this.source);
+                    //success
+                    if(res.data.status == 'success'){
 
-                this.$message({
-                  type: 'success',
-                  message: '删除成功!'
+                         this.$message({
+                          type: 'success',
+                          message: '成功删除该图片!'
+                        });
+
+                        for(var i=0;i<this.source.length;i++){
+                          if(this.source[i]['id'] == id){
+                            this.source.splice(i,1);
+                          }
+                        }  
+
+                    }else{
+                        this.$message({
+                          type: 'danger',
+                          message: '图片删除失败!'
+                        });
+                    }
                 });
               }).catch(() => {
                 this.$message({

@@ -4,14 +4,14 @@
           <h3 class="column-title">文件夹</h3>
           <div class="column-content">
               <dl class="cc-item" v-for="(item,index) in sources" >
-                  <dt class="cc-item-previewbox">
+                  <dt class="cc-item-previewbox" @click="gonIntoNewFolder(item.name,item.dir)">
                       <span class="cip-icon"></span>
                       <span class="cip-name">{{item.name}}</span>
                   </dt>
                   <dd class="cc-item-textbox">
                       <ul class="citms">
-                          <li class="cit cit1" @click="renameFile(item.id)">重命名</li>
-                          <li class="cit cit2" @click="moveFile(item.id)">移动文件</li>
+                          <li class="cit cit1" @click="renameFile(item.dir,item.name,item.id)">重命名</li>
+                          <li class="cit cit2" @click="moveFile(item.dir,item.fileType,item.name,item.id)">移动文件</li>
                           <li class="cit cit3" @click="deleteFile(item.id)">删除</li>
                       </ul>
                   </dd>
@@ -45,7 +45,7 @@
 -->
 
 
-<script type="text/ecmascript-6">
+<script scoped type="text/ecmascript-6">
     
     import {mapGetters, mapMutations, mapActions} from 'vuex';
 
@@ -53,7 +53,11 @@
     export default{
         data(){
             return{
-                getDatas: []
+                getDatas: [],
+                remove_url: this.$baseUrl+'/api/deleteFiles',
+                rename_url: this.$baseUrl+'/api/renameFolder',
+                url_get_sources_by_dir: this.$baseUrl + '/api/getFile',
+                cdir: '/'
             }
         },
         props: {
@@ -71,24 +75,61 @@
           }
         },
         methods:{
-          renameFile(id){
+          //进入文件夹页面
+          gonIntoNewFolder(name,dir){
+            this.cdir = dir + name + '/'; 
+            
+            this.setDir(this.cdir);
+          
+            this.$axios.post(this.url_get_sources_by_dir,{
+              dir: this.dir
+            }).then((res)=>{
+                //success
+                if(res.data.status == 'success'){
+                    this.setSource(res.data.data);
+                }else{
+                    this.$message({
+                      type: 'error',
+                      message: '获取资源失败!'
+                    });
+                }
+            });
+          },
+          //点击重命名文件夹
+          renameFile(cdir,cname,cid){
              this.$prompt('请输入文件夹名称', 'DBS温馨提示', {
                 confirmButtonText: '确定',
-                cancelButtonText: '取消'
+                cancelButtonText: '取消',
+                inputValue: cname
               }).then(({ value }) => {
 
-                console.log(this.source)
+                //发送修改名称请求
+                this.$axios.post(this.rename_url,{
+                    dir: cdir,
+                    foldName: cname,
+                    newFoldName: value
+                }).then((res)=>{
 
-                //修改数据
-                for(var i=0;i<this.source.length;i++){
-                  if(this.source[i].id == id){
-                    this.source[i]['name'] = value;
-                  }
-                }
-                
-                this.$message({
-                  type: 'success',
-                  message: '重命名成功!'
+                    //success
+                    if(res.data.status == 'success'){
+                         this.$message({
+                          type: 'success',
+                          message: res.data.message
+                        });
+
+                        //修改本地数据
+                        for(var i=0;i<this.source.length;i++){
+                          if(this.source[i].id == cid){
+                            this.source[i]['name'] = value;
+                          }
+                        }
+
+                    }else{
+                        this.$message({
+                          type: 'danger',
+                          message: res.data.message
+                        });
+                    }
                 });
 
               }).catch(() => {
@@ -98,15 +139,11 @@
                 });       
               });
           },
-          moveFile(id){
-              var allFiles = this.source;
-              
-              /*for(var i=0;i<allFiles.length;i++){
-                if(allFiles[i]['id'] == id){
-                  allFiles.splice(i,1);
-                }
-              } */
+          moveFile(cdir,ctype,cname,cid){
+              //向父级派发事件
+              this.$emit('movefile',{'dir':cdir,'fileType':ctype,'fileName':cname,'fileId':cid});
           },
+          //删除文件
           deleteFile(id){
               this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                 confirmButtonText: '确定',
@@ -114,18 +151,35 @@
                 type: 'warning'
               }).then(() => {
 
-                for(var i=0;i<this.source.length;i++){
-                  if(this.source[i]['id'] == id){
-                    this.source.splice(i,1);
-                  }
-                } 
+                //请求删除操作
+                console.log(id);
+                this.$axios.post(this.remove_url,{
+                    fileId: id
+                }).then((res)=>{
 
-                console.log(id,this.source);
+                    //success
+                    if(res.data.status == 'success'){
+                         this.$message({
+                          type: 'success',
+                          message: '成功删除该文件夹!'
+                        });
 
-                this.$message({
-                  type: 'success',
-                  message: '删除成功!'
+                        for(var i=0;i<this.source.length;i++){
+                          if(this.source[i]['id'] == id){
+                            this.source.splice(i,1);
+                          }
+                        }  
+
+                    }else{
+                        this.$message({
+                          type: 'danger',
+                          message: '文件夹删除失败!'
+                        });
+                    }
                 });
+
+                
+               
               }).catch(() => {
                 this.$message({
                   type: 'info',
@@ -134,11 +188,12 @@
               });
           },
           ...mapMutations({
-            setSource : 'source'
+            setSource : 'source',
+            setDir: 'dir'
           })
         },
         computed:{
-          ...mapGetters(['source'])
+          ...mapGetters(['source','dir'])
         },
         mounted(){
           //console.log(this.source)

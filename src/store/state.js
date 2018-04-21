@@ -5,7 +5,8 @@ const state = {
     title: '',
     source: [],
     selectid: [],
-    results: []
+    results: [],
+    dir: '/'
 }
 
 export default state;

@@ -20,6 +20,9 @@ const mutations = {
     },
     [types.RESULTS]: (state,data) => {
         state.results = data;
+    },
+    [types.DIR]: (state,data) => {
+        state.dir = data;
     }
 };
 

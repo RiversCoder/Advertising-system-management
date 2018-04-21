@@ -18,3 +18,7 @@ export const selectid = function(state){
 export const results = function(state){
     return state.results;
 }
+
+export const dir = function(state){
+    return state.dir;
+}

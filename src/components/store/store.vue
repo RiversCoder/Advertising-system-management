@@ -65,6 +65,7 @@
                 tableData: [],
                 url: this.$baseUrl+'/api/addSubAccount',
                 get_url: this.$baseUrl+'/api/subAccount',
+                delete_url: this.$baseUrl+'/api/delSubAccount',
                 attr:{}
             }
         },
@@ -79,7 +80,6 @@
             this.$axios.post(this.get_url).then((res)=>{
               
               if(res.data.status == 'success'){
-                 console.log(res.data.data)
                  this.tableData = res.data.data;
               }
 
@@ -89,6 +89,7 @@
 
 
           },
+          //点及添加子账户
           clickAddUser(){
             if(!this.input || !this.passwords){
               this.$message.error('邮箱或密码不能为空!');
@@ -105,27 +106,17 @@
 
               this.$axios.post(this.url,this.attr).then((res)=>{
 
-                if(res.data.code == 200){
+                if(res.data.status == 'success'){
+                  this.init();
                   this.$message({
-                    showClose: true,
-                    message: res.data.message,
+                    message: '恭喜你，成功添加子账户！',
                     type: 'success'
                   });
-
-                  this.tableData.push({
-                    title: '已有子账户',
-                    email: this.input+'@dbs.com',
-                    alias: 'xiaohua',
-                    time: (new Date()).toLocaleTimeString(),
-                    address: '北京西二旗百度大厦正门'
-                  })
-
                 }else{
                   this.$message.error(res.data.message);
                 }
               
               }).catch((error)=>{
-                
                 console.log(error)
               })
 
@@ -183,8 +174,21 @@
                 };
                 myChart.setOption(option);
             },
-            handleDelete(index){
-                console.log(index);
+            //点击删除子账户
+            handleDelete(data){ 
+                //handleDelete
+                this.$axios.post(this.delete_url,{'sub_id':data.id}).then((res)=>{
+
+                    if(res.data.status == 'success'){
+                      this.init();
+                      this.$message({
+                        message: '成功删除该子账户！',
+                        type: 'success'
+                      });
+                    }else{
+                      this.$message.error(res.data.message);
+                    }
+                })
             }
         },
         created(){
