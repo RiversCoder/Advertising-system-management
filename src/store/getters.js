@@ -22,3 +22,21 @@ export const results = function(state){
 export const dir = function(state){
     return state.dir;
 }
+
+
+export const sdir = function(state){
+    return state.sdir;
+}
+
+
+export const model_type_1 = function(state){
+    return state.model_type_1;
+}
+
+export const model_type_2 = function(state){
+    return state.model_type_2;
+}
+
+export const model_type_3 = function(state){
+    return state.model_type_3;
+}

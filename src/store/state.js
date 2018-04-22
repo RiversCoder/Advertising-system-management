@@ -6,7 +6,11 @@ const state = {
     source: [],
     selectid: [],
     results: [],
-    dir: '/'
+    dir: '/',
+    sdir: '/',
+    model_type_1: {"file_list":[],"time_list":[]},
+    model_type_2: {"file_list":[],"time_list":[]},
+    model_type_3: {"file_list":[],"time_list":[]},
 }
 
 export default state;

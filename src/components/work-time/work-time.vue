@@ -84,10 +84,22 @@
             },
             tabClick(){
 
+            },
+            checkSetStorage(){
+                var obj = {
+                    name : '王大花',
+                    code : '4009012312xxx',
+                    age : 12,
+                    class : '七年级五班'
+                };
+
+                localStorage.setItem('item',obj);
+
+                console.log(localStorage.getItem('item'));
             }
         },
         created(){
-           
+            
         },
         components:{
             Histogram,

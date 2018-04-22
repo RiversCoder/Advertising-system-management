@@ -11,7 +11,7 @@
                     <div class="add-source-wrap">
                         <ul class="imgWrap" ref="imgWrap">
                             <li v-for="(item,index) in cresults" :width="liw+'px'">
-                                <img :src="item.src" alt="" :width="liw+'px'">
+                                <img :src="'http://'+item.img" alt="" :width="liw+'px'">
                             </li>
                         </ul>
                     </div>
@@ -24,7 +24,7 @@
             <div class="tbox tbox2" ref="timeListBox">
                 <div class="tlistwrap" >
                     <ul class="tlists">
-                        <li class="bitem bitem1" v-for="(item,index) in worktimes">
+                        <li class="bitem bitem1" v-for="(item,index) in setTimes">
                             <span class="bitem-item bitem-time">{{item.time}}</span>
                             <span class="bitem-item bitem-day">
                                 {{item.date}}
@@ -62,7 +62,7 @@
 
 <script>
     
-    import {worktime} from 'common/js/time';
+    import tool from 'common/js/tool';
     import BScroll from 'better-scroll';
     import {mapGetters, mapMutations, mapActions} from 'vuex';
 
@@ -75,9 +75,13 @@
                 value2:'',
                 checkList: [],
                 dialogFormVisible: false,
-                worktimes: worktime,
-                cresults: this.$route.query.results ? this.$route.query.results : [],
-                liw:0
+                worktimes: [],
+                cresults: [],
+                liw:0,
+                week: '000000',
+                start: 0,
+                duration: 0,
+                setTimes: []
             }
         },
         methods:{
@@ -87,60 +91,87 @@
                 click: true
               })
             },
-            //初始化已经选择的素材
+            //初始化已经选择的素材和时间
             init(){
                 var box = this.$refs.imgWrap;
                 this.liw = Math.ceil(box.clientWidth/this.cresults.length);
-
-                console.log(this.cresults);
+            },
+            //初始化已经选择的文件
+            initSelectFiles(){
+                if(tool.lget('file_list_on')){
+                    this.cresults = tool.lget('file_list_on');
+                }
+            },
+            //初始化已经set的时间线
+            initSetTimes(){
+                //设置存储空间
+                if(!tool.lget('time_list_on')){
+                    tool.lset('time_list_on',this.setTimes);
+                }else{
+                    //初始化数据
+                    this.setTimes = tool.lget('time_list_on');
+                }
+                
             },
             addFileBtn(){
                 this.$router.push({'path':'/program-production/select',query:{direct:'on'}});
             },
             //添加时间和星期
             closeSure(){
+                
                 this.dialogFormVisible = false;
 
                 //验证
-                
                 if(this.checkList.length==0 || !this.value1 || !this.value2){
                     this.$message.error('时间或星期不能为空!');
                     return;
                 }
+                //验证时间大小
+                if(tool.changeTimetoSecond(this.value1) >= tool.changeTimetoSecond(this.value2)){
+                    this.$message.error('时间格式错误!');
+                    return;
+                }
 
-                this.worktimes.push({
-                    'time': this.value1+'-'+this.value2,
-                    'date': this.checkList.join(',')
-                });
+                //计算时间冲突
+                if(tool.checkTime(this.setTimes,tool.countTimes(this.value1,this.value2,this.checkList))){
+                    this.$message.error('时间设置冲突,请重新设置!');
+                    return;
+                }
+
+                //计算并且存储数据
+                this.setTimes.push(tool.countTimes(this.value1,this.value2,this.checkList));
+
+                tool.lset('time_list_on',this.setTimes);
             },
             //删除时间项
             deleteTime(index){
-                this.worktimes.splice(index,1);
+                this.setTimes.splice(index,1);
+                tool.lset('time_list_on',this.setTimes);
                 this.$message({
-                  message: '恭喜你，删除成功!',
+                  message: '删除成功!',
                   type: 'success'
                 });
             }
         },
         compouted:{
-            ...mapGetters(['results'])
+            ...mapGetters(['results','model_type_1'])
         },
         watch:{
             cresults:{
                handler(newValue, oldValue) {
 　　　　　　　　  for (let i = 0; i < newValue.length; i++) {
 　　　　　　　　    if (oldValue[i] != newValue[i]) {
-　　　　　　　　　　    console.log(newValue)
+　　　　　　　　　　    
+                      break;
 　　　　　　　　    }
                 }
         　　　　},
         　　　　deep: true
             }
         },
-        created(){
-            
-        },
         mounted(){
+            this.initSelectFiles();
+            this.initSetTimes();
             this.init();
         },
         created(){

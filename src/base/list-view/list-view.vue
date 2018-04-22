@@ -1,27 +1,30 @@
 <template>
    <div class="con-container">
       <div class="Column">
-          <!--文件夹区域-->
+         
+         <!--文件夹区域-->
          <div v-if="folderExist">
             <h3 class="column-title">文件夹</h3>
             <div class="column-content" >
                 <dl class="cc-item" v-for="(item,index) in folderSources" >
-                    <dt class="cc-item-previewbox">
-                        <img :src="item.src" class="cip-img"/>
+                    <dt class="cc-item-previewbox cc-item-folder-previewbox">
+                        <img src=""/>
                         <span class="cip-name">{{item.name}}</span>
                     </dt>
                     <span class="maskImg" ></span>
                 </dl>
             </div>
           </div>
-          
+         
+        
+        <!--视频区域-->
          <div v-if="videoExist">
            <h3 class="column-title">视频</h3>
            <div class="column-content" >
-               <dl class="cc-item" v-for="(item,index) in videoSources" >
+               <dl class="cc-item" v-for="(item,index) in videoSources" :data-id="item.id">
                    <dt class="cc-item-previewbox">
                          <span class="vcip-img">
-                             <img :src="item.src" />
+                             <img :src="item.img" />
                          </span>
                          <span class="vcip-icon"></span>
                          <span class="vcip-name">{{item.name}}</span>
@@ -31,13 +34,15 @@
            </div>
          </div>
          
+
+         <!--图片区域-->
          <div v-if="imageExist">
            <h3 class="column-title">图片</h3>
            <div class="column-content" >
-               <dl class="cc-item" v-for="(item,index) in imageSources" >
+               <dl class="cc-item" v-for="(item,index) in imageSources" :data-id="item.id">
                    <dt class="cc-item-previewbox">
                          <span class="vcip-img">
-                             <img :src="item.src" />
+                             <img :src="item.img" />
                          </span>
                          <span class="vcip-icon icip-icon"></span>
                          <span class="vcip-name">{{item.name}}</span>
@@ -126,7 +131,7 @@
           ...mapGetters(['results'])
         },
         mounted(){
-
+          console.log(this.imageSources)
         }
     }
 </script>
@@ -177,6 +182,9 @@
                       
                     .icip-icon
                         wh(19px,19px);bgImg('~common/images/source/img@2x.png');
+                .cc-item-folder-previewbox
+                    bgColor(#dedede);border-radius:10px;     
+                          
               .maskImg
                 display:block;wh(238px,135px);box-sizing:border-box;border-radius:10px;border:4px solid #5E8CEE;bgColor(#fff);opacity:0;ab(0,0);
             .cactive

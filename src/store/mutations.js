@@ -23,6 +23,18 @@ const mutations = {
     },
     [types.DIR]: (state,data) => {
         state.dir = data;
+    },
+    [types.SDIR]: (state,data) => {
+        state.sdir = data;
+    },
+    [types.MODEL_TYPE_1]: (state,data) => {
+        state.model_type_1 = data;
+    },
+    [types.MODEL_TYPE_2]: (state,data) => {
+        state.model_type_2 = data;
+    },
+    [types.MODEL_TYPE_3]: (state,data) => {
+        state.model_type_3 = data;
     }
 };
 

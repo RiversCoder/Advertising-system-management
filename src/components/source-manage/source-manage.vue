@@ -99,7 +99,7 @@
                 this.$axios.post(this.url_get_sources_by_dir,{
                     dir: pdir ? pdir : this.dir
                 }).then((res)=>{
-
+                    //console.log(pdir,this.dir);
                     //success
                     if(res.data.status == 'success'){
                         //console.log(res.data)

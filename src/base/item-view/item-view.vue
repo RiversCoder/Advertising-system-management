@@ -6,9 +6,9 @@
              <dl class="cc-item">
                  <dt class="cc-item-previewbox">
                        <span class="vcip-img">
-                           <img :src="item.src" />
+                           <img :src="item.img" />
                        </span>
-                       <span :class="item.type == 'video' ? 'vcip-icon' : 'vcip-icon icip-icon' "></span>
+                       <span :class="item.fileType == '1' ? 'vcip-icon' : 'vcip-icon icip-icon' "></span>
                        <span class="vcip-name">{{item.name}}</span>
                  </dt>
                  <span class="maskImg"></span>

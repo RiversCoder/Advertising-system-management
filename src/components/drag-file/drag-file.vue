@@ -27,7 +27,7 @@
    </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script scoped type="text/ecmascript-6">
     
     import {mapGetters, mapMutations, mapActions} from 'vuex';
     import ItemView from '@/base/item-view/item-view';
@@ -46,8 +46,7 @@
               selectVideoId: [],
               selectImageId: [],
               fileId: [],
-              selectData: [],
-              source: datas
+              selectData: []
             }
         },
         methods:{
@@ -59,8 +58,6 @@
             },
             //初始化数据
             init(){
-               //console.log(this.source);
-              //console.log(this.selectid);
               this.selectData = [];
               for(var i=0;i<this.selectid.length;i++){
                 for(var j=0;j<this.source.length;j++){
@@ -86,7 +83,7 @@
             },
             initPos(cindex,dindex){
               
-              console.log(cindex,dindex);
+              
               //重新计算位置
               this.countPos(cindex,dindex);
 
@@ -163,17 +160,43 @@
             lastBtn(){
               this.$router.back(-1);
             },
+            //组装节目数据
+            createStructor(data){
+                var attr = {
+                    "file_name":"file1",
+                    "file_type":"",
+                    "download_url":"",
+                    "file_size":"",
+                    "file_duration":""
+                };
+
+                var newArr = [];
+                for(var i=0;i<data.length;i++){
+                    newArr.push({
+                      "img": data[i]['img'],
+                      "id" : data[i]['id'],
+                      "file_name": data[i]['name'],
+                      "file_type": data[i]['fileType'],
+                      "download_url": data[i]['url'],
+                      "file_size": data[i]['size'],
+                      "file_duration": data[i]['videoTime']
+                    });
+                }
+                //设置素材展示的本地缓存
+                tool.lset('file_list_'+this.$route.query.direct,newArr);
+            },
             //提交
             nextBtn(){
 
-              //首先把数据保存然后提交到数据库
+              //首先把数据保存到本地 然后提交到数据库
+              this.createStructor(this.selectData);
 
               //跳转到拖拽面板页面
               this.$router.push({
-                path: '/program-production/work-time/'+this.$route.query.direct,
+                path: '/program-production/work-time/'+this.$route.query.direct/*,
                 query:{
                   results: this.selectData
-                }
+                }*/
               });
             }
         },
@@ -181,7 +204,7 @@
           
         },
         computed:{
-          ...mapGetters(['selectid'])
+          ...mapGetters(['source','selectid'])
         },
         created(){
           this.init();
