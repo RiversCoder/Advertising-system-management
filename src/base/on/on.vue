@@ -128,13 +128,16 @@
                 }
                 //验证时间大小
                 if(tool.changeTimetoSecond(this.value1) >= tool.changeTimetoSecond(this.value2)){
-                    this.$message.error('时间格式错误!');
+                    this.$message.error('亲，时间先后顺序设置错误！');
                     return;
                 }
 
                 //计算时间冲突
                 if(tool.checkTime(this.setTimes,tool.countTimes(this.value1,this.value2,this.checkList))){
-                    this.$message.error('时间设置冲突,请重新设置!');
+                    this.$message({
+                      message: '时间设置冲突,请重新设置!',
+                      type: 'warning'
+                    });
                     return;
                 }
 

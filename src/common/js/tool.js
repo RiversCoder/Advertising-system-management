@@ -163,18 +163,26 @@ var tool = {
     },
     checkTime: function(arr1,obj){
         console.log(arr1,obj)
-        if(arr1.length >= 1){
-            var x1 = arr1[arr1.length-1].start;
-            var x2 = x1+arr1[arr1.length-1].duration;
-            var t1 = obj.start;
-            var t2 = t1+obj.duration;
-            
-            //如果不重叠
+        var x1 = 0;
+        var x2 = 0;
+        var t1 = obj.start;
+        var t2 = t1+obj.duration;
+
+
+        for(var i=0;i<arr1.length;i++){
+            x1 = arr1[i].start;
+            x2 = x1+arr1[i].duration;
+
+             //如果不重叠
             if(t2 <= x1 || t1 >= x2){
-                return false;
+
+                if(i == arr1.length-1){
+                    return false;
+                }
             }else{
                 return true;
             }
+
         }
     }
 };
