@@ -12,7 +12,7 @@
                       <ul class="citms">
                           <li class="cit cit1" @click="renameFile(item.dir,item.name,item.id)">重命名</li>
                           <li class="cit cit2" @click="moveFile(item.dir,item.fileType,item.name,item.id)">移动文件</li>
-                          <li class="cit cit3" @click="deleteFile(item.id)">删除</li>
+                          <li class="cit cit3" @click="deleteFile(item.name,item.dir,item.id)">删除</li>
                       </ul>
                   </dd>
               </dl>
@@ -54,7 +54,7 @@
         data(){
             return{
                 getDatas: [],
-                remove_url: this.$baseUrl+'/api/deleteFiles',
+                remove_url: this.$baseUrl+'/api/deleteFolder',
                 rename_url: this.$baseUrl+'/api/renameFolder',
                 url_get_sources_by_dir: this.$baseUrl + '/api/getFile',
                 cdir: '/'
@@ -144,7 +144,7 @@
               this.$emit('movefile',{'dir':cdir,'fileType':ctype,'fileName':cname,'fileId':cid});
           },
           //删除文件
-          deleteFile(id){
+          deleteFile(cname,cdir,id){
               this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -152,9 +152,10 @@
               }).then(() => {
 
                 //请求删除操作
-                console.log(id);
+                //console.log(id);
                 this.$axios.post(this.remove_url,{
-                    fileId: id
+                    name: cname,
+                    dir: cdir
                 }).then((res)=>{
 
                     //success

@@ -4,11 +4,10 @@
          
          <!--文件夹区域-->
          <div v-if="folderExist">
-            <h3 class="column-title">文件夹</h3>
+            <h3 class="column-title" v-show="showFolderTitle">文件夹</h3>
             <div class="column-content" >
-                <dl class="cc-item" v-for="(item,index) in folderSources" >
+                <dl class="cc-item" v-for="(item,index) in folderSources" :data-id="item.id">
                     <dt class="cc-item-previewbox cc-item-folder-previewbox">
-                        <img src=""/>
                         <span class="cip-name">{{item.name}}</span>
                     </dt>
                     <span class="maskImg" ></span>
@@ -76,6 +75,10 @@
             }
         },
         props: {
+          showFolderTitle:{
+            type: Boolean,
+            default: false
+          },
           imageExist:{
             type: Boolean,
             default: false
@@ -131,7 +134,7 @@
           ...mapGetters(['results'])
         },
         mounted(){
-          console.log(this.imageSources)
+          //console.log(this.imageSources)
         }
     }
 </script>

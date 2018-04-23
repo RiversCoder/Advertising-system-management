@@ -40,3 +40,8 @@ export const model_type_2 = function(state){
 export const model_type_3 = function(state){
     return state.model_type_3;
 }
+
+
+export const publish = function(state){
+    return state.publish;
+}

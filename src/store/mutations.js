@@ -35,6 +35,9 @@ const mutations = {
     },
     [types.MODEL_TYPE_3]: (state,data) => {
         state.model_type_3 = data;
+    },
+    [types.PUBLISH]: (state,data) => {
+        state.publish = data;
     }
 };
 

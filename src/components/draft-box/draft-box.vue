@@ -6,8 +6,8 @@
                   <el-row>
                     <el-col :span="24">
                         <div class="grid-content">
-                            <el-button plain class="rbtn uploadFile" >上传文件</el-button>
-                            <el-button plain class="rbtn newFolder" >删除</el-button>
+                            <el-button plain class="rbtn uploadFile" >上线</el-button>
+                            <el-button plain class="rbtn newFolder" @click="deleteRequest">删除</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -15,7 +15,7 @@
               <el-main>
                   <div class="scrollWrap" ref="menuScroll">
                       <div class="cwrap">
-                          <list-view :title="title" :sources="videoDatas" :ctype="listType"></list-view>
+                          <list-view :folderSources="folderDatas" :folderExist="true"></list-view>
                       </div>
                   </div>
               </el-main>
@@ -25,11 +25,12 @@
 </template>
 
 
-<script>
+<script scoped >
     
     import Scroll from '@/base/scroll/scroll';
     import BScroll from 'better-scroll';
     import ListView from '@/base/list-view/list-view';
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
 
     export default{
         data(){
@@ -37,15 +38,10 @@
                 input: '',
                 title: '草稿箱',
                 listType: 'draft',
-                videoDatas: [
-                    {name: 'java',status: true,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862138&di=5b67169c66a3e51b5d9fa7eac4190c39&imgtype=0&src=http%3A%2F%2Fimg1.3lian.com%2F2015%2Fa1%2F78%2Fd%2F151.jpg'},
-                    {name:'javaScript',status: false,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862136&di=4abcaae736a05a2572e4db3a61d461c8&imgtype=0&src=http%3A%2F%2Fimg1.3lian.com%2F2015%2Fa1%2F95%2Fd%2F148.jpg'},
-                    {name:'曹操',status: true,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862134&di=d1299b430488adda7b9766fb11c95199&imgtype=0&src=http%3A%2F%2Fup.enterdesk.com%2Fedpic_source%2F63%2F9d%2F2c%2F639d2c2aa8f71fe6979897b93d37519d.jpg'},
-                    {name:'孙权',status: false,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862133&di=0b39b978456b00b4d511e49e46321ce4&imgtype=0&src=http%3A%2F%2Fimg.tupianzj.com%2Fuploads%2Fallimg%2F160317%2F9-16031H11K7.jpg'},
-                    {name:'刘备',status: true,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862131&di=de18ab2031afc9a3843bdb9329aa5151&imgtype=0&src=http%3A%2F%2Fimg1.3lian.com%2F2015%2Fa1%2F95%2Fd%2F149.jpg'},
-                    {name:'孙尚香',status: true,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862130&di=3de9ff7912d845ace7db0d5cd4482dbe&imgtype=0&src=http%3A%2F%2Fimg1.3lian.com%2F2015%2Fa1%2F98%2Fd%2F206.jpg'},
-                    {name:'李白',status: true,src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523966862129&di=fb51ee2432e4f48af76693a2a42a8787&imgtype=0&src=http%3A%2F%2Fwww.wmpic.me%2Fwp-content%2Fuploads%2F2013%2F11%2F2013112717214942.jpg'}
-                ]
+                get_drap_box_url: this.$baseUrl + '/api/getShow',
+                delete_drap_box_url: this.$baseUrl + '/api/deleteShow',
+                folderDatas: [],
+                items: []
             }
         },
         methods:{
@@ -53,6 +49,67 @@
               this.menuScroll = new BScroll(this.$refs.menuScroll, {
                 click: true
               })
+            },
+            //初始化草稿箱数据
+            initProgramData(){
+                this.$axios.post(this.get_drap_box_url).then((res)=>{
+                    if(res.data.status == "success"){
+                        console.log(res.data)
+                        for(var i=0;i<res.data.data.length;i++){
+                            this.folderDatas.push({
+                                'id': res.data.data[i]['id'],
+                                'name': res.data.data[i]['created_at'],
+                                'showContent': res.data.data[i]['showContent']
+                            });
+                        }
+                    }
+                })
+            },
+            //删除节目
+            deletePrograms(){
+                var items = document.getElementsByClassName('cc-item');
+                var This = this;
+                for(var i=0;i<items.length;i++){
+                    items[i].onclick = function(ev){
+                        this.classList.toggle('cactive');
+                    }
+                }
+
+            },
+            //发出删除节目请求
+            deleteRequest(){
+
+                //遍历要选择的
+                var items = document.getElementsByClassName('cc-item');
+
+                //获取要删除的文件
+                var idArr = [];
+                for(var i=0;i<items.length;i++){
+                    if(items[i].classList.contains('cactive')){
+                        idArr.push(items[i].dataset.id);
+                    }
+                }
+
+                this.$axios.post(this.delete_drap_box_url,{
+                    'show_id': 22
+                }).then((res)=>{
+                    console.log(res);
+                    if(res.data.status == "success"){
+                       console.log(res.data)
+                    }
+                })
+                
+                
+                for(var i=0;i<idArr.length;i++){
+                    
+                }
+                /*this.$axios.post(this.delete_drap_box_url,{
+                    show_id: id
+                }).then((res)=>{
+                    if(res.data.status == "success"){
+                       console.log(res.data)
+                    }
+                })*/
             },
             initScrollHeight(){
                 
@@ -65,11 +122,15 @@
         },
         mounted(){
             this.initScrollHeight();
+            setTimeout(()=>{
+                this.deletePrograms();
+            },500)
         },
         created(){
             this.$nextTick(() => {
               this._initScroll()
             });
+            this.initProgramData();
         },
         components:{
             Scroll,

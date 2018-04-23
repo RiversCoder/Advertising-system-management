@@ -17,6 +17,7 @@ import SelectFile from '@/components/select-file/select-file'
 import DragFile from '@/components/drag-file/drag-file'
 
 import ListView from '@/base/list-view/list-view'
+import Histogram from '@/base/histogram/histogram'
 import On from '@/base/on/on'
 import Off from '@/base/off/off'
 import Full from '@/base/full/full'
@@ -130,8 +131,8 @@ const router =  new Router({
       component: Reset
     },
     {
-      path: '/list',
-      component: ListView
+      path: '/his',
+      component: Histogram
     }
   ],
   linkActiveClass: 'menuActive'

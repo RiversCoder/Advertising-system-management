@@ -161,8 +161,65 @@ var tool = {
         var senconds = arr[0]*60*60 + arr[1]*60;
         return senconds;
     },
+    //处理时间成数组返回
+    handleTime: function(data)
+    {   
+        var os = [];
+        var ms = [];
+       
+        data.forEach((item)=>{
+           var num = parseInt(item.weeks,16);
+           var str = num.toString(2);
+           ms.push([item.start,item.duration,this.addZoomBefore(str,7)]);
+        })
+
+        return ms;
+    },
+    //前面补零
+    addZoomBefore(str,len){
+        var dis = 0;
+        var s = '';
+
+        if(str.length < len){
+            dis = len - str.length;
+
+            for(var i=0;i<dis;i++){
+                s += '0'
+            }
+
+            return (s+str);
+        }else{
+            return str;
+        }
+
+    },
+    //换算比例 把时间换算成高度
+    countPercent(ih,arr){
+        var tH = 24*60*60;
+        var per = ih/tH;
+
+        var newArr = [];
+        for(var i=0;i<arr.length;i++){
+            newArr.push([Math.floor(arr[i][0]*per),Math.floor(arr[i][1]*per),arr[i][2]]);
+        }
+        
+        return newArr;
+    },
+    //创建颜色块
+    createColorblock(pclsn,clsn,data,color){
+        var p = document.getElementsByClassName(pclsn);
+        console.log(data)
+        for(var i=0;i<data.length;i++){
+            for(var j=0;j<p.length;j++){
+                console.log()
+                if(data[i][2].charAt(j) == 1){
+                    p[j].innerHTML += `<span class="cwb" style="display:block;width:100%;position:absolute;left:0;top:${data[i][0]}px;height:${data[i][1]}px;background-color:${color};"></span>`;
+                }
+            }
+        }
+    },
     checkTime: function(arr1,obj){
-        console.log(arr1,obj)
+        
         var x1 = 0;
         var x2 = 0;
         var t1 = obj.start;
@@ -184,6 +241,78 @@ var tool = {
             }
 
         }
+    },
+    //组装数据
+    packageData: function(username){
+        //1. 格式
+        var programs = {
+            "date": new Date().getTime(),
+            "username": username,
+            "program":[]
+        }
+        
+        var program = {};
+        var model_type_1 = {}; 
+        var model_type_2 = {}; 
+        var model_type_3 = {};    
+
+        //2. 统计公共节目状态
+        model_type_1 = this.cProgamWorkStatus('file_list_on','time_list_on');
+        model_type_2 = this.cProgamWorkStatus('file_list_off','time_list_off');
+        model_type_3 = this.cProgamWorkStatus('file_list_full','time_list_full');        
+
+        
+        if(model_type_1 || model_type_2 || model_type_3){
+            return true;
+        }else{
+            return false;
+        }
+
+        program = {
+            'model_type_1': model_type_1,
+            'model_type_2': model_type_2,
+            'model_type_3': model_type_3
+        }
+
+        programs['program'] = program;
+
+        return programs;
+    },
+    cProgamWorkStatus(sfn,stn){
+        var data  = this.lget(sfn);
+        var tdata = this.lget(stn);
+        var file_list = [];
+        var time_list = [];
+        var obj = {};
+
+        if(!data || !tdata || data.length == 0 || tdata.length == 0){
+            return false;
+        }
+
+        for(var i=0;i<data.length;i++){
+            file_list.push({
+                 "file_name":data[i].file_name,
+                  "file_type":data[i].file_type,
+                  "download_url":data[i].download_url,
+                  "file_size":data[i].file_size,
+                  "file_duration":data[i].file_duration
+            })
+        }
+
+        for(var i=0;i<tdata.length;i++){
+            time_list.push({
+              "start":tdata[i].start,
+              "duration":tdata[i].duration,
+              "weeks":tdata[i].weeks
+            })
+        }
+
+        obj = {
+            'file_list' : file_list,
+            'time_list' : time_list
+        };
+
+        return obj
     }
 };
 

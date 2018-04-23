@@ -11,7 +11,7 @@
                     <div class="add-source-wrap">
                         <ul class="imgWrap" ref="imgWrap">
                             <li v-for="(item,index) in cresults" :width="liw+'px'">
-                                <img :src="'http://'+item.img" alt="" :width="liw+'px'">
+                                <img :src="item.img" alt="" :width="liw+'px'">
                             </li>
                         </ul>
                     </div>
@@ -24,7 +24,7 @@
             <div class="tbox tbox2" ref="timeListBox">
                 <div class="tlistwrap" >
                     <ul class="tlists">
-                        <li class="bitem bitem1" v-for="(item,index) in worktimes">
+                        <li class="bitem bitem1" v-for="(item,index) in setTimes">
                             <span class="bitem-item bitem-time">{{item.time}}</span>
                             <span class="bitem-item bitem-day">
                                 {{item.date}}
@@ -78,8 +78,10 @@
                 worktimes: [],
                 cresults: [],
                 liw:0,
-                weeks: '0000000',
-                
+                week: '000000',
+                start: 0,
+                duration: 0,
+                setTimes: []
             }
         },
         methods:{
@@ -93,16 +95,26 @@
             init(){
                 var box = this.$refs.imgWrap;
                 this.liw = Math.ceil(box.clientWidth/this.cresults.length);
-
-                //初始化已经选择的图片素材
             },
+            //初始化已经选择的文件
             initSelectFiles(){
-                if(tool.lget('file_list_on')){
-                    this.cresults = tool.lget('file_list_on');
+                if(tool.lget('file_list_off')){
+                    this.cresults = tool.lget('file_list_off');
                 }
             },
+            //初始化已经set的时间线
+            initSetTimes(){
+                //设置存储空间
+                if(!tool.lget('time_list_off')){
+                    tool.lset('time_list_off',this.setTimes);
+                }else{
+                    //初始化数据
+                    this.setTimes = tool.lget('time_list_off');
+                }
+                
+            },
             addFileBtn(){
-                this.$router.push({'path':'/program-production/select',query:{direct:'on'}});
+                this.$router.push({'path':'/program-production/select',query:{direct:'off'}});
             },
             //添加时间和星期
             closeSure(){
@@ -114,18 +126,32 @@
                     this.$message.error('时间或星期不能为空!');
                     return;
                 }
+                //验证时间大小
+                if(tool.changeTimetoSecond(this.value1) >= tool.changeTimetoSecond(this.value2)){
+                    this.$message.error('亲，时间先后顺序设置错误！');
+                    return;
+                }
 
-                this.worktimes.push({
-                    'time': this.value1+'-'+this.value2,
-                    'date': this.checkList.join(',')
-                });
+                //计算时间冲突
+                if(tool.checkTime(this.setTimes,tool.countTimes(this.value1,this.value2,this.checkList))){
+                    this.$message({
+                      message: '时间设置冲突,请重新设置!',
+                      type: 'warning'
+                    });
+                    return;
+                }
 
+                //计算并且存储数据
+                this.setTimes.push(tool.countTimes(this.value1,this.value2,this.checkList));
+
+                tool.lset('time_list_off',this.setTimes);
             },
             //删除时间项
             deleteTime(index){
-                this.worktimes.splice(index,1);
+                this.setTimes.splice(index,1);
+                tool.lset('time_list_off',this.setTimes);
                 this.$message({
-                  message: '恭喜你，删除成功!',
+                  message: '删除成功!',
                   type: 'success'
                 });
             }
@@ -148,6 +174,7 @@
         },
         mounted(){
             this.initSelectFiles();
+            this.initSetTimes();
             this.init();
         },
         created(){
@@ -192,7 +219,7 @@
         .tbox2
             border:1px solid #DEDEDE;border-left:0;height:398px;overflow:hidden;
         .add-source-wrap
-            wh(253px,152px);position:absolute;bottom:0;left:0; 
+            wh(253px,152px);position:absolute;bottom:0;left:0;overflow:hidden; 
             .imgWrap
                 wh(100%,100%);list-style:none;
                 li
@@ -200,7 +227,7 @@
                     img
                        display:block;       
         .add-source-btn
-            wh(253px,152px);position:absolute;bottom:0;left:0;bgImg('~common/images/worktime/addBtn1.png');cursor:pointer;
+            wh(253px,152px);position:absolute;bottom:0;left:0;bgImg('~common/images/worktime/addBtn2.png');cursor:pointer;
                
     .add-file-box
         wh(510px,200px);bgImg('~common/images/worktime/worktime.jpg');margin: 0 auto;position:relative;top:94px;
@@ -216,6 +243,6 @@
                 i 
                     font-style:normal;
     .add-bitem-btn
-        @extend .block;wh(100%,65px);bgColor(#F4F4F4);bgImg('~common/images/worktime/add.png');background-size:30px 30px;background-position:center center;cursor:pointer;border-bottom:1px solid #DEDEDE;                                             
+        @extend .block;wh(100%,65px);bgColor(#F4F4F4);bgImg('~common/images/worktime/add2.png');background-size:30px 30px;background-position:center center;cursor:pointer;border-bottom:1px solid #DEDEDE;                                             
 </style>
 

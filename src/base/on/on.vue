@@ -11,7 +11,7 @@
                     <div class="add-source-wrap">
                         <ul class="imgWrap" ref="imgWrap">
                             <li v-for="(item,index) in cresults" :width="liw+'px'">
-                                <img :src="'http://'+item.img" alt="" :width="liw+'px'">
+                                <img :src="item.img" alt="" :width="liw+'px'">
                             </li>
                         </ul>
                     </div>
@@ -219,7 +219,7 @@
         .tbox2
             border:1px solid #DEDEDE;border-left:0;height:398px;overflow:hidden;
         .add-source-wrap
-            wh(253px,152px);position:absolute;bottom:0;left:0; 
+            wh(253px,152px);position:absolute;bottom:0;left:0;overflow:hidden; 
             .imgWrap
                 wh(100%,100%);list-style:none;
                 li

@@ -40,13 +40,14 @@
                 
                 <!-- 柱状图展示 -->
                 <div class="chartViewBox">
-                    <histogram></histogram>
+                    <histogram :onOff="showLines"></histogram>
                 </div>
                 
                 <!-- 收藏、上线按钮 -->
                 <div class="collectionBtn">
-                    <el-button plain class="rbtn ">收藏</el-button>
-                    <el-button plain class="rbtn uploadFile">上线</el-button>
+                    <el-button plain class="rbtn resetBtn" @click="reset">重置</el-button>
+                    <el-button plain class="rbtn colectBtn" @click="goup">收藏</el-button>
+                    <el-button plain class="rbtn uploadFile" @click="entry">上线</el-button>
                 </div>    
                 
             </div>
@@ -54,13 +55,25 @@
                 <div class="gamebox-header">
                     <span class="gh-title">游戏开关</span>
                     <el-switch
-                      v-model="value"
+                      v-model="gameOnoff"
                       active-color="#F8D76B"
                       inactive-color="#ff4949"
                       class="switchbox">
                     </el-switch>
                 </div>
-                <textarea class="inputGameBox"></textarea>
+                <textarea class="inputGameBox" v-model="gamearea"></textarea>
+                
+                <!-- 主题选择 -->
+                <div class="theme-select-wrap">
+                    <div class="theme-show-box">
+                        <h4>主题选择</h4>
+                        <span v-model="selectValue" class="selctValue">春天</span>
+                    </div>
+                    <div class="theme-select-box">
+                        <span class="select-box"></span>
+                    </div>
+                </div>
+
             </div>
         </div>
     
@@ -68,45 +81,7 @@
 </div>
 </template>
 
-<script>
-    import Histogram from '@/base/histogram/histogram'
-    import On from '@/base/on/on'
 
-    export default{
-        data(){
-            return {
-                value: true
-            }
-        },
-        methods:{
-            addFileBtn(){
-                this.$router.push({'path':'/select'})
-            },
-            tabClick(){
-
-            },
-            checkSetStorage(){
-                var obj = {
-                    name : '王大花',
-                    code : '4009012312xxx',
-                    age : 12,
-                    class : '七年级五班'
-                };
-
-                localStorage.setItem('item',obj);
-
-                console.log(localStorage.getItem('item'));
-            }
-        },
-        created(){
-            
-        },
-        components:{
-            Histogram,
-            On
-        }
-    }
-</script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
     
@@ -117,6 +92,9 @@
         bgColor(#F4F4F4);color:#333;font-size:18px;initp();border-radius:10px;
      }
     
+
+    
+
     .pc-header
         border-bottom:2px solid #DEDEDE;
 
@@ -143,8 +121,6 @@
          position:relative;
          &:before
             bgColor(#ED1C24);        
- 
-
     
     .previewBox
         wh(100%,280px);border:1px solid #DEDEDE;
@@ -175,13 +151,26 @@
             ab(302px,70px);
         
         .collectionBtn
-            ab(890px,80px);    
+            ab(890px,120px);
+        .resetBtn
+            position:absolute;top:-55px;left:10px;        
         .rbtn
             width:128px;hh(40px);@extend .block;font-size:18px;color:#333;padding:0;border-radius:10px;
         .uploadFile
-            bgColor(#ED1C24);color:#fff;margin-top:27px;position:relative;left:-10px;
+            bgColor(#ED1C24);color:#fff;margin-top:15px;position:relative;left:0px;
         .gamebox
-            width:24%;    
+            width:24%;height:280px;position:relative;
+            .theme-select-wrap
+                wh(100%,70px);position:absolute;bottom:0;left:0;border-top:1px solid #DEDEDE;
+                .theme-show-box
+                    wh(80%,70px);border-right:1px solid #DEDEDE;box-sizing:border-box;line-height:70px;font-size:18px;text-indent:20px;color:#333;font-weight:bold;position:relative;float:left;
+                    .selctValue
+                        position:absolute;right:0;top:0;box-sizing:border-box;padding-right:18px;color:#999;
+                .theme-select-box
+                    wh(19%,70px);position:relative;float:left;
+                .select-box
+                    display:block;wh(30px,16px);bgImg('~common/images/source/select@2x.png');ab(23px,29px);cursor:pointer;    
+                    
         .gamebox-header
             wh(100%,69px);line-height:69px;font-size:18px;color:#333;text-indent:20px;border-bottom:1px solid #DEDEDE;position:relative;
             .switchbox
@@ -194,3 +183,152 @@
             display:block;wh(304px,86px);padding:3px 5px;bgColor(#F4F4F4);border-radius:10px;font-size:12px;line-height:14px;color:#999;margin:0 auto;margin-top:10px;                                               
 </style>
 
+<script scoped >
+    import Histogram from '@/base/histogram/histogram'
+    import On from '@/base/on/on'
+    import tool from 'common/js/tool'
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
+
+    export default{
+        data(){
+            return {
+                gameOnoff: false,
+                new_program_url: this.$baseUrl+'/api/createShow',
+                entry_program_url: this.$baseUrl+'/api/pushShow',
+                get_user: this.$baseUrl+'/api/user',
+                showLines: true,
+                gamearea: 'https://riverscoder.github.io/the-hamster-game/bin/index.html',
+                game_url: this.$baseUrl+'/api/gameUpdate',
+                selectValue: '春天'
+            }
+        },
+        methods:{
+            addFileBtn(){
+                this.$router.push({'path':'/select'})
+            },
+            tabClick(){
+
+            },
+            //点击收藏
+            goup(){
+
+                var config = {
+                    showName: tool.randomString(),
+                    deviceName: 'dbs01',
+                    isPush: 0
+                };
+
+                var url =  this.new_program_url;     
+                this.requestProgram(url,config);
+            },
+            //点击上线节目
+            entry(){
+                var url =  this.entry_program_url;
+                this.requestProgram(url);
+            },
+            //点击重置节目
+            reset(){
+                //1. 隐藏图表数据
+                localStorage.setItem('showLines',false);
+                this.showLines = false;
+
+                //2. 清除当前所有时间list和文件list
+                
+                tool.lset('file_list_on',[]);
+                tool.lset('time_list_on',[]);
+                tool.lset('file_list_off',[]);
+                tool.lset('time_list_off',[]);
+                tool.lset('file_list_full',[]);
+                tool.lset('time_list_full',[]);
+
+                //3. 刷新页面 重新渲染数据
+                location.reload(); 
+            },
+            requestProgram(url,config){
+                
+                //1.获取当前的用户名
+                var username = '';
+                var jsons = {};
+                var baseConfig = {};
+
+                this.$axios.post(this.get_user).then((res)=>{
+                    username = res.data.name;
+
+                    //2. 组装数据列表
+                    jsons = tool.packageData(username);
+                    
+
+                    if(!jsons){
+                        this.$message({
+                          showClose: true,
+                          message: '请编辑节目后再上线！',
+                          type: 'warning'
+                        });
+
+                        return;
+                    }
+
+                    //组装请求数据
+                    baseConfig = {
+                        directorie: JSON.stringify(jsons)
+                    };
+
+                    if(config){
+                       Object.assign(baseConfig,config); 
+                    }
+
+                    //3. 节目请求
+                    this.$axios.post(url,baseConfig).then((res)=>{
+                        
+                        if(!config){
+                            this.showLines = true
+                            localStorage.setItem('showLines',this.showLines);
+                        }
+
+                        this.$message({
+                          showClose: true,
+                          message: res.data.message,
+                          type: 'success'
+                        });
+                    })
+                })  
+            },
+            //请求开始游戏
+            requestGame(onoff){
+                var value = this.gamearea;
+                var sw = onoff ? 1 : 0;
+
+                this.$axios.post(this.game_url,{
+                    url: value,
+                    switch: sw
+                }).then((res)=>{
+                    this.$message({
+                      showClose: true,
+                      message: res.data.message,
+                      type: 'success'
+                    });
+                })
+
+            },
+            ...mapMutations({
+                setPublish:'publish'
+            })
+        },
+        watch:{
+            gameOnoff:{
+                handler(nv,ov){
+                    this.requestGame(nv);
+                },
+                deep: true
+            }
+        },
+        created(){
+           this.showLines = eval(localStorage.getItem('showLines'));
+           console.log(this.showLines)
+        },
+        components:{
+            Histogram,
+            On
+        }
+    }
+</script>

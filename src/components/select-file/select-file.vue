@@ -133,13 +133,12 @@
               //获取数据组
               var boxs = document.getElementsByClassName('cc-item');
 
-              if(this.existData.length > 0){
-                //获取已经存在的触发状态的图片
-                for(var i=0;i<boxs.length;i++){
-                   if(boxs[i].classList.contains('cactive')){
-                     this.fileId.push(boxs[i].dataset.id);
-                   }
-                }
+              
+              //获取已经存在的触发状态的图片
+              for(var i=0;i<boxs.length;i++){
+                 if(boxs[i].classList.contains('cactive')){
+                   this.fileId.push(boxs[i].dataset.id);
+                 }
               }
 
 

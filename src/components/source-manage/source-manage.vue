@@ -318,12 +318,15 @@
             //移动文件到文件夹
             moveFileFn(attr){
                 this.dialogTableVisible = true;
-                
+                this.folderSelctsData = [];
+
+                console.log(attr)
                 //设置数据
                 if(attr.fileType != 2){
                     for(var i=0;i<this.folderData.length;i++){
                         this.folderSelctsData[i] = this.folderData[i];
                     }
+                    console.log(this.folderSelctsData);
                 }else{
                     var data = [];
                     for(i=0;i<this.folderData.length;i++){
