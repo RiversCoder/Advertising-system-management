@@ -6,11 +6,12 @@
          <div v-if="folderExist">
             <h3 class="column-title" v-show="showFolderTitle">文件夹</h3>
             <div class="column-content" >
-                <dl class="cc-item" v-for="(item,index) in folderSources" :data-id="item.id">
-                    <dt class="cc-item-previewbox cc-item-folder-previewbox">
-                        <span class="cip-name">{{item.name}}</span>
+                <dl class="cc-item" v-for="(item,index) in folderSources" :data-dir="item.dir">
+                    <dt class="cc-item-previewbox cc-item-folder-previewbox cc-i-active">
+                        <span class="vcip-icon vcip-folder-icon"></span>
+                        <span class="cip-name cip-folder-name">{{item.name}}</span>
                     </dt>
-                    <span class="maskImg" ></span>
+                    <span class="maskImg" @click="goIntoFolder(item.name,item.dir)"></span>
                 </dl>
             </div>
           </div>
@@ -28,7 +29,7 @@
                          <span class="vcip-icon"></span>
                          <span class="vcip-name">{{item.name}}</span>
                    </dt>
-                   <span class="maskImg" @click="selectFn1($event,item.id)"></span>
+                   <span class="maskImg" @click="selectFn($event,item)"></span>
                </dl>
            </div>
          </div>
@@ -46,7 +47,7 @@
                          <span class="vcip-icon icip-icon"></span>
                          <span class="vcip-name">{{item.name}}</span>
                    </dt>
-                   <span class="maskImg" @click="selectFn2($event,item.id)"></span>
+                   <span class="maskImg" @click="selectFn($event,item)"></span>
                </dl>
            </div>
          </div>
@@ -69,9 +70,10 @@
                 titles: '图片',
                 listType: 'image',
                 videoDatas: [],
-                recordVideoId: [],
+                recordVideo: [],
                 recordImageId: [],
-                showMask: true
+                showMask: true,
+                cdir: '/'
             }
         },
         props: {
@@ -108,6 +110,10 @@
             default: function(){
                 return []
             }
+          },
+          rs:{
+            type: String,
+            default:''
           }
         },
         initSelects(){
@@ -116,15 +122,34 @@
          // this.recordImageId = tool.getSelect(item,'cactive',id,this.recordImageId);
         },
         methods:{
-          selectFn1(ev,id){
+
+          //点击后操作
+          selectFn(ev,d){
+            var item = ev.srcElement;
+            tool.getSelect(item,'cactive',this.rs,d);
+          },
+
+         /* selectFn1(ev,id){
             var item = ev.srcElement;
             this.recordVideoId = tool.getSelect(item,'cactive',id,this.recordVideoId);
             this.$emit('select1',this.recordVideoId);
+
+            //1. 每次点击先获取自身的状态
+            //2. 匹配本地存储的内容然后根据自身的状态做对比然后增删
+
           },
           selectFn2(ev,id){
             var item = ev.srcElement;
             this.recordImageId = tool.getSelect(item,'cactive',id,this.recordImageId);
             this.$emit('select2',this.recordImageId);
+
+          },*/
+          //点击重新渲染当前页面
+          goIntoFolder(name,dir){
+            var newDir = dir + name + '/' ;
+
+            //向父级页面发送请求 需要重新加载数据
+            this.$emit('freshPage',newDir);            
           },
           ...mapMutations({
             setSelect:'select'
@@ -143,9 +168,9 @@
 
     @import "~common/stylus/variable" 
     @import "~common/stylus/mixin"
-    
+                 
     .con-container
-            width:100%;box-sizing:border-box;background:#fff;padding-bottom:30px;
+        width:100%;box-sizing:border-box;background:#fff;padding-bottom:30px;
     .Column
         width:100%;height:auto;initp();
         
@@ -161,7 +186,7 @@
                 wh(238px,135px);position:relative;box-sizing:border-box;border:1px solid #DEDEDE;border-radius:10px;margin-top:30px;margin-left:8px;cursor:pointer;
                 
                 .cc-item-previewbox
-                    wh(236px,135px);position:relative;box-sizing:border-box;
+                    wh(236px,133px);position:relative;box-sizing:border-box;
                     
                     /* 已经存在的文件夹 */
                     .cip-icon
@@ -169,7 +194,7 @@
                     .cip-name
                         wh(100%,16px);hh(16px);font-weight:bold;color:#fff;font-size:16px;abcenterX(0,59px,0);text-align:center;
                     .cip-img
-                        wh(236px,135px);border-radius:10px;
+                        wh(236px,134px);border-radius:10px;
                     
                     /* 视频 */
                     .vcip-icon
@@ -185,8 +210,13 @@
                       
                     .icip-icon
                         wh(19px,19px);bgImg('~common/images/source/img@2x.png');
+                    .vcip-folder-icon
+                        bgImg('~common/images/source/folder_copy.png');ab(103px,36px);wh(32px,28px);
+                    .cip-folder-name
+                        color:#333;fonts-size:16px;top:81px;
+
                 .cc-item-folder-previewbox
-                    bgColor(#dedede);border-radius:10px;     
+                    bgColor(#F4F4F4);border:1px solid #f4f4f4;border-radius:10px;
                           
               .maskImg
                 display:block;wh(238px,135px);box-sizing:border-box;border-radius:10px;border:4px solid #5E8CEE;bgColor(#fff);opacity:0;ab(0,0);

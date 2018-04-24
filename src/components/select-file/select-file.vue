@@ -13,7 +13,7 @@
                     <p style="display:none"><input name="file" type="file" value="选择" size="20" id="fileUpload1" accept="image/png,image/gif,image/jpeg,video/mp4,application/ogg, audio/ogg,video/3gpp" @change ="changeUploadFile($event)" /></p>  
                     <el-button plain class="rbtn newFolder" @click.native="nextBtn">下一步</el-button>
                     <el-button plain class="rbtn newFolder" @click.native="lastBtn">上一步</el-button>
-                    <el-button plain class="rbtn newFolder" @click.native="backLast" v-show="backBtnShow">返回上一级</el-button>
+                    <el-button plain class="rbtn uploadFile" @click.native="backLast" v-show="backBtnShow">返回上一级</el-button>
                 </div>
             </el-col>
         </el-row>
@@ -22,20 +22,23 @@
       <el-main>
             <div class="cwrap" ref="cwrap">
                 <div>
-                  <!-- <list-view :folderExist="true" :folderSources="folderData"></list-view> -->
-                  <list-view @select1="selectData1" :videoExist="true" :videoSources="videoData"></list-view>
-                  <list-view @select2="selectData2" :imageExist="true" :imageSources="imageData"></list-view>
+                  <list-view @freshPage="freshData" :folderExist="true" :folderSources="folderData"></list-view> 
+                  <list-view :rs="this.$route.query.direct"  :videoExist="true" :videoSources="videoData"></list-view>
+                  <list-view :rs="this.$route.query.direct"  :imageExist="true" :imageSources="imageData"></list-view>
                </div>
             </div>
       </el-main>
    </div>
 </template>
 
+
+
+
 <script type="text/ecmascript-6">
     
     import ListView from '@/base/list-view/list-view';
     import {mapGetters, mapMutations, mapActions} from 'vuex';
-    import datas from 'common/js//data';
+    /*import datas from 'common/js/data';*/
     import tool from 'common/js/tool';
     import BScroll from 'better-scroll';
 
@@ -68,16 +71,23 @@
             //向数据库请求 初始化资源管理的所有数据
             initSources(pdir){
                 
-                this.$axios.post(this.get_all_files).then((res)=>{
-                    //console.log(pdir,this.dir);
-                    //success
+                this.$axios.post(this.url_get_sources_by_dir,{
+                  dir: pdir ? pdir : this.dir
+                }).then((res)=>{
+                    
                     if(res.data.status == 'success'){
                         
+                        //获取当前目录下的数据
                         this.setSource(res.data.data);
 
                         //检测是否在根目录
                         this.checkDir();
+
+                        //分配数据
                         this.init();
+
+                        //初始化被选择的数据
+                        this.initSelectData();
 
                         this.render_success = true;
 
@@ -105,7 +115,7 @@
                   //console.log(item);
                   switch(item.fileType){
                       case 2 :
-                          //this.folderData.push(item);
+                          this.folderData.push(item);
                       break;
                       case 0 :
                           this.imageData.push(item);
@@ -116,23 +126,18 @@
                   }
               });
             },
-            selectData1(v){
-              this.selectVideoId = v;
-            },
-            selectData2(v){
-              this.selectImageId = v;
-            },
             //上一步
             lastBtn(){
               this.$router.back(-1);
             },
             //下一步
             nextBtn(){
+              
               //获取当前的数据
               this.fileId = [];
+
               //获取数据组
               var boxs = document.getElementsByClassName('cc-item');
-
               
               //获取已经存在的触发状态的图片
               for(var i=0;i<boxs.length;i++){
@@ -141,9 +146,7 @@
                  }
               }
 
-
               this.setSelect(this.fileId);
-
               //跳转到拖拽面板页面
               this.$router.push({path:'order',query:{direct:this.$route.query.direct}})    
             },
@@ -156,6 +159,27 @@
               var box = this.$refs.cwrap;
               var h = document.body.offsetHeight - 108;
               box.style.height = h + 'px';
+            },
+            //返回上一级
+            backLast(){
+
+                //重新当前目录是否有数据更新
+                //tool.checkIsUpdate('cc-item','cactive',this.source,this.$route.query.direct)
+
+                //跳转目录
+                var diss = this.dir;
+                var arr = diss.split('/');
+                var newArr = arr.splice(0,arr.length-2);
+                var newDir = newArr.join('/')+'/';
+                this.dir = newDir;
+                this.initSources(newDir);
+            },
+            //重新加载数据
+            freshData(pdir){
+              //保存当前的
+
+              this.initSources(pdir);
+              this.dir = pdir;
             },
             //检测是否在根目录
             checkDir(){
@@ -182,8 +206,6 @@
                       clearTimeout(timer);
                     },200);
                 }
-                /*
-                }*/
             }
         },
         watch:{
@@ -198,21 +220,27 @@
           ...mapGetters(['source'])
         },
         created(){
+          //默认加载根目录的数据
           this.initSources();
-          //this.init();
+          //加载滚动盒子
           this.$nextTick(() => {
             this._initScroll()
           });
         },
         mounted(){
+          
+          //配合滚动计算高度
           this.countHeight();
 
           //判断是否已经有数据被选择
-          console.log('file_list_'+this.$route.query.direct);
+          console.log(tool.lget('file_list_'+this.$route.query.direct));
+          
           if(tool.lget('file_list_'+this.$route.query.direct)){
             this.existData = tool.lget('file_list_'+this.$route.query.direct);
+              
             //初始化已经选中状态的数据
             this.initSelectData();
+          
           }
 
         },
@@ -221,6 +249,9 @@
         }
     }
 </script>
+
+
+
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
 

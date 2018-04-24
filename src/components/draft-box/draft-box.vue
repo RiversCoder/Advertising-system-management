@@ -6,7 +6,7 @@
                   <el-row>
                     <el-col :span="24">
                         <div class="grid-content">
-                            <el-button plain class="rbtn uploadFile" >上线</el-button>
+                            <el-button plain class="rbtn uploadFile" @click="goupRequest">上线</el-button>
                             <el-button plain class="rbtn newFolder" @click="deleteRequest">删除</el-button>
                         </div>
                     </el-col>
@@ -40,6 +40,7 @@
                 listType: 'draft',
                 get_drap_box_url: this.$baseUrl + '/api/getShow',
                 delete_drap_box_url: this.$baseUrl + '/api/deleteShow',
+                go_up_url: this.$baseUrl + '/api/pushShow',
                 folderDatas: [],
                 items: []
             }
@@ -54,7 +55,7 @@
             initProgramData(){
                 this.$axios.post(this.get_drap_box_url).then((res)=>{
                     if(res.data.status == "success"){
-                        console.log(res.data)
+                        console.log(res.data.data)
                         for(var i=0;i<res.data.data.length;i++){
                             this.folderDatas.push({
                                 'id': res.data.data[i]['id'],
@@ -75,6 +76,39 @@
                     }
                 }
 
+            },
+            //上线节目请求
+            goupRequest(){
+                //遍历要选择的
+                var items = document.getElementsByClassName('cc-item');
+
+                //获取要删除的文件
+                var idArr = [];
+                var shows = '';
+                for(var i=0;i<items.length;i++){
+                    if(items[i].classList.contains('cactive')){
+                        idArr.push(items[i].dataset.id);
+                        shows = this.folderDatas[i].showContent;
+                    }
+                }
+
+                if(idArr.length > 1){
+                    this.$message({
+                      message: '不能同时上线多个节目,请指定一个节目上线!',
+                      type: 'warning',
+                      showClose: true
+                    });
+                    return;
+                }
+
+                //发出请求
+                this.$axios.post(this.go_up_url,{
+                    directorie: shows
+                }).then((res)=>{
+                    if(res.data.status == "success"){
+                       console.log(res.data)
+                    }
+                })
             },
             //发出删除节目请求
             deleteRequest(){
@@ -98,18 +132,6 @@
                        console.log(res.data)
                     }
                 })
-                
-                
-                for(var i=0;i<idArr.length;i++){
-                    
-                }
-                /*this.$axios.post(this.delete_drap_box_url,{
-                    show_id: id
-                }).then((res)=>{
-                    if(res.data.status == "success"){
-                       console.log(res.data)
-                    }
-                })*/
             },
             initScrollHeight(){
                 

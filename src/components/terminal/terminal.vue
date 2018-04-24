@@ -29,6 +29,13 @@
                          <el-input class="input-lilv" v-model="input1_4" placeholder="请输入百分比"></el-input>
                      </div></el-col>
                   </el-row>
+
+                  <el-row>
+                     <el-col :span="24"><div class="grid-content">
+                         <el-button class="resetBtn" @click="resetClick(1)">重置</el-button>
+                     </div></el-col>
+                  </el-row>
+
               </div><!--//end formBox1-->
               <div class="formBox formBox2">
                   <el-row>
@@ -48,13 +55,35 @@
                      <el-col :span="4"><div class="grid-content">&nbsp;</div></el-col>
                      <el-col :span="9"><div class="grid-content">
                          <el-input class="input-lilv input-lilvTwo" v-model="input2_3" placeholder="总回报"></el-input>
-                     </div></el-col> 
+                     </div></el-col>
                   </el-row>
+                  
                   <el-row>
                      <el-col :span="24"><div class="grid-content">
                          <el-input class="input-lilv" v-model="input2_4" placeholder="请输入百分比"></el-input>
                      </div></el-col>
                   </el-row>
+
+                  <el-row>
+                     <el-col :span="24" class="input-lilv"><div class="grid-content">
+                         <el-button class="resetBtn" @click="resetClick(2)">重置</el-button>
+                     </div></el-col>
+                  </el-row>
+
+                  
+                  <el-row>
+                     <el-col :span="10"><div class="grid-content">
+                        <el-button class="downBtn">下载模板</el-button>
+                     </div></el-col>
+                      <el-col :span="4"><div class="grid-content">
+                        &nbsp;
+                     </div></el-col>
+                     <el-col :span="10"><div class="grid-content">
+                        <input type="file" name="file" style="display:none;" ref="tableFile" @change="loadExcel" />
+                        <el-button class="downBtn" @click="uploadTable">上传表格</el-button>
+                     </div></el-col>
+                  </el-row>
+
               </div> <!--//end formBox2-->
 
               <el-button class="tiJiaoBtn" @click="submit">提交</el-button>
@@ -71,6 +100,10 @@
 
 <script type="text/ecmascript-6">
     
+    import xlsx from 'xlsx';
+
+    //console.log(xlsx);
+
     export default{
         data(){
             return{
@@ -83,7 +116,8 @@
                 input2_1: '',
                 input2_2: '',
                 input2_3: '',
-                input2_4: ''
+                input2_4: '',
+                templateInfo: []
             }
         },
         props: {
@@ -135,6 +169,77 @@
                     }
                 }); 
 
+            },
+            //上传表格
+            uploadTable(){
+              //1. 打开选择文件窗口
+              this.$refs.tableFile.click();
+
+              //2. 监听表单事件
+            },
+            writeForms(){
+              var datas = this.templateInfo;
+              console.log(datas);
+              var num = 0;
+              for(var i=0;i<datas.length;i++){
+                num = 0;
+                for(var item in datas[i]){
+                  num++;
+                  this['input'+(i+1)+'_'+num] = datas[i][item]; 
+                }
+              } 
+            },
+            //重置表单数据
+            resetClick(num){
+              for(var i=1;i<5;i++){
+                this['input'+num+'_'+i] = '';
+              }
+            },
+            //加载excel表格
+            loadExcel(){
+              var file = this.$refs.tableFile.files[0];
+              var reader = new FileReader();
+              var This = this;
+              var rABS = false; //是否将文件读取为二进制字符串
+              var wb = null; //读取文件结果
+
+              if(rABS) {
+                  reader.readAsArrayBuffer(file);
+              } else {
+                  reader.readAsBinaryString(file);
+              }
+
+              reader.onload = function(e){
+                var data = e.target.result;
+                
+                if(rABS)
+                {
+                    wb = xlsx.read(btoa(This.fixdata(data)), {type: 'base64'});
+                } 
+                else 
+                {
+                    wb = xlsx.read(data, {type: 'binary'});
+                }
+
+                //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
+                //wb.Sheets[Sheet名]获取第一个Sheet的数据 [wb.SheetNames[0]]
+
+               
+                for(var item in wb.Sheets){
+                  This.templateInfo.push(xlsx.utils.sheet_to_json(wb.Sheets[item])[0])
+                }
+
+               //填入表单中                
+               This.writeForms();
+              }
+            },
+            fixdata(data) { //文件流转BinaryString
+                var o = "",
+                    l = 0,
+                    w = 10240;
+                for(; l < data.byteLength / w; ++l)o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+                o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+                return o;
             }
         },
         created(){
@@ -168,7 +273,7 @@
     .lilv-content
         wh(100%,575px);border-radius:10px;border:1px solid #DEDEDE;position:relative
         .formBox
-            wh(320px,280px);position:relative;left:334px;
+            width:320px;min-height:300px;float:left;
             .fb-title
                 font-size:16px;color:#333;font-weight:bold;text-align:center;hh(108px);
             .input-lilv
@@ -179,11 +284,16 @@
                       border:1px solid #999;   
             .input-lilvTwo
                 width:140px;
+        .formBox1
+            margin-left:330px;
         .formBox2
-            left:828px;top:-300px;              
-    
+            margin-left:170px;         
+            .downBtn
+              width:100%;
+        .resetBtn
+            width:100%  
         .tiJiaoBtn
-            wh(280px,50px);color:#fff;font-size:20px;bgColor(#ED1C24);ab(622px,422px);
+            wh(280px,50px);color:#fff;font-size:20px;bgColor(#ED1C24);ab(622px,462px);
             &:hover
                 opacity:0.8;                                 
 </style>

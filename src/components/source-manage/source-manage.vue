@@ -23,7 +23,7 @@
               <el-main>
                   <div class="scrollWrap" ref="menuScroll">
                       <div class="cwrap">
-                          <folder-source @movefile="moveFileFn" :sources="folderData" :allsources="datas"></folder-source>
+                          <folder-source @movefile="moveFileFn" :sources="folderData" :allsources="folderData"></folder-source>
                           <video-source @movefile="moveFileFn" :videos="videoData"></video-source>
                           <image-source @movefile="moveFileFn" :images="imageData"></image-source>
                       </div>
@@ -53,9 +53,7 @@
     import FolderSource from '@/base/folder-source/folder-source';
     import VideoSource from '@/base/video-source/video-source';
     import ImageSource from '@/base/image-source/image-source';
-    import datas from 'common/js/data.js';
     import tool from 'common/js/tool.js';
-    import dataSearch from './data-search.js';
     import {mapGetters, mapMutations, mapActions} from 'vuex';
     import qs from 'qs';
 
@@ -68,7 +66,6 @@
                 folderData: [],
                 folderSelctsData: [],
                 videoData: [],
-                datas: datas,
                 webDatas: [],
                 url_1: this.$baseUrl + '/api/webget',
                 url_2: this.$baseUrl + '/api/callbackUpload',
@@ -99,10 +96,7 @@
                 this.$axios.post(this.url_get_sources_by_dir,{
                     dir: pdir ? pdir : this.dir
                 }).then((res)=>{
-                    //console.log(pdir,this.dir);
-                    //success
                     if(res.data.status == 'success'){
-                        //console.log(res.data)
                         this.setSource(res.data.data);
 
                         //检测是否在根目录
@@ -190,6 +184,7 @@
                 let headHeight = 108;
 
                 wrap.style.height = (winHeight - headHeight) + "px";
+                
             },
             //上传文件按钮
             uploadFileBtn(){
@@ -295,9 +290,9 @@
                 this.imageData = [];
                 this.videoData = [];
 
-                if(this.source.length == 0){
-                    this.setSource(datas);
-                }
+                /*if(this.source.length == 0){
+                    this.setSource([]);
+                }*/
 
                 //console.log('line271'+this.source)
                     

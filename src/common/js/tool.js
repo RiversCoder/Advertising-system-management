@@ -1,18 +1,45 @@
 
 var tool = {
-    getSelect: (item,clsn,id,record)=>{
+    changeFormat: function(data){
+        var newData = {};
+
+        for(var key in data){
+            newData['file_name'] = data['name'];
+            newData['file_type'] = data['fileType'];
+            newData['download_url'] = data['url'];
+            newData['file_duration'] = data['videoTime'];
+            newData['file_size'] = data['size'];
+            newData['id'] = data['id'];
+            newData['img'] = data['img'];
+        }
+
+        return newData;
+    },
+    getSelect: function(item,clsn,rs,d){
         item.parentNode.classList.toggle(clsn);
 
+        var data = this.lget('file_list_'+rs) ? this.lget('file_list_'+rs) : [];
+        var record = [];
+
         if(item.parentNode.classList.contains(clsn)){
-            record.push(id);
-            record = [...new Set(record)];
+            
+            data.push(this.changeFormat(d))
+            
+            //数组去重复    
+            record = [...new Set(data)];
+
         }else{
-          for(var i=0;i<record.length;i++){
-            if(record[i] == id){
-              record.splice(i,1);
+            for(var i=0;i<data.length;i++){
+                if(data[i].id == d.id){
+                  data.splice(i,1);
+                }
             }
-          }
+            record = data;
         }
+
+        //存入本地
+        this.lset('file_list_'+rs,data);
+        
         return record;
     },
     concatArray: (arr1,arr2)=>{

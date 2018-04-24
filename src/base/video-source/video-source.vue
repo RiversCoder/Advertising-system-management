@@ -33,7 +33,9 @@
 
 
 <script scoped type="text/ecmascript-6">
+
 import {mapGetters, mapMutations, mapActions} from 'vuex';
+
     export default{
         data(){
             return{

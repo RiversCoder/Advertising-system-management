@@ -4,6 +4,8 @@
           <h3 class="column-title">图片</h3>
           <div class="column-content">
                 
+                <p v-if="!images">暂无资源</p>
+
                 <dl class="cc-item" v-for="(item,index) in images" >
                       
                       <dt class="cc-item-previewbox">
