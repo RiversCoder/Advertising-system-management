@@ -37,9 +37,7 @@
             
         },
         created(){
-            /*this.$nextTick(() => {
-              this._initScroll()
-            });*/
+            
         },
         mounted(){
             this.initContainer();

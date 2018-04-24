@@ -11,7 +11,7 @@ const state = {
     model_type_1: {"file_list":[],"time_list":[]},
     model_type_2: {"file_list":[],"time_list":[]},
     model_type_3: {"file_list":[],"time_list":[]},
-    publish:false
+    publish:''
 }
 
 export default state;

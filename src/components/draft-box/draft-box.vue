@@ -106,7 +106,11 @@
                     directorie: shows
                 }).then((res)=>{
                     if(res.data.status == "success"){
-                       console.log(res.data)
+                       this.$message({
+                          message: res.data.message,
+                          type: 'success',
+                          showClose: true
+                        });
                     }
                 })
             },

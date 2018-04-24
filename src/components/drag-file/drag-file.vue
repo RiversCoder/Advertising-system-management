@@ -59,18 +59,11 @@
             //初始化数据
             init(){
               this.selectData = [];
-              for(var i=0;i<this.selectid.length;i++){
-                for(var j=0;j<this.source.length;j++){
-                  if(this.selectid[i] == this.source[j].id){
-                    this.source[j]['order'] = i;
-                    this.selectData.push(this.source[j]);
-                  }
-                }
-              }
-
-              for(var i=0;i<this.selectData.length;i++){
-                this.selectData[i]['order'] = i;
-              }
+              var data = [];
+              
+              //获取当前本地的file_list数据
+              data = tool.lget('file_list_'+this.$route.query.direct);
+              this.selectData = data;
 
               this.setResults(this.selectData);
             },
@@ -175,11 +168,11 @@
                     newArr.push({
                       "img": data[i]['img'],
                       "id" : data[i]['id'],
-                      "file_name": data[i]['name'],
-                      "file_type": data[i]['fileType'],
-                      "download_url": data[i]['url'],
-                      "file_size": data[i]['size'],
-                      "file_duration": data[i]['videoTime']
+                      "file_name": data[i]['file_name'],
+                      "file_type": data[i]['file_type'],
+                      "download_url": data[i]['download_url'],
+                      "file_size": data[i]['file_size'],
+                      "file_duration": data[i]['file_duration']
                     });
                 }
                 //设置素材展示的本地缓存
@@ -193,10 +186,7 @@
 
               //跳转到拖拽面板页面
               this.$router.push({
-                path: '/program-production/work-time/'+this.$route.query.direct/*,
-                query:{
-                  results: this.selectData
-                }*/
+                path: '/program-production/work-time/'+this.$route.query.direct
               });
             }
         },

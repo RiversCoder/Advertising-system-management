@@ -133,20 +133,8 @@
             //下一步
             nextBtn(){
               
-              //获取当前的数据
-              this.fileId = [];
-
-              //获取数据组
-              var boxs = document.getElementsByClassName('cc-item');
               
-              //获取已经存在的触发状态的图片
-              for(var i=0;i<boxs.length;i++){
-                 if(boxs[i].classList.contains('cactive')){
-                   this.fileId.push(boxs[i].dataset.id);
-                 }
-              }
 
-              this.setSelect(this.fileId);
               //跳转到拖拽面板页面
               this.$router.push({path:'order',query:{direct:this.$route.query.direct}})    
             },
@@ -233,7 +221,7 @@
           this.countHeight();
 
           //判断是否已经有数据被选择
-          console.log(tool.lget('file_list_'+this.$route.query.direct));
+          //console.log(tool.lget('file_list_'+this.$route.query.direct));
           
           if(tool.lget('file_list_'+this.$route.query.direct)){
             this.existData = tool.lget('file_list_'+this.$route.query.direct);

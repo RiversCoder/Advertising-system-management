@@ -35,7 +35,10 @@
         methods:{
            draw(){
 
-                if(this.onOff){
+                //检测本地是否有值
+                //tool.checkTimelists();
+                console.log('重绘制')
+                if(true){
                     
                     //1. 绘制工作日时间
                     this.drawWorkDay('#446FCB','time_list_on');
@@ -45,15 +48,17 @@
 
                     //3. 绘制全屏
                     this.drawWorkDay('#F58E1F','time_list_full');
-                
                 }
            },
            drawWorkDay(color,storageName){
                 
                 //1. 获取数据
                 if(!tool.lget(storageName)){
+
+                    //清除当前颜色色块
                     return;
                 }
+
                 var data = tool.lget(storageName);
                 var arr = tool.handleTime(data);
                 
@@ -61,23 +66,21 @@
                 var harr = tool.countPercent(144,arr);
                 
                 //3. 生成色块
-                tool.createColorblock('child-lists-wrap','cwb',harr,color);
-           },
+                tool.createColorblock('child-lists-wrap','cwb',harr,color,storageName);
+           }/*,
            ...mapMutations({
             setPublish:'publish'
-           })
+           })*/
         },
         computed:{
             ...mapGetters(['publish'])
         },  
         watch:{
-            onOff: {
-                handler(ne,ol){
-                    if(ne === true){
-                        this.draw();
-                    }
-                },
-                deep: true
+            publish: function(newv,oldv){
+                console.log(newv);
+                if(newv){
+                    this.draw();
+                }
             }
         },
         created(){

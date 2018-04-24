@@ -17,8 +17,11 @@
                     </div>
                     <div class="add-source-btn" ref="addSourceBox" @click="addFileBtn">
                     </div>
+                </div>
 
-
+                <div class="infoTips">
+                    <h4>建议视频图片尺寸比例：16：9</h4>
+                    <h3>（有图片才显示）图片默认展示时间为15s</h3>
                 </div>
             </div>
             <div class="tbox tbox2" ref="timeListBox">
@@ -63,7 +66,7 @@
 <script>
     
     import tool from 'common/js/tool';
-    import BScroll from 'better-scroll';
+    //import BScroll from 'better-scroll';
     import {mapGetters, mapMutations, mapActions} from 'vuex';
 
 
@@ -85,12 +88,12 @@
             }
         },
         methods:{
-            //初始化绑定 better-scroll 
+            /*//初始化绑定 better-scroll 
             _initScroll() {
               this.menuScroll = new BScroll(this.$refs.timeListBox, {
                 click: true
               })
-            },
+            },*/
             //初始化已经选择的素材和时间
             init(){
                 var box = this.$refs.imgWrap;
@@ -145,6 +148,8 @@
                 this.setTimes.push(tool.countTimes(this.value1,this.value2,this.checkList));
 
                 tool.lset('time_list_full',this.setTimes);
+
+                this.setPublish(Math.random());
             },
             //删除时间项
             deleteTime(index){
@@ -154,7 +159,11 @@
                   message: '删除成功!',
                   type: 'success'
                 });
-            }
+                this.setPublish(Math.random());
+            },
+            ...mapMutations({
+                setPublish: 'publish'
+            })
         },
         compouted:{
             ...mapGetters(['results','model_type_1'])
@@ -178,9 +187,9 @@
             this.init();
         },
         created(){
-            this.$nextTick(() => {
+           /* this.$nextTick(() => {
               this._initScroll()
-            });
+            });*/
         },
         components:{
         }
@@ -218,6 +227,12 @@
             border:4px dashed #DEDEDE;overflow:hidden;
         .tbox2
             border:1px solid #DEDEDE;border-left:0;height:398px;overflow:hidden;
+        .infoTips
+            width:100%;position:absolute;height:55px;top:316px;
+            h4
+                font-size:18px;width:100%;hh(28px);text-align:center;color:#999;
+             h3
+                font-size:17px;width:100%;hh(27px);text-align:center;color:#ED1C24;    
         .add-source-wrap
             wh(253px,152px);position:absolute;bottom:0;left:0;overflow:hidden; 
             .imgWrap

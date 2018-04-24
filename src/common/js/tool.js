@@ -233,14 +233,14 @@ var tool = {
         return newArr;
     },
     //创建颜色块
-    createColorblock(pclsn,clsn,data,color){
+    createColorblock(pclsn,clsn,data,color,storageName){
         var p = document.getElementsByClassName(pclsn);
-        console.log(data)
+        
         for(var i=0;i<data.length;i++){
             for(var j=0;j<p.length;j++){
-                console.log()
+                p[j].innerHTML = '';
                 if(data[i][2].charAt(j) == 1){
-                    p[j].innerHTML += `<span class="cwb" style="display:block;width:100%;position:absolute;left:0;top:${data[i][0]}px;height:${data[i][1]}px;background-color:${color};"></span>`;
+                    p[j].innerHTML += `<span class="cwb" data-storage="${storageName}" style="display:block;width:100%;position:absolute;left:0;top:${data[i][0]}px;height:${data[i][1]}px;background-color:${color};"></span>`;
                 }
             }
         }
@@ -340,6 +340,20 @@ var tool = {
         };
 
         return obj
+    },
+    checkTimelists: function(){
+        var t1 = this.lget('time_list_on');
+        var t2 = this.lget('time_list_off');
+        var t3 = this.lget('time_list_full');
+
+        if(t1.length>0 || t2.length>0 || t3.length>0){
+            return true;
+        }else{
+            return false;
+
+            //清空所有色块
+
+        }
     }
 };
 

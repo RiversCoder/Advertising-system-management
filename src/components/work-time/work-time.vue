@@ -22,12 +22,12 @@
 
         
         <!-- 加载工作添加计划 -->
-        <router-view ></router-view>
+        <router-view></router-view>
         
         
         <h3 class="column-title column-title-2">节目总预览</h3>    
         
-        <div class="previewBox">
+        <div class="previewBox" >
             <div class="pbox tubiaobox">
                 
                 <!-- 说明 -->
@@ -44,14 +44,14 @@
                 </div>
                 
                 <!-- 收藏、上线按钮 -->
-                <div class="collectionBtn">
+                <div class="collectionBtn" style="display:none;">
                     <el-button plain class="rbtn resetBtn" @click="reset">重置</el-button>
                     <el-button plain class="rbtn colectBtn" @click="goup">收藏</el-button>
                     <el-button plain class="rbtn uploadFile" @click="entry">上线</el-button>
                 </div>    
                 
             </div>
-            <div class="pbox gamebox">
+            <div class="pbox gamebox" style="display:none;">
                 <div class="gamebox-header">
                     <span class="gh-title">游戏开关</span>
                     <el-switch

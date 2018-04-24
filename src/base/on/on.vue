@@ -145,6 +145,8 @@
                 this.setTimes.push(tool.countTimes(this.value1,this.value2,this.checkList));
 
                 tool.lset('time_list_on',this.setTimes);
+
+                this.setPublish(Math.random());
             },
             //删除时间项
             deleteTime(index){
@@ -154,7 +156,11 @@
                   message: '删除成功!',
                   type: 'success'
                 });
-            }
+                this.setPublish(Math.random());
+            },
+           ...mapMutations({
+            setPublish:'publish'
+           })
         },
         compouted:{
             ...mapGetters(['results','model_type_1'])
