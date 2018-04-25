@@ -152,9 +152,9 @@ var tool = {
     //将字符串转换成16进制
     stringToHex: function(str){
 　　　　 var shi = parseInt(str,2);
-        var shiliu = shi.toString(16);
+        //var shiliu = shi.toString(16);
 
-        return shiliu;
+        return shi;
 　　},
     //设置本地存储对象
     lset: function(name,value){
@@ -199,7 +199,6 @@ var tool = {
         }
 
         return initWeekArr.join('');
-
     },
     //把时间换算成秒
     changeTimetoSecond(time){
@@ -212,13 +211,13 @@ var tool = {
     {   
 
         var os = [];
-        var ms = [];
-       
-        data.forEach((item)=>{
-           var num = parseInt(item.weeks,16);
-           var str = num.toString(2);
-           ms.push([item.start,item.duration,this.addZoomBefore(str,7)]);
-        })
+        var ms = []; 
+
+        //注意： 进制处理
+        for(var i=0;i<data.length;i++){
+           var str = data[i].weeks.toString(2);
+           ms.push([data[i].start,data[i].duration,this.addZoomBefore(str,7)]);
+        }
 
         return ms;
     },
@@ -258,7 +257,6 @@ var tool = {
         
         for(var i=0;i<data.length;i++){
             for(var j=0;j<p.length;j++){
-                //p[j].innerHTML = '';
                 if(data[i][2].charAt(j) == 1){
                     p[j].innerHTML += `<span class="cwb" data-storage="${storageName}" style="display:block;width:100%;position:absolute;left:0;top:${data[i][0]}px;height:${data[i][1]}px;background-color:${color};"></span>`;
                 }
@@ -297,7 +295,7 @@ var tool = {
             "date": tool.formatDate(new Date(),"yyyy-MM-dd hh:mm:ss"),
             "username": username,
             "program":[],
-            "url_prefix": "https://skylander-dbs.oss-cn-hongkong.aliyuncs.com/user-dir/"
+            "url_prefix": "https://skylander-dbs.oss-cn-hongkong.aliyuncs.com"
         }
 
         var program = {};
@@ -336,16 +334,19 @@ var tool = {
         var obj = {};
 
         if(!data || !tdata || data.length == 0 || tdata.length == 0){
-            return false;
+            return {
+                file_list:[],
+                time_list:[]
+            };
         }
 
         for(var i=0;i<data.length;i++){
             file_list.push({/*
                   "file_name":data[i].file_name,*/
                   "file_type":data[i].file_type,
-                  "download_url": tool.replaceUrl(data[i].download_url,'https://skylander-dbs.oss-cn-hongkong.aliyuncs.com/user-dir/'),
+                  "download_url": tool.replaceUrl(data[i].download_url,'https://skylander-dbs.oss-cn-hongkong.aliyuncs.com'),
                   "file_size":data[i].file_size,
-                  "file_duration":data[i].file_duration
+                  "file_duration":parseInt(data[i].file_duration) ? parseInt(data[i].file_duration) : 15
             })
         }
 
@@ -380,11 +381,11 @@ var tool = {
         }
     },
     //重绘
-    reDraws: function(pcls,cls){
+    reDraws: function(pcls){
         //删除以前所有的数据
         //重新绘制
         var parents = document.getElementsByClassName(pcls);
-        var cls = document.getElementsByClassName(cls);
+        //var cls = document.getElementsByClassName(cls);
 
         for(var i=0;i<parents.length;i++){
             parents[i].innerHTML = '';
@@ -398,15 +399,20 @@ var tool = {
         var alls = [];
 
         for(var i=0;i<locals.length;i++){
-            var data = tool.lget(locals[i]);
-            var arr = tool.handleTime(data);
 
-            var height = 144;
+            if(!!tool.lget(locals[i]) && tool.lget(locals[i]).length>0){
+                var data = tool.lget(locals[i]);
+                var arr = tool.handleTime(data);
 
-            //2. 换算比例
-            var harr = tool.countPercent(height,arr);
+                var height = 144;
 
-            arrs.push(harr);
+                //2. 换算比例
+                var harr = tool.countPercent(height,arr);
+
+                arrs.push(harr);
+            }else{
+                continue;
+            } 
         }
 
         for(var i=0;i<arrs.length;i++)
@@ -432,6 +438,7 @@ var tool = {
             'fri': [],
             'sat': []
         };
+        var arr = new Array();
 
         var key = 0;
         for(var i=0;i<alls.length;i++){
@@ -439,6 +446,7 @@ var tool = {
            for(var n=0;n<timelines.length;n++){
                 if(timelines[n] == 1){
                     day = weeks[n];
+                    arr = new Array();
                     ts[day].push([alls[i][0],alls[i][1]]);
                 }
            }
@@ -491,11 +499,9 @@ var tool = {
 
         for(var key in data){
            for(var i=0;i<data[key].length;i++){
-                p[key].innerHTML += `<span class="cwb" style="display:block;width:100%;position:absolute;left:0;top:${data[key][i][0]}px;height:${data[key][i][1]}px;background-color:red;"></span>`;
+                p[key].innerHTML += `<span class="cwb" style="display:block;width:100%;position:absolute;left:0;top:${data[key][i][0]}px;height:${data[key][i][1]}px;background-color:red;z-index:10;"></span>`;
            }
         }
-
-      
 
     },
     //一对坐标对比算法

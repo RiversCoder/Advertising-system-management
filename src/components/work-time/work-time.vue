@@ -157,13 +157,13 @@
                 var username = '';
                 var jsons = {};
                 var baseConfig = {};
-                console.log('1231');
+                
                 this.$axios.post(this.get_user).then((res)=>{
                     username = res.data.data.name;
 
                     //2. 组装数据列表
                     jsons = tool.packageData(username);
-
+                    
                     if(!jsons){
                         this.$message({
                           showClose: true,

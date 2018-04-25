@@ -39,10 +39,10 @@
                 //tool.checkTimelists();
                 //console.log('重新绘制');
                 //清除所有 重绘
-                tool.reDraws('child-lists-wrap','cwb');
-
+                tool.reDraws('child-lists-wrap');
+                
                 if(this.checkStorage()){
-                    
+                   
                     //1. 绘制工作日时间
                     this.drawWorkDay('#446FCB','time_list_on');
                     
@@ -54,7 +54,7 @@
                 }
            },
            checkStorage(){
-                if(tool.lget('time_list_on').length > 0 || tool.lget('time_list_off').length > 0 || tool.lget('time_list_full').length > 0){
+                if((tool.lget('time_list_on')&&tool.lget('time_list_on').length > 0) || (tool.lget('time_list_off')&&tool.lget('time_list_off').length > 0) || (tool.lget('time_list_full')&&tool.lget('time_list_full').length > 0)){
                     return true;
                 }else{
                     return false
@@ -62,17 +62,22 @@
            },
            drawWorkDay(color,storageName){
                 
+                //console.log(tool.lget(storageName))
+
                 //1. 获取数据
-                if(!tool.lget(storageName)){
+                if(!!tool.lget(storageName)&&tool.lget(storageName).length>0){
 
                     //清除当前颜色色块
-                    //tool.clearColorBlock(storageName);
-                    
-                    return;
+                    //tool.clearColorBlock(storageName); 
+                }else{
+                    return false;
                 }
 
                 var data = tool.lget(storageName);
+                //console.log(data);
+
                 var arr = tool.handleTime(data);
+                //console.log(arr);
                 var height = 144;
 
                 //2. 换算比例
@@ -80,10 +85,10 @@
                 
                 //3. 生成色块
                 tool.createColorblock('child-lists-wrap','cwb',harr,color,storageName);
-
+                
+                //return;
                 //绘制冲突的时间段
                 tool.drawRedConflict();
-
            }
         },
         computed:{
@@ -91,6 +96,7 @@
         },  
         watch:{
             publish: function(newv,oldv){
+                console.log('publish:'+newv);
                 if(newv){
                     this.draw();
                 }
@@ -121,9 +127,9 @@
             .cwb
                 display:block;width:100%;position:absolute;left:0;
         .child-lists
-            list-style:none;wh(55px,143px);position:absolute;
+            list-style:none;wh(55px,143px);position:absolute;z-index:11;
             .citem
-                width:100%;height:12px;box0szing:border-box;border-bottom:1px solid #fff;
+                width:100%;height:12px;box-szing:border-box;border-bottom:1px solid #fff;
         .ctitle
             display:block;width:100%;font-size:18px;color:#333;text-align:center;margin-top:8px;position:absolute;bottom:0;                             
 </style>

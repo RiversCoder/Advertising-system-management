@@ -184,22 +184,22 @@
 
                 if(this.render_success){
                     timer = setTimeout(()=>{
-                    this.existData = tool.lget('file_list_'+this.$route.query.direct);
-                    boxs = document.getElementsByClassName('cc-item');
-                    //清除所有
-                    for(var m=0;m<boxs.length;m++){
-                      boxs[m].classList.remove('cactive');
-                    }
-                    //添加当前
-                    for(var i=0;i<this.existData.length;i++){
-                      for(var j=0;j<boxs.length;j++){
-                        if(this.existData[i]['id'] == boxs[j].dataset.id){
-                          boxs[j].classList.add('cactive');
+                      this.existData = tool.lget('file_list_'+this.$route.query.direct);
+                      boxs = document.getElementsByClassName('cc-item');
+                      //清除所有
+                      for(var m=0;m<boxs.length;m++){
+                        boxs[m].classList.remove('cactive');
+                      }
+                      //添加当前
+                      for(var i=0;i<this.existData.length;i++){
+                        for(var j=0;j<boxs.length;j++){
+                          if(this.existData[i]['id'] == boxs[j].dataset.id){
+                            boxs[j].classList.add('cactive');
+                          }
                         }
                       }
-                    }
-                    clearTimeout(timer);
-                  },200);
+                      clearTimeout(timer);
+                    },500);
                 }
             }
         },

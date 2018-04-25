@@ -104,8 +104,6 @@
                     }
                 }
 
-
-
                 if(idArr.length > 1){
                     this.$message({
                       message: '不能同时上线多个节目,请指定一个节目上线!',
