@@ -37,8 +37,11 @@
 
                 //检测本地是否有值
                 //tool.checkTimelists();
-                console.log('重绘制')
-                if(true){
+                //console.log('重新绘制');
+                //清除所有 重绘
+                tool.reDraws('child-lists-wrap','cwb');
+
+                if(this.checkStorage()){
                     
                     //1. 绘制工作日时间
                     this.drawWorkDay('#446FCB','time_list_on');
@@ -50,34 +53,44 @@
                     this.drawWorkDay('#F58E1F','time_list_full');
                 }
            },
+           checkStorage(){
+                if(tool.lget('time_list_on').length > 0 || tool.lget('time_list_off').length > 0 || tool.lget('time_list_full').length > 0){
+                    return true;
+                }else{
+                    return false
+                }
+           },
            drawWorkDay(color,storageName){
                 
                 //1. 获取数据
                 if(!tool.lget(storageName)){
 
                     //清除当前颜色色块
+                    //tool.clearColorBlock(storageName);
+                    
                     return;
                 }
 
                 var data = tool.lget(storageName);
                 var arr = tool.handleTime(data);
-                
+                var height = 144;
+
                 //2. 换算比例
-                var harr = tool.countPercent(144,arr);
+                var harr = tool.countPercent(height,arr);
                 
                 //3. 生成色块
                 tool.createColorblock('child-lists-wrap','cwb',harr,color,storageName);
-           }/*,
-           ...mapMutations({
-            setPublish:'publish'
-           })*/
+
+                //绘制冲突的时间段
+                tool.drawRedConflict();
+
+           }
         },
         computed:{
             ...mapGetters(['publish'])
         },  
         watch:{
             publish: function(newv,oldv){
-                console.log(newv);
                 if(newv){
                     this.draw();
                 }

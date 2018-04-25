@@ -44,14 +44,14 @@
                 </div>
                 
                 <!-- 收藏、上线按钮 -->
-                <div class="collectionBtn" style="display:none;">
+                <div class="collectionBtn">
                     <el-button plain class="rbtn resetBtn" @click="reset">重置</el-button>
                     <el-button plain class="rbtn colectBtn" @click="goup">收藏</el-button>
                     <el-button plain class="rbtn uploadFile" @click="entry">上线</el-button>
                 </div>    
                 
             </div>
-            <div class="pbox gamebox" style="display:none;">
+            <div class="pbox gamebox" >
                 <div class="gamebox-header">
                     <span class="gh-title">游戏开关</span>
                     <el-switch
@@ -81,6 +81,166 @@
 </div>
 </template>
 
+
+
+
+<script scoped >
+    import Histogram from '@/base/histogram/histogram'
+    import On from '@/base/on/on'
+    import tool from 'common/js/tool'
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
+
+    export default{
+        data(){
+            return {
+                gameOnoff: false,
+                new_program_url: this.$baseUrl+'/api/createShow',
+                entry_program_url: this.$baseUrl+'/api/pushShow',
+                get_user: this.$baseUrl+'/api/user',
+                showLines: true,
+                gamearea: 'https://riverscoder.github.io/the-hamster-game/bin/index.html',
+                game_url: this.$baseUrl+'/api/gameUpdate',
+                selectValue: '春天'
+            }
+        },
+        methods:{
+            addFileBtn(){
+                this.$router.push({'path':'/select'})
+            },
+            tabClick(){
+
+            },
+            //点击收藏
+            goup(){
+
+                var config = {
+                    showName: tool.randomString(),
+                    deviceName: 'dbs01',
+                    isPush: 0
+                };
+
+                var url =  this.new_program_url;     
+                this.requestProgram(url,config);
+            },
+            //点击上线节目
+            entry(){
+
+                //1. 检测是否满足上线的条件
+                //2. 上线
+                //3. 上线后清除当前重置所有本地数据
+
+                var url =  this.entry_program_url;
+                this.requestProgram(url);
+            },
+            //点击重置节目
+            reset(){
+               
+                //1. 隐藏图表数据
+                localStorage.setItem('showLines',false);
+                this.showLines = false;
+
+                //2. 清除当前所有时间list和文件list
+                
+                tool.lset('file_list_on',[]);
+                tool.lset('time_list_on',[]);
+                tool.lset('file_list_off',[]);
+                tool.lset('time_list_off',[]);
+                tool.lset('file_list_full',[]);
+                tool.lset('time_list_full',[]);
+
+                //3. 刷新页面 重新渲染数据
+                location.reload(); 
+            },
+            requestProgram(url,config){
+                
+                //1.获取当前的用户名
+                var username = '';
+                var jsons = {};
+                var baseConfig = {};
+
+                this.$axios.post(this.get_user).then((res)=>{
+                    username = res.data.name;
+
+                    console.log(username)
+
+                    //2. 组装数据列表
+                    jsons = tool.packageData(username);
+                    
+
+                    if(!jsons){
+                        this.$message({
+                          showClose: true,
+                          message: '请编辑节目后再上线！',
+                          type: 'warning'
+                        });
+
+                        return;
+                    }
+
+                    //组装请求数据
+                    baseConfig = {
+                        directorie: JSON.stringify(jsons)
+                    };
+
+                    if(config){
+                       Object.assign(baseConfig,config); 
+                    }
+
+                    //3. 节目请求
+                    this.$axios.post(url,baseConfig).then((res)=>{
+                        
+                        if(!config){
+                            this.showLines = true
+                            localStorage.setItem('showLines',this.showLines);
+                        }
+
+                        this.$message({
+                          showClose: true,
+                          message: res.data.message,
+                          type: 'success'
+                        });
+                    })
+                })  
+            },
+            //请求开始游戏
+            requestGame(onoff){
+                var value = this.gamearea;
+                var sw = onoff ? 1 : 0;
+
+                this.$axios.post(this.game_url,{
+                    url: value,
+                    switch: sw
+                }).then((res)=>{
+                    this.$message({
+                      showClose: true,
+                      message: res.data.message,
+                      type: 'success'
+                    });
+                })
+
+            },
+            ...mapMutations({
+                setPublish:'publish'
+            })
+        },
+        watch:{
+            gameOnoff:{
+                handler(nv,ov){
+                    this.requestGame(nv);
+                },
+                deep: true
+            }
+        },
+        created(){
+           //this.showLines = eval(localStorage.getItem('showLines'));
+           // /console.log(this.showLines)
+        },
+        components:{
+            Histogram,
+            On
+        }
+    }
+</script>
 
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
@@ -182,153 +342,3 @@
         .inputGameBox
             display:block;wh(304px,86px);padding:3px 5px;bgColor(#F4F4F4);border-radius:10px;font-size:12px;line-height:14px;color:#999;margin:0 auto;margin-top:10px;                                               
 </style>
-
-<script scoped >
-    import Histogram from '@/base/histogram/histogram'
-    import On from '@/base/on/on'
-    import tool from 'common/js/tool'
-    import {mapGetters, mapMutations, mapActions} from 'vuex';
-
-    export default{
-        data(){
-            return {
-                gameOnoff: false,
-                new_program_url: this.$baseUrl+'/api/createShow',
-                entry_program_url: this.$baseUrl+'/api/pushShow',
-                get_user: this.$baseUrl+'/api/user',
-                showLines: true,
-                gamearea: 'https://riverscoder.github.io/the-hamster-game/bin/index.html',
-                game_url: this.$baseUrl+'/api/gameUpdate',
-                selectValue: '春天'
-            }
-        },
-        methods:{
-            addFileBtn(){
-                this.$router.push({'path':'/select'})
-            },
-            tabClick(){
-
-            },
-            //点击收藏
-            goup(){
-
-                var config = {
-                    showName: tool.randomString(),
-                    deviceName: 'dbs01',
-                    isPush: 0
-                };
-
-                var url =  this.new_program_url;     
-                this.requestProgram(url,config);
-            },
-            //点击上线节目
-            entry(){
-                var url =  this.entry_program_url;
-                this.requestProgram(url);
-            },
-            //点击重置节目
-            reset(){
-                //1. 隐藏图表数据
-                localStorage.setItem('showLines',false);
-                this.showLines = false;
-
-                //2. 清除当前所有时间list和文件list
-                
-                tool.lset('file_list_on',[]);
-                tool.lset('time_list_on',[]);
-                tool.lset('file_list_off',[]);
-                tool.lset('time_list_off',[]);
-                tool.lset('file_list_full',[]);
-                tool.lset('time_list_full',[]);
-
-                //3. 刷新页面 重新渲染数据
-                location.reload(); 
-            },
-            requestProgram(url,config){
-                
-                //1.获取当前的用户名
-                var username = '';
-                var jsons = {};
-                var baseConfig = {};
-
-                this.$axios.post(this.get_user).then((res)=>{
-                    username = res.data.name;
-
-                    //2. 组装数据列表
-                    jsons = tool.packageData(username);
-                    
-
-                    if(!jsons){
-                        this.$message({
-                          showClose: true,
-                          message: '请编辑节目后再上线！',
-                          type: 'warning'
-                        });
-
-                        return;
-                    }
-
-                    //组装请求数据
-                    baseConfig = {
-                        directorie: JSON.stringify(jsons)
-                    };
-
-                    if(config){
-                       Object.assign(baseConfig,config); 
-                    }
-
-                    //3. 节目请求
-                    this.$axios.post(url,baseConfig).then((res)=>{
-                        
-                        if(!config){
-                            this.showLines = true
-                            localStorage.setItem('showLines',this.showLines);
-                        }
-
-                        this.$message({
-                          showClose: true,
-                          message: res.data.message,
-                          type: 'success'
-                        });
-                    })
-                })  
-            },
-            //请求开始游戏
-            requestGame(onoff){
-                var value = this.gamearea;
-                var sw = onoff ? 1 : 0;
-
-                this.$axios.post(this.game_url,{
-                    url: value,
-                    switch: sw
-                }).then((res)=>{
-                    this.$message({
-                      showClose: true,
-                      message: res.data.message,
-                      type: 'success'
-                    });
-                })
-
-            },
-            ...mapMutations({
-                setPublish:'publish'
-            })
-        },
-        watch:{
-            gameOnoff:{
-                handler(nv,ov){
-                    this.requestGame(nv);
-                },
-                deep: true
-            }
-        },
-        created(){
-           this.showLines = eval(localStorage.getItem('showLines'));
-           console.log(this.showLines)
-        },
-        components:{
-            Histogram,
-            On
-        }
-    }
-</script>

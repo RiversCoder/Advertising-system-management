@@ -6,7 +6,7 @@
          <div v-if="folderExist">
             <h3 class="column-title" v-show="showFolderTitle">文件夹</h3>
             <div class="column-content" >
-                <dl class="cc-item" v-for="(item,index) in folderSources" :data-dir="item.dir">
+                <dl class="cc-item" v-for="(item,index) in folderSources" :data-dir="item.dir" :data-id="item.id">
                     <dt class="cc-item-previewbox cc-item-folder-previewbox cc-i-active">
                         <span class="vcip-icon vcip-folder-icon"></span>
                         <span class="cip-name cip-folder-name">{{item.name}}</span>

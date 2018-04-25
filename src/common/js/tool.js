@@ -191,6 +191,7 @@ var tool = {
     //处理时间成数组返回
     handleTime: function(data)
     {   
+
         var os = [];
         var ms = [];
        
@@ -238,7 +239,7 @@ var tool = {
         
         for(var i=0;i<data.length;i++){
             for(var j=0;j<p.length;j++){
-                p[j].innerHTML = '';
+                //p[j].innerHTML = '';
                 if(data[i][2].charAt(j) == 1){
                     p[j].innerHTML += `<span class="cwb" data-storage="${storageName}" style="display:block;width:100%;position:absolute;left:0;top:${data[i][0]}px;height:${data[i][1]}px;background-color:${color};"></span>`;
                 }
@@ -263,6 +264,7 @@ var tool = {
                 if(i == arr1.length-1){
                     return false;
                 }
+                
             }else{
                 return true;
             }
@@ -277,7 +279,9 @@ var tool = {
             "username": username,
             "program":[]
         }
+
         
+
         var program = {};
         var model_type_1 = {}; 
         var model_type_2 = {}; 
@@ -306,6 +310,7 @@ var tool = {
         return programs;
     },
     cProgamWorkStatus(sfn,stn){
+
         var data  = this.lget(sfn);
         var tdata = this.lget(stn);
         var file_list = [];
@@ -353,6 +358,165 @@ var tool = {
 
             //清空所有色块
 
+        }
+    },
+    //重绘
+    reDraws: function(pcls,cls){
+        //删除以前所有的数据
+        //重新绘制
+        var parents = document.getElementsByClassName(pcls);
+        var cls = document.getElementsByClassName(cls);
+
+        for(var i=0;i<parents.length;i++){
+            parents[i].innerHTML = '';
+        }
+        
+    },
+    drawRedConflict: function(){
+
+        var locals = ['time_list_on','time_list_off','time_list_full'];
+        var arrs = [];
+        var alls = [];
+
+        for(var i=0;i<locals.length;i++){
+            var data = tool.lget(locals[i]);
+            var arr = tool.handleTime(data);
+
+            var height = 144;
+
+            //2. 换算比例
+            var harr = tool.countPercent(height,arr);
+
+            arrs.push(harr);
+        }
+
+        for(var i=0;i<arrs.length;i++)
+        {
+            for(var j=0;j<arrs[i].length;j++){
+                alls.push(arrs[i][j]);
+            }
+        }  
+        
+        this.countWeeksTimes(alls);
+    },
+    //统计每个星期对应的所有时间段
+    countWeeksTimes: function(alls){
+        var weeks = ['sun','mon','tue','web','thr','fri','sat'];
+        var day = '';
+        var timelines = '';
+        var ts = {
+            'sun': [],
+            'mon': [],
+            'tue': [],
+            'web': [],
+            'thr': [],
+            'fri': [],
+            'sat': []
+        };
+
+        var key = 0;
+        for(var i=0;i<alls.length;i++){
+           timelines = alls[i][2];
+           for(var n=0;n<timelines.length;n++){
+                if(timelines[n] == 1){
+                    day = weeks[n];
+                    ts[day].push([alls[i][0],alls[i][1]]);
+                }
+           }
+        }
+
+        this.getRedBoxArray(ts);
+    },
+    getRedBoxArray(data){
+        var datas = data;
+        var arr = [[12,43],[22,10]];
+        var rArr = [];
+        var newPos = [];
+        var redboxs = {
+            '0' : [],
+            '1' : [],
+            '2' : [],
+            '3' : [],
+            '4' : [],
+            '5' : [],
+            '6' : []
+        }
+        var index = 0;
+        var cv = null;
+
+        for(var key in datas){
+            //获取一周中每一天的新坐标
+            if(datas[key].length>1){
+                for(var i=0;i<datas[key].length;i++){
+                    cv = datas[key][i];
+                    for(var j=i+1;j<datas[key].length;j++){
+                        //获取红色区块坐标二位数组
+                        if(this.getRepeatBox(datas[key][j],cv)){
+                            redboxs[index].push(this.getRepeatBox(datas[key][j],cv))
+                        }
+                    }
+                }
+            }
+
+            index++;
+        }
+
+        //绘制红色区块
+        this.drawRedBox(redboxs);
+    },
+    drawRedBox(data){
+        //console.log(data[0]);
+
+        var p = document.getElementsByClassName('child-lists-wrap');
+        
+
+        for(var key in data){
+           for(var i=0;i<data[key].length;i++){
+                p[key].innerHTML += `<span class="cwb" style="display:block;width:100%;position:absolute;left:0;top:${data[key][i][0]}px;height:${data[key][i][1]}px;background-color:red;"></span>`;
+           }
+        }
+
+      
+
+    },
+    //一对坐标对比算法
+    getRepeatBox(arr1,arr2){
+        var s1 = arr1[0];
+        var e1 = s1 + arr1[1];
+
+        var s2 = arr2[0];
+        var e2 = s2 + arr2[1];
+
+        var ns = 0;
+        var ne = 0;
+
+        //检测是否重叠
+        //1. 如不不重叠
+        if(e2 <= s1 || s2 >= e1){
+            return false;
+        }else{
+            //1. 完全外包裹重叠
+            if(s1>s2 && e1<e2){
+                ns = s1;
+                ne = e1;
+            }
+            //2.完全内包裹重叠
+            if(s1<s2 && e2<e1){
+                ns = s2;
+                ne = e2;
+            }
+            //3. 上半部分重叠
+            if(s2<s1 && e2>s1 && e2<e1){
+                ns = s1;
+                ne = e2;
+            }
+            //4. 下半部分重叠
+            if(e2>e1 && s2>s1 && s2<e1){
+                ns = s2;
+                ne = e1;
+            }
+
+            return [ns,ne-ns];  
         }
     }
 };

@@ -53,9 +53,9 @@
             },
             //初始化草稿箱数据
             initProgramData(){
+                this.folderDatas = [];
                 this.$axios.post(this.get_drap_box_url).then((res)=>{
                     if(res.data.status == "success"){
-                        console.log(res.data.data)
                         for(var i=0;i<res.data.data.length;i++){
                             this.folderDatas.push({
                                 'id': res.data.data[i]['id'],
@@ -63,6 +63,11 @@
                                 'showContent': res.data.data[i]['showContent']
                             });
                         }
+
+                        setTimeout(()=>{
+                            //绑定删除事件
+                            this.deletePrograms();
+                        },300)
                     }
                 })
             },
@@ -70,12 +75,18 @@
             deletePrograms(){
                 var items = document.getElementsByClassName('cc-item');
                 var This = this;
+                console.log(items);
                 for(var i=0;i<items.length;i++){
+
                     items[i].onclick = function(ev){
+
+                        for(var j=0;j<items.length;j++){
+                            items[j].classList.remove('cactive');
+                        }
+
                         this.classList.toggle('cactive');
                     }
                 }
-
             },
             //上线节目请求
             goupRequest(){
@@ -124,18 +135,26 @@
                 var idArr = [];
                 for(var i=0;i<items.length;i++){
                     if(items[i].classList.contains('cactive')){
-                        idArr.push(items[i].dataset.id);
+                        
+                        this.$axios.post(this.delete_drap_box_url,{
+                            'showId': items[i].dataset.id
+                        }).then((res)=>{
+                            if(res.data.status == "success"){
+                               this.$message({
+                                  message: res.data.message,
+                                  type: 'success',
+                                  showClose: true
+                                });
+
+                               //重新加载数据！
+                               this.initProgramData();
+                            }
+                        })
+                        break;
                     }
                 }
 
-                this.$axios.post(this.delete_drap_box_url,{
-                    'show_id': 22
-                }).then((res)=>{
-                    console.log(res);
-                    if(res.data.status == "success"){
-                       console.log(res.data)
-                    }
-                })
+                
             },
             initScrollHeight(){
                 
@@ -150,7 +169,7 @@
             this.initScrollHeight();
             setTimeout(()=>{
                 this.deletePrograms();
-            },500)
+            },300)
         },
         created(){
             this.$nextTick(() => {

@@ -23,8 +23,8 @@
             <div class="cwrap" ref="cwrap">
                 <div>
                   <list-view @freshPage="freshData" :folderExist="true" :folderSources="folderData"></list-view> 
-                  <list-view :rs="this.$route.query.direct"  :videoExist="true" :videoSources="videoData"></list-view>
-                  <list-view :rs="this.$route.query.direct"  :imageExist="true" :imageSources="imageData"></list-view>
+                  <list-view :rs="$route.query.direct"  :videoExist="true" :videoSources="videoData"></list-view>
+                  <list-view :rs="$route.query.direct"  :imageExist="true" :imageSources="imageData"></list-view>
                </div>
             </div>
       </el-main>
@@ -80,7 +80,7 @@
                         //获取当前目录下的数据
                         this.setSource(res.data.data);
 
-                        //检测是否在根目录
+                        //检测是否在根目录 显示隐藏返回上一级按钮
                         this.checkDir();
 
                         //分配数据
@@ -89,7 +89,7 @@
                         //初始化被选择的数据
                         this.initSelectData();
 
-                        this.render_success = true;
+                        this.render_success = Math.random();
 
                     }else{
                         this.$message({
@@ -128,13 +128,13 @@
             },
             //上一步
             lastBtn(){
+
+              //当前页面直接后退
+
               this.$router.back(-1);
             },
             //下一步
             nextBtn(){
-              
-              
-
               //跳转到拖拽面板页面
               this.$router.push({path:'order',query:{direct:this.$route.query.direct}})    
             },
@@ -165,7 +165,7 @@
             //重新加载数据
             freshData(pdir){
               //保存当前的
-
+              
               this.initSources(pdir);
               this.dir = pdir;
             },
@@ -179,29 +179,33 @@
             },
             //初始化已经被选中的数据
             initSelectData(){
-                var boxs = document.getElementsByClassName('cc-item');
+                var boxs = null;
                 var timer = null;
 
                 if(this.render_success){
                     timer = setTimeout(()=>{
-                      for(var i=0;i<this.existData.length;i++){
-                        for(var j=0;j<boxs.length;j++){
-                          if(this.existData[i]['id'] == boxs[j].dataset.id){
-                            boxs[j].classList.add('cactive');
-                          }
+                    this.existData = tool.lget('file_list_'+this.$route.query.direct);
+                    boxs = document.getElementsByClassName('cc-item');
+                    //清除所有
+                    for(var m=0;m<boxs.length;m++){
+                      boxs[m].classList.remove('cactive');
+                    }
+                    //添加当前
+                    for(var i=0;i<this.existData.length;i++){
+                      for(var j=0;j<boxs.length;j++){
+                        if(this.existData[i]['id'] == boxs[j].dataset.id){
+                          boxs[j].classList.add('cactive');
                         }
                       }
-                      clearTimeout(timer);
-                    },200);
+                    }
+                    clearTimeout(timer);
+                  },200);
                 }
             }
         },
         watch:{
-          render_success:{
-            handler(news,olds){
-              this.initSelectData();
-            },
-            deep: true
+          render_success:function(nw,ow){
+            this.initSelectData();
           }
         },
         computed:{

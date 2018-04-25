@@ -154,7 +154,8 @@
                 tool.lset('time_list_off',this.setTimes);
                 this.$message({
                   message: '删除成功!',
-                  type: 'success'
+                  type: 'success',
+                  showClose: true
                 });
                 this.setPublish(Math.random())
             },
