@@ -1,5 +1,24 @@
 
 var tool = {
+    formatDate: function(cdate,fmt){
+
+            var o = {
+                "M+": cdate.getMonth() + 1, //月份 
+                "d+": cdate.getDate(), //日 
+                "h+": cdate.getHours(), //小时 
+                "m+": cdate.getMinutes(), //分 
+                "s+": cdate.getSeconds(), //秒 
+                "q+": Math.floor((cdate.getMonth() + 3) / 3), //季度 
+                "S": cdate.getMilliseconds() //毫秒 
+            };
+            if (/(y+)/.test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (cdate.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt)) 
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+    },
     changeFormat: function(data){
         var newData = {};
 
@@ -275,12 +294,11 @@ var tool = {
     packageData: function(username){
         //1. 格式
         var programs = {
-            "date": new Date().getTime(),
+            "date": tool.formatDate(new Date(),"yyyy-MM-dd hh:mm:ss"),
             "username": username,
-            "program":[]
+            "program":[],
+            "url_prefix": "https://skylander-dbs.oss-cn-hongkong.aliyuncs.com/user-dir/"
         }
-
-        
 
         var program = {};
         var model_type_1 = {}; 
@@ -294,7 +312,7 @@ var tool = {
 
         
         if(model_type_1 || model_type_2 || model_type_3){
-            return true;
+            
         }else{
             return false;
         }
@@ -322,10 +340,10 @@ var tool = {
         }
 
         for(var i=0;i<data.length;i++){
-            file_list.push({
-                 "file_name":data[i].file_name,
+            file_list.push({/*
+                  "file_name":data[i].file_name,*/
                   "file_type":data[i].file_type,
-                  "download_url":data[i].download_url,
+                  "download_url": tool.replaceUrl(data[i].download_url,'https://skylander-dbs.oss-cn-hongkong.aliyuncs.com/user-dir/'),
                   "file_size":data[i].file_size,
                   "file_duration":data[i].file_duration
             })
@@ -346,6 +364,9 @@ var tool = {
 
         return obj
     },
+    replaceUrl(nUrl,str){
+        return nUrl.replace(str,'');
+    },
     checkTimelists: function(){
         var t1 = this.lget('time_list_on');
         var t2 = this.lget('time_list_off');
@@ -355,9 +376,7 @@ var tool = {
             return true;
         }else{
             return false;
-
             //清空所有色块
-
         }
     },
     //重绘

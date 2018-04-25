@@ -51,7 +51,7 @@
                 </div>    
                 
             </div>
-            <div class="pbox gamebox" >
+            <div class="pbox gamebox" style="display:none;">
                 <div class="gamebox-header">
                     <span class="gh-title">游戏开关</span>
                     <el-switch
@@ -157,15 +157,12 @@
                 var username = '';
                 var jsons = {};
                 var baseConfig = {};
-
+                console.log('1231');
                 this.$axios.post(this.get_user).then((res)=>{
-                    username = res.data.name;
-
-                    console.log(username)
+                    username = res.data.data.name;
 
                     //2. 组装数据列表
                     jsons = tool.packageData(username);
-                    
 
                     if(!jsons){
                         this.$message({
@@ -191,7 +188,6 @@
                         
                         if(!config){
                             this.showLines = true
-                            localStorage.setItem('showLines',this.showLines);
                         }
 
                         this.$message({

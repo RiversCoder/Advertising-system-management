@@ -62,8 +62,9 @@
                                 'name': res.data.data[i]['created_at'],
                                 'showContent': res.data.data[i]['showContent']
                             });
-                        }
 
+                        }
+                        console.log(res.data.data)
                         setTimeout(()=>{
                             //绑定删除事件
                             this.deletePrograms();
@@ -75,7 +76,7 @@
             deletePrograms(){
                 var items = document.getElementsByClassName('cc-item');
                 var This = this;
-                console.log(items);
+                
                 for(var i=0;i<items.length;i++){
 
                     items[i].onclick = function(ev){
@@ -102,6 +103,8 @@
                         shows = this.folderDatas[i].showContent;
                     }
                 }
+
+
 
                 if(idArr.length > 1){
                     this.$message({
