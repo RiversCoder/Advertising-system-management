@@ -40,7 +40,8 @@ const router =  new Router({
           path: 'home',
           component: Home,
           meta: { 
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true // 需要被缓存
           }
         },
         {
@@ -48,39 +49,46 @@ const router =  new Router({
           component: ProgramProduction,
           redirect: '/program-production/work-time',
           meta: { 
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: false
           },
           children:[
             {
               path:'work-time',
               component: WorkTime,
               meta: { 
-                requireAuth: true
+                requireAuth: true,
+                keepAlive: false
               },
               redirect: '/program-production/work-time/on',
               children: [{
                 path:'on',
-                component: On
+                component: On,
+                keepAlive: false
               },{
                 path:'off',
-                component: Off
+                component: Off,
+                keepAlive: false
               },{
                 path:'full',
-                component: Full
+                component: Full,
+                keepAlive: false
               }]
             },
             {
               path: 'select',
               component: SelectFile,
               meta: { 
-                requireAuth: true
+                requireAuth: true,
+                keepAlive: false
               }
             },
             {
               path: 'order',
               component: DragFile,
               meta: { 
-                requireAuth: true
+                requireAuth: true,
+                keepAlive: false 
               }
             }
           ]
@@ -89,50 +97,53 @@ const router =  new Router({
           path: 'source-manage',
           component: SourceManage,
           meta: { 
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true // 需要被缓存
           }
         },
         {
           path: 'terminal',
           component: Terminal,
           meta: { 
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true // 需要被缓存
           }
         },
         {
           path: 'help',
           component: Help,
           meta: { 
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true // 需要被缓存
           }
         },
         {
           path: 'store',
           component: Store,
           meta: { 
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true // 需要被缓存
           }
         },
         {
           path: 'draft-box',
           component: DraftBox,
           meta: { 
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: false 
           }
         }
       ]
     },
     {
       path: '/login',
-      component: Login
+      component: Login,
+      keepAlive: false 
     },
     {
       path: '/reset',
-      component: Reset
-    },
-    {
-      path: '/his',
-      component: Histogram
+      component: Reset,
+      keepAlive: false 
     }
   ],
   linkActiveClass: 'menuActive'

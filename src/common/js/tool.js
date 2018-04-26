@@ -615,6 +615,29 @@ var tool = {
         }
 
         return false;
+    },
+    //检测是否存在节目
+    checkExistData(program){
+
+        var rc = false;
+
+        var m1 = program.model_type_1;
+        var m2 = program.model_type_2;
+        var m3 = program.model_type_3;
+
+        if(m1.file_list.length > 0 && m1.time_list.length > 0){
+            return true;
+        }
+
+        if(m2.file_list.length > 0 && m2.time_list.length > 0){
+            return true;
+        }
+
+        if(m3.file_list.length > 0 && m3.time_list.length > 0){
+            return true;
+        }
+
+        return false;
     }
 };
 

@@ -241,11 +241,11 @@
     .tlists
         wh(100%,auto);list-style:none;
         .bitem
-            wh(100%,74px);border-bottom:1px solid #DEDEDE;display:flex;
+            wh(100%,74px);border-bottom:1px solid #DEDEDE;display:flex;overflow:hidden;
             .bitem-item
                 @extend .block;width:50%;hh(74px);font-size:18px;text-align:left;text-indent:23px;letter-spacing:2px;color:#333;box-sizing:border-box;
             .bitem-day
-                text-align:right;padding-right:23px;
+                text-align:right;padding-right:23px;font-size:16px;
                 i 
                     font-style:normal;
     .add-bitem-btn

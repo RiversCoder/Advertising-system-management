@@ -26,60 +26,68 @@
         
         
         <h3 class="column-title column-title-2">节目总预览</h3>    
-        
-        <div class="previewBox" >
-            <div class="pbox tubiaobox">
-                
-                <!-- 说明 -->
-                <ul class="introLists" v-show='true'>
-                    <li class="introItem introItem1">工作</li>
-                    <li class="introItem introItem2">非工作时间</li>
-                    <li class="introItem introItem3">非工作时间</li>
-                    <li class="introItem introItem4">无视频展示</li>
-                </ul>
-                
-                <!-- 柱状图展示 -->
-                <div class="chartViewBox">
-                    <histogram :onOff="showLines"></histogram>
-                </div>
-                
-                <!-- 收藏、上线按钮 -->
-                <div class="collectionBtn">
-                    <el-button plain class="rbtn resetBtn" @click="reset">重置</el-button>
-                    <el-button plain class="rbtn colectBtn" @click="goup">收藏</el-button>
-                    <el-button plain class="rbtn uploadFile" @click="entry">上线</el-button>
-                </div>    
-                
-            </div>
-            <div class="pbox gamebox" style="display:none;">
-                <div class="gamebox-header">
-                    <span class="gh-title">游戏开关</span>
-                    <el-switch
-                      v-model="gameOnoff"
-                      active-color="#F8D76B"
-                      inactive-color="#ff4949"
-                      class="switchbox">
-                    </el-switch>
-                </div>
-                <textarea class="inputGameBox" v-model="gamearea"></textarea>
-                
-                <!-- 主题选择 -->
-                <div class="theme-select-wrap">
-                    <div class="theme-show-box">
-                        <h4>主题选择</h4>
-                        <span v-model="selectValue" class="selctValue">春天</span>
+        <div class="previewBoxWrap">
+            <div class="previewBox" >
+                <div class="pbox tubiaobox">
+                    
+                    <!-- 说明 -->
+                    <ul class="introLists" v-show='true'>
+                        <li class="introItem introItem1">工作</li>
+                        <li class="introItem introItem2">非工作时间</li>
+                        <li class="introItem introItem3">非工作时间</li>
+                        <li class="introItem introItem4">无视频展示</li>
+                    </ul>
+                    
+                    <!-- 柱状图展示 -->
+                    <div class="chartViewBox">
+                        <histogram :onOff="showLines"></histogram>
                     </div>
-                    <div class="theme-select-box">
-                        <span class="select-box"></span>
-                    </div>
+                    
+                    <!-- 收藏、上线按钮 -->
+                    <div class="collectionBtn">
+                        <el-button plain class="rbtn resetBtn" @click="reset">重置</el-button>
+                        <el-button plain class="rbtn colectBtn" @click="goup">收藏</el-button>
+                        <el-button plain class="rbtn uploadFile" @click="entry">上线</el-button>
+                    </div>    
+                    
                 </div>
+                <div class="pbox gamebox" >
 
+                    <div class="gamebox-game">
+                        <div class="gamebox-header">
+                            <span class="gh-title">游戏开关</span>
+                            <el-switch
+                              v-model="gameOnoff"
+                              active-color="#F8D76B"
+                              inactive-color="#ff4949"
+                              class="switchbox">
+                            </el-switch>
+                        </div>
+                        <textarea class="inputGameBox" v-model="gamearea"></textarea>
+                    </div>
+                    
+                   <div class="gamebox-theme">
+                        <!-- 主题选择 -->
+                        <div class="theme-select-wrap">
+                            <div class="theme-show-box">
+                                <h4>主题选择</h4>
+                                <span v-model="selectValue" class="selctValue">春天</span>
+                            </div>
+                            <div class="theme-select-box">
+                                <span class="select-box"></span>
+                            </div>
+                        </div>
+                   </div>
+
+                </div>
             </div>
         </div>
     
     </div>
 </div>
 </template>
+
+
 
 
 
@@ -128,8 +136,10 @@
                 this.requestProgram(url,config);
             },
             checkIsRequest(){
+
+
+
                 //1-1.是否有时间重复的地方 检测是否有红色块
-                
                 if(tool.checkTimeRepeat()){
                     this.$message({
                       showClose: true,
@@ -139,6 +149,7 @@
                     return false;
                 }
                 
+                //console.log(tool.checkTimeRepeat())
                 //1-2.是否添加时间线后没有添加素材
                 //通过时间线来检测是否添加素材
                 var info = tool.checkFolderByTimeLine();  
@@ -172,7 +183,7 @@
                 if(!this.checkIsRequest()){
                     return;
                 }
-                
+                 
                 //2. 上线
                 var url =  this.entry_program_url;
                 this.requestProgram(url,false,()=>{
@@ -182,8 +193,6 @@
                         clearTimeout(timer);
                     },1000)
                 });
-
-                
                 
             },
             //点击重置节目
@@ -217,12 +226,15 @@
 
                     //2. 组装数据列表
                     jsons = tool.packageData(username);
-                    
-                    if(!jsons){
+
+
+                    //检测是否存在数据
+
+                    if(!tool.checkExistData(jsons.program)){
                         this.$message({
                           showClose: true,
                           message: '请编辑节目后再上线！',
-                          type: 'warning'
+                          type: 'error'
                         });
 
                         return;
@@ -256,19 +268,37 @@
             },
             //请求开始游戏
             requestGame(onoff){
-                var value = this.gamearea;
-                var sw = onoff ? 1 : 0;
+              var value = this.gamearea;
+              var sw = onoff ? 1 : 0;
 
-                this.$axios.post(this.game_url,{
-                    url: value,
-                    switch: sw
-                }).then((res)=>{
-                    this.$message({
-                      showClose: true,
-                      message: res.data.message,
-                      type: 'success'
-                    });
-                })
+                //先获取用户的信息 检测权限后再推送游戏
+                //获取用户信息，验证是否有权限提交利率
+              this.$axios.post(this.get_user).then((res)=>{
+                    //success
+                    if(res.data.status == 'success'){
+                        //检测用户权限
+                        if(res.data.data.role == 2 || res.data.data.role == 3){
+                            //4. 向服务器发送数据
+                             this.$axios.post(this.game_url,{
+                                url: value,
+                                switch: sw
+                            }).then((res)=>{
+                                this.$message({
+                                  showClose: true,
+                                  message: res.data.message,
+                                  type: 'success'
+                                });
+                            })
+                        }else{
+                          checkUser = true;
+                          this.$message.error('没有权限进行此操作，请联系管理员授权！');
+                        }
+                    }else{
+                        this.$message.error('获取用户信息失败!');
+                    }
+                }); 
+
+               
 
             },
             ...mapMutations({
@@ -393,4 +423,16 @@
                         wh(25px,25px);
         .inputGameBox
             display:block;wh(304px,86px);padding:3px 5px;bgColor(#F4F4F4);border-radius:10px;font-size:12px;line-height:14px;color:#999;margin:0 auto;margin-top:10px;                                               
+</style>
+
+
+<style scoped type="text/css">
+    @media screen and (max-width: 1800px){
+        .content .previewBoxWrap{
+            overflow-x: auto;border: 1px solid #dedede;
+        }
+        .content .previewBox{
+            width:1482px;border:0;
+        }
+    }
 </style>

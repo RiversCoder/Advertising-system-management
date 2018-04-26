@@ -3,7 +3,7 @@
       <div class="Column">
           <h3 class="column-title">视频</h3>
           <div class="column-content">
-                
+                 <div v-show="videos.length==0" style="font-size:16px;color:#333;height:60px;line-height:60px;text-indent:30px;">暂无视频资源，请添加或上传视频资源！</div>
                 <dl class="cc-item" v-for="(item,index) in videos" >
                       
                       <dt class="cc-item-previewbox">

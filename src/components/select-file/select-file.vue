@@ -64,9 +64,10 @@
         methods:{
             //初始化绑定 better-scroll 
             _initScroll() {
-              this.menuScroll = new BScroll(this.$refs.cwrap, {
-                click: true
-              })
+              var options = {}; 
+              options.scrollbar = true  //wheel: false
+              options.click = true
+              this.menuScroll = new BScroll(this.$refs.cwrap,options)
             },
             //向数据库请求 初始化资源管理的所有数据
             initSources(pdir){
@@ -190,6 +191,9 @@
                       for(var m=0;m<boxs.length;m++){
                         boxs[m].classList.remove('cactive');
                       }
+                      if(!this.existData){
+                        return;
+                      }
                       //添加当前
                       for(var i=0;i<this.existData.length;i++){
                         for(var j=0;j<boxs.length;j++){
@@ -199,7 +203,7 @@
                         }
                       }
                       clearTimeout(timer);
-                    },500);
+                    },800);
                 }
             }
         },

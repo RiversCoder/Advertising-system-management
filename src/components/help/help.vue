@@ -1,8 +1,8 @@
 <template>
     <div class="help">
         <div class="logoBox">
-            <img src="http://img4.imgtn.bdimg.com/it/u=2012809304,2806183889&fm=214&gp=0.jpg" class="logoImg" />
-            <h3 class="logoTitle">SKYLANDER</h3>
+            <img src="~common/images/logo@250x250.png" />
+            <h3>SKYLANDER</h3>
             <a class="logoSite" href="http://www.skylandertech.com" target="_blank">www.skylandertech.com</a>
         </div>
 

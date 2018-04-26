@@ -14,7 +14,7 @@
                     <el-input v-model="password" placeholder="Password" type="password" class="inputs" name="user_password"></el-input> 
                     <el-input  @click.native="loginfn" value="Login" type="button" class="inputs submit" ></el-input> 
                     
-                    <a class="forgetInfo" href="javascript:;" @click="forgetpw">忘记密码?</a>
+                    <!-- <a class="forgetInfo" href="javascript:;" @click="forgetpw">忘记密码?</a> -->
 
                   </form>
               </div>

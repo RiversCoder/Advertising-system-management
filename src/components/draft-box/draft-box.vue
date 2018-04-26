@@ -14,6 +14,7 @@
               </el-header>
               <el-main>
                   <div class="scrollWrap" ref="menuScroll">
+                      <div v-show="folderDatas.length==0" style="font-size:16px;color:#333;height:60px;line-height:60px;text-indent:30px;">暂无节目资源，请前往节目控制发布并收藏节目！</div>
                       <div class="cwrap">
                           <list-view :folderSources="folderDatas" :folderExist="true"></list-view>
                       </div>
@@ -47,9 +48,10 @@
         },
         methods:{
             _initScroll() {
-              this.menuScroll = new BScroll(this.$refs.menuScroll, {
-                click: true
-              })
+              var options = {}; 
+              options.scrollbar = true  //wheel: false
+              options.click = true
+              this.menuScroll = new BScroll(this.$refs.menuScroll,options)
             },
             //初始化草稿箱数据
             initProgramData(){
@@ -64,7 +66,7 @@
                             });
 
                         }
-                        console.log(res.data.data)
+                        
                         setTimeout(()=>{
                             //绑定删除事件
                             this.deletePrograms();

@@ -159,10 +159,11 @@
             this.$alert('是否要退出后台？', 'DBS温馨提示', {
               confirmButtonText: '确定',
               callback: action => {
-                 console.log('清除token');
-                 this.setToken(null);
-                 localStorage.setItem('token','');
-                 this.$router.push({path:'/login'});
+                 if(action == 'confirm'){
+                   this.setToken(null);
+                   localStorage.setItem('token','');
+                   this.$router.push({path:'/login'});
+                 }
               }
             });
           },
@@ -193,7 +194,7 @@
         width:$menuwidth;height:100%;background:$menu-color;transition:.2s ease-in;position:absolute;top:0;bottom:0;bgColor(#F4F4F4);
         
         .outLoginbox
-            margin-top:100px;wh(100%,50px);hh(50px);text-align:center;cursor:pointer;position:relative;
+            wh(100%,50px);hh(50px);text-align:center;cursor:pointer;position:absolute;bottom:50px;
             .outloginimg
               @extends .block;wh(40px,40px);bgImg('~common/images/exit@2x.png');ab(78px,5px);
             .outlogintext

@@ -2,6 +2,7 @@
    <div class="con-container">
       <div class="Column">
           <h3 class="column-title">文件夹</h3>
+          <div v-show="sources.length==0" style="font-size:16px;color:#333;height:60px;line-height:60px;text-indent:30px;">暂无文件夹，请新建文件夹！</div>
           <div class="column-content">
               <dl class="cc-item" v-for="(item,index) in sources" >
                   <dt class="cc-item-previewbox" @click="gonIntoNewFolder(item.name,item.dir)">

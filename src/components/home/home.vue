@@ -21,7 +21,7 @@
             ])
         },
         created(){
-            console.log(this.token)
+            
         }
     }
 </script>

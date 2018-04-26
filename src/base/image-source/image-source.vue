@@ -4,7 +4,7 @@
           <h3 class="column-title">图片</h3>
           <div class="column-content">
                 
-                <p v-if="!images">暂无资源</p>
+               <div v-show="images.length==0" style="font-size:16px;color:#333;height:60px;line-height:60px;text-indent:30px;">暂无图片资源，请添加或上传图片资源！</div>
 
                 <dl class="cc-item" v-for="(item,index) in images" >
                       

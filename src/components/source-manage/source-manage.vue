@@ -16,6 +16,7 @@
                             <el-button plain class="rbtn uploadFile" @click.native="uploadFileBtn" >上传文件</el-button>
                             <el-button plain class="rbtn newFolder" @click.native="newFolder" >新建文件夹</el-button>
                             <el-button plain class="rbtn newFolder" @click.native="backLast" v-show="backBtnShow">返回上一级</el-button>
+                            <el-progress :percentage="progress" class="progress-line" v-show="showProgress" color="#ed1c24"></el-progress>
                         </div>
                     </el-col>
                 </el-row>
@@ -76,6 +77,7 @@
                 move_folder_url: this.$baseUrl+'/api/moveFolder',
                 //ossData : null,
                 progress: 0,
+                showProgress: false,
                 onoff: true,
                 cdir: '/',
                 dialogTableVisible: false,
@@ -87,9 +89,10 @@
         methods:{
             //初始化绑定 better-scroll 
             _initScroll() {
-              this.menuScroll = new BScroll(this.$refs.menuScroll, {
-                click: true
-              })
+              var options = {}; 
+              options.scrollbar = true  //wheel: false
+              options.click = true
+              this.menuScroll = new BScroll(this.$refs.menuScroll,options)
             },
             //向数据库请求 初始化资源管理的所有数据
             initSources(pdir){
@@ -227,6 +230,7 @@
 
                 let form = new FormData();   
                 var fname = tool.randomString(12) + tool.getBackname(file);
+                var timer = null;
 
                 var attr = {
                     'OSSAccessKeyId': data.accessid, 
@@ -244,26 +248,20 @@
 
                 var config = {
                     onUploadProgress: progressEvent => {
-                        var complete = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%'
+                        var complete = (progressEvent.loaded / progressEvent.total * 100 | 0) 
                         this.progress = complete
+                        this.showProgress = true;
                         
-                        if(this.onoff){
-                           /* this.$message({
-                              message: '正在上传请稍等……',
-                              duration: 500
-                            });*/
-                            this.onoff = false;
-                        }
-                        
+                        //console.log(this.progress);
 
-                        if(this.progress == '100%'){
-                            this.onoff = true;
+                        if(this.progress == '100'){
                             this.$notify({
                               title: '成功',
                               message: '恭喜你，上传文件成功！',
                               type: 'success',
-                              duration: 1500
+                              duration: 2500
                             });
+                            this.showProgress = false;
                             //重新加载数据
                             this.initSources();
                         }
@@ -456,6 +454,10 @@
         bgColor(#F4F4F4);color:#333;font-size:18px;initp();border-radius:10px;
      }
     
+    
+    
+    .progress-line
+        width:300px;position:absolute;bottom:3px;right:0;
 
     .source-container
         width:100%;height:100%;min-height:800px;

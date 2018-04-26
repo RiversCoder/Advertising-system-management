@@ -1,105 +1,107 @@
 <template>
-   <div class="con-container">
-      <div class="Column">
-          <h3 class="column-title">利率填写</h3>
-          
-          <div class="lilv-content">
-
-              <div class="forWrap">
-                <div class="formBox formBox1">
-                    <el-row>
-                       <el-col :span="24"><div class="grid-content">
-                           <h3 class="fb-title">星展兴盛理财新客户尊享</h3>
-                       </div></el-col>
-                    </el-row>
-                    <el-row>
-                       <el-col :span="24"><div class="grid-content">
-                           <el-input class="input-lilv" v-model="input1_1" placeholder="星展兴盛理财新客户尊享"></el-input>
-                       </div></el-col>
-                    </el-row>
-                    <el-row>
-                       <el-col :span="9"><div class="grid-content">
-                           <el-input class="input-lilv input-lilvTwo" v-model="input1_2" placeholder="港元"></el-input>
-                       </div></el-col>
-                       <el-col :span="4"><div class="grid-content">&nbsp;</div></el-col>
-                       <el-col :span="9"><div class="grid-content">
-                           <el-input class="input-lilv input-lilvTwo" v-model="input1_3" placeholder="总回报"></el-input>
-                       </div></el-col> 
-                    </el-row>
-                    <el-row>
-                       <el-col :span="24"><div class="grid-content">
-                           <el-input class="input-lilv" v-model="input1_4" placeholder="请输入百分比"></el-input>
-                       </div></el-col>
-                    </el-row>
-
-                    <el-row>
-                       <el-col :span="24"><div class="grid-content">
-                           <el-button class="resetBtn" @click="resetClick(1)">重置</el-button>
-                       </div></el-col>
-                    </el-row>
-
-                </div><!--//end formBox1-->
-            </div>
-
-              <div class="forWrap">
-                <div class="formBox formBox2">
-                    <el-row>
-                       <el-col :span="24"><div class="grid-content">
-                           <h3 class="fb-title">定期存款客户尊享</h3>
-                       </div></el-col>
-                    </el-row>
-                    <el-row>
-                       <el-col :span="24"><div class="grid-content">
-                           <el-input class="input-lilv" v-model="input2_1" placeholder="定期存款客户尊享"></el-input>
-                       </div></el-col>
-                    </el-row>
-                    <el-row>
-                       <el-col :span="9"><div class="grid-content">
-                           <el-input class="input-lilv input-lilvTwo" v-model="input2_2" placeholder="纽元"></el-input>
-                       </div></el-col>
-                       <el-col :span="4"><div class="grid-content">&nbsp;</div></el-col>
-                       <el-col :span="9"><div class="grid-content">
-                           <el-input class="input-lilv input-lilvTwo" v-model="input2_3" placeholder="总回报"></el-input>
-                       </div></el-col>
-                    </el-row>
-                    
-                    <el-row>
-                       <el-col :span="24"><div class="grid-content">
-                           <el-input class="input-lilv" v-model="input2_4" placeholder="请输入百分比"></el-input>
-                       </div></el-col>
-                    </el-row>
-
-                    <el-row>
-                       <el-col :span="24" class="input-lilv"><div class="grid-content">
-                           <el-button class="resetBtn" @click="resetClick(2)">重置</el-button>
-                       </div></el-col>
-                    </el-row>
-
-                    
-                    <el-row>
-                       <el-col :span="10"><div class="grid-content">
-                          <el-button class="downBtn">下载模板</el-button>
-                       </div></el-col>
-                        <el-col :span="4"><div class="grid-content">
-                          &nbsp;
-                       </div></el-col>
-                       <el-col :span="10"><div class="grid-content">
-                          <input type="file" name="file" style="display:none;" ref="tableFile" @change="loadExcel" />
-                          <el-button class="downBtn" @click="uploadTable">上传表格</el-button>
-                       </div></el-col>
-                    </el-row>
-
-                </div> <!--//end formBox2-->
-              </div>
+   <div class="con-container" ref="menuScroll">
+      <div>
+        <div class="Column">
+            <h3 class="column-title">利率填写</h3>
             
-            <div class="submitBtnBox">
-              <el-button class="tiJiaoBtn" @click="submit">提交</el-button>
-            </div>  
+            <div class="lilv-content">
+
+                <div class="forWrap">
+                  <div class="formBox formBox1">
+                      <el-row>
+                         <el-col :span="24"><div class="grid-content">
+                             <h3 class="fb-title">星展兴盛理财新客户尊享</h3>
+                         </div></el-col>
+                      </el-row>
+                      <el-row>
+                         <el-col :span="24"><div class="grid-content">
+                             <el-input class="input-lilv" v-model="input1_1" placeholder="星展兴盛理财新客户尊享"></el-input>
+                         </div></el-col>
+                      </el-row>
+                      <el-row>
+                         <el-col :span="9"><div class="grid-content">
+                             <el-input class="input-lilv input-lilvTwo" v-model="input1_2" placeholder="港元"></el-input>
+                         </div></el-col>
+                         <el-col :span="4"><div class="grid-content">&nbsp;</div></el-col>
+                         <el-col :span="9"><div class="grid-content">
+                             <el-input class="input-lilv input-lilvTwo" v-model="input1_3" placeholder="总回报"></el-input>
+                         </div></el-col> 
+                      </el-row>
+                      <el-row>
+                         <el-col :span="24"><div class="grid-content">
+                             <el-input class="input-lilv" v-model="input1_4" placeholder="请输入百分比"></el-input>
+                         </div></el-col>
+                      </el-row>
+
+                      <el-row>
+                         <el-col :span="24"><div class="grid-content">
+                             <el-button class="resetBtn" @click="resetClick(1)">重置</el-button>
+                         </div></el-col>
+                      </el-row>
+
+                  </div><!--//end formBox1-->
+              </div>
+
+                <div class="forWrap">
+                  <div class="formBox formBox2">
+                      <el-row>
+                         <el-col :span="24"><div class="grid-content">
+                             <h3 class="fb-title">定期存款客户尊享</h3>
+                         </div></el-col>
+                      </el-row>
+                      <el-row>
+                         <el-col :span="24"><div class="grid-content">
+                             <el-input class="input-lilv" v-model="input2_1" placeholder="定期存款客户尊享"></el-input>
+                         </div></el-col>
+                      </el-row>
+                      <el-row>
+                         <el-col :span="9"><div class="grid-content">
+                             <el-input class="input-lilv input-lilvTwo" v-model="input2_2" placeholder="纽元"></el-input>
+                         </div></el-col>
+                         <el-col :span="4"><div class="grid-content">&nbsp;</div></el-col>
+                         <el-col :span="9"><div class="grid-content">
+                             <el-input class="input-lilv input-lilvTwo" v-model="input2_3" placeholder="总回报"></el-input>
+                         </div></el-col>
+                      </el-row>
+                      
+                      <el-row>
+                         <el-col :span="24"><div class="grid-content">
+                             <el-input class="input-lilv" v-model="input2_4" placeholder="请输入百分比"></el-input>
+                         </div></el-col>
+                      </el-row>
+
+                      <el-row>
+                         <el-col :span="24" class="input-lilv"><div class="grid-content">
+                             <el-button class="resetBtn" @click="resetClick(2)">重置</el-button>
+                         </div></el-col>
+                      </el-row>
+
+                      
+                      <el-row>
+                         <el-col :span="10"><div class="grid-content">
+                            <el-button class="downBtn">下载模板</el-button>
+                         </div></el-col>
+                          <el-col :span="4"><div class="grid-content">
+                            &nbsp;
+                         </div></el-col>
+                         <el-col :span="10"><div class="grid-content">
+                            <input type="file" name="file" style="display:none;" ref="tableFile" @change="loadExcel" />
+                            <el-button class="downBtn" @click="uploadTable">上传表格</el-button>
+                         </div></el-col>
+                      </el-row>
+
+                  </div> <!--//end formBox2-->
+                </div>
               
+              <div class="submitBtnBox">
+                <el-button class="tiJiaoBtn" @click="submit">提交</el-button>
+              </div>  
+                
 
-          </div><!-- //end  lilv-content-->
+            </div><!-- //end  lilv-content-->
 
 
+        </div>
       </div>
     </div>
 </template>
@@ -108,7 +110,8 @@
 
 
 <script type="text/ecmascript-6">
-    
+
+    import BScroll from 'better-scroll';
     import xlsx from 'xlsx';
 
     //console.log(xlsx);
@@ -118,6 +121,7 @@
             return{
                 title: '',
                 url: this.$baseUrl+'/api/interestRate',
+                user_url: this.$baseUrl+'/api/user',
                 input1_1: '',
                 input1_2: '',
                 input1_3: '',
@@ -133,8 +137,23 @@
 
         },
         methods:{
+          _initScroll() {
+              var options = {}; 
+              options.scrollbar = true  //wheel: false
+              options.click = true
+              this.menuScroll = new BScroll(this.$refs.menuScroll,options)
+            },
+            initScrollHeight(){
+                
+                let wrap = this.$refs.menuScroll;
+                let winHeight = document.body.offsetHeight;
+                let headHeight = 108;
+
+                wrap.style.height = (winHeight - headHeight) + "px";
+            },
             submit(){
               
+
                //1. 获取参数
               
                var attr = {
@@ -164,19 +183,32 @@
               }
 
 
-                //3. 向服务器发送数据
-               this.$axios.post(this.url,attr).then((res)=>{
-                    console.log(res);
+              //获取用户信息，验证是否有权限提交利率
+              this.$axios.post(this.user_url).then((res)=>{
                     //success
                     if(res.data.status == 'success'){
-                        this.$message({
-                          message: '恭喜你，利率信息提交成功！',
-                          type: 'success'
-                        });
+                        //检测用户权限
+                        if(res.data.data.role == 3 || res.data.data.role == 4){
+                            //4. 向服务器发送数据
+                           this.$axios.post(this.url,attr).then((res)=>{
+                                //success
+                                if(res.data.status == 'success'){
+                                    this.$message({
+                                      message: '恭喜你，利率信息提交成功！',
+                                      type: 'success'
+                                    });
+                                }else{
+                                    this.$message.error('提交数据失败!');
+                                }
+                            }); 
+
+                        }else{
+                          this.$message.error('没有权限进行此操作，请联系管理员授权！');
+                        }
                     }else{
-                        this.$message.error('提交数据失败!');
+                        this.$message.error('获取用户信息失败!');
                     }
-                }); 
+                });          
 
             },
             //上传表格
@@ -252,10 +284,13 @@
             }
         },
         created(){
-
+          //加载滚动盒子
+          this.$nextTick(() => {
+            this._initScroll()
+          });
         },
         mounted(){
-           
+           this.initScrollHeight();
         }
     }
 </script>
@@ -270,7 +305,7 @@
     }
 
     .con-container
-            width:100%;box-sizing:border-box;background:#fff;padding:32px 46px 10px 32px;
+            width:100%;box-sizing:border-box;background:#fff;padding:32px 46px 10px 32px;overflow:hidden;
     .Column
         width:100%;height:auto;initp();
         
