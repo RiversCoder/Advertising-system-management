@@ -4,89 +4,98 @@
           <h3 class="column-title">利率填写</h3>
           
           <div class="lilv-content">
-              <div class="formBox formBox1">
-                  <el-row>
-                     <el-col :span="24"><div class="grid-content">
-                         <h3 class="fb-title">星展兴盛理财新客户尊享</h3>
-                     </div></el-col>
-                  </el-row>
-                  <el-row>
-                     <el-col :span="24"><div class="grid-content">
-                         <el-input class="input-lilv" v-model="input1_1" placeholder="星展兴盛理财新客户尊享"></el-input>
-                     </div></el-col>
-                  </el-row>
-                  <el-row>
-                     <el-col :span="9"><div class="grid-content">
-                         <el-input class="input-lilv input-lilvTwo" v-model="input1_2" placeholder="港元"></el-input>
-                     </div></el-col>
-                     <el-col :span="4"><div class="grid-content">&nbsp;</div></el-col>
-                     <el-col :span="9"><div class="grid-content">
-                         <el-input class="input-lilv input-lilvTwo" v-model="input1_3" placeholder="总回报"></el-input>
-                     </div></el-col> 
-                  </el-row>
-                  <el-row>
-                     <el-col :span="24"><div class="grid-content">
-                         <el-input class="input-lilv" v-model="input1_4" placeholder="请输入百分比"></el-input>
-                     </div></el-col>
-                  </el-row>
 
-                  <el-row>
-                     <el-col :span="24"><div class="grid-content">
-                         <el-button class="resetBtn" @click="resetClick(1)">重置</el-button>
-                     </div></el-col>
-                  </el-row>
+              <div class="forWrap">
+                <div class="formBox formBox1">
+                    <el-row>
+                       <el-col :span="24"><div class="grid-content">
+                           <h3 class="fb-title">星展兴盛理财新客户尊享</h3>
+                       </div></el-col>
+                    </el-row>
+                    <el-row>
+                       <el-col :span="24"><div class="grid-content">
+                           <el-input class="input-lilv" v-model="input1_1" placeholder="星展兴盛理财新客户尊享"></el-input>
+                       </div></el-col>
+                    </el-row>
+                    <el-row>
+                       <el-col :span="9"><div class="grid-content">
+                           <el-input class="input-lilv input-lilvTwo" v-model="input1_2" placeholder="港元"></el-input>
+                       </div></el-col>
+                       <el-col :span="4"><div class="grid-content">&nbsp;</div></el-col>
+                       <el-col :span="9"><div class="grid-content">
+                           <el-input class="input-lilv input-lilvTwo" v-model="input1_3" placeholder="总回报"></el-input>
+                       </div></el-col> 
+                    </el-row>
+                    <el-row>
+                       <el-col :span="24"><div class="grid-content">
+                           <el-input class="input-lilv" v-model="input1_4" placeholder="请输入百分比"></el-input>
+                       </div></el-col>
+                    </el-row>
 
-              </div><!--//end formBox1-->
-              <div class="formBox formBox2">
-                  <el-row>
-                     <el-col :span="24"><div class="grid-content">
-                         <h3 class="fb-title">定期存款客户尊享</h3>
-                     </div></el-col>
-                  </el-row>
-                  <el-row>
-                     <el-col :span="24"><div class="grid-content">
-                         <el-input class="input-lilv" v-model="input2_1" placeholder="定期存款客户尊享"></el-input>
-                     </div></el-col>
-                  </el-row>
-                  <el-row>
-                     <el-col :span="9"><div class="grid-content">
-                         <el-input class="input-lilv input-lilvTwo" v-model="input2_2" placeholder="纽元"></el-input>
-                     </div></el-col>
-                     <el-col :span="4"><div class="grid-content">&nbsp;</div></el-col>
-                     <el-col :span="9"><div class="grid-content">
-                         <el-input class="input-lilv input-lilvTwo" v-model="input2_3" placeholder="总回报"></el-input>
-                     </div></el-col>
-                  </el-row>
-                  
-                  <el-row>
-                     <el-col :span="24"><div class="grid-content">
-                         <el-input class="input-lilv" v-model="input2_4" placeholder="请输入百分比"></el-input>
-                     </div></el-col>
-                  </el-row>
+                    <el-row>
+                       <el-col :span="24"><div class="grid-content">
+                           <el-button class="resetBtn" @click="resetClick(1)">重置</el-button>
+                       </div></el-col>
+                    </el-row>
 
-                  <el-row>
-                     <el-col :span="24" class="input-lilv"><div class="grid-content">
-                         <el-button class="resetBtn" @click="resetClick(2)">重置</el-button>
-                     </div></el-col>
-                  </el-row>
+                </div><!--//end formBox1-->
+            </div>
 
-                  
-                  <el-row>
-                     <el-col :span="10"><div class="grid-content">
-                        <el-button class="downBtn">下载模板</el-button>
-                     </div></el-col>
-                      <el-col :span="4"><div class="grid-content">
-                        &nbsp;
-                     </div></el-col>
-                     <el-col :span="10"><div class="grid-content">
-                        <input type="file" name="file" style="display:none;" ref="tableFile" @change="loadExcel" />
-                        <el-button class="downBtn" @click="uploadTable">上传表格</el-button>
-                     </div></el-col>
-                  </el-row>
+              <div class="forWrap">
+                <div class="formBox formBox2">
+                    <el-row>
+                       <el-col :span="24"><div class="grid-content">
+                           <h3 class="fb-title">定期存款客户尊享</h3>
+                       </div></el-col>
+                    </el-row>
+                    <el-row>
+                       <el-col :span="24"><div class="grid-content">
+                           <el-input class="input-lilv" v-model="input2_1" placeholder="定期存款客户尊享"></el-input>
+                       </div></el-col>
+                    </el-row>
+                    <el-row>
+                       <el-col :span="9"><div class="grid-content">
+                           <el-input class="input-lilv input-lilvTwo" v-model="input2_2" placeholder="纽元"></el-input>
+                       </div></el-col>
+                       <el-col :span="4"><div class="grid-content">&nbsp;</div></el-col>
+                       <el-col :span="9"><div class="grid-content">
+                           <el-input class="input-lilv input-lilvTwo" v-model="input2_3" placeholder="总回报"></el-input>
+                       </div></el-col>
+                    </el-row>
+                    
+                    <el-row>
+                       <el-col :span="24"><div class="grid-content">
+                           <el-input class="input-lilv" v-model="input2_4" placeholder="请输入百分比"></el-input>
+                       </div></el-col>
+                    </el-row>
 
-              </div> <!--//end formBox2-->
+                    <el-row>
+                       <el-col :span="24" class="input-lilv"><div class="grid-content">
+                           <el-button class="resetBtn" @click="resetClick(2)">重置</el-button>
+                       </div></el-col>
+                    </el-row>
 
+                    
+                    <el-row>
+                       <el-col :span="10"><div class="grid-content">
+                          <el-button class="downBtn">下载模板</el-button>
+                       </div></el-col>
+                        <el-col :span="4"><div class="grid-content">
+                          &nbsp;
+                       </div></el-col>
+                       <el-col :span="10"><div class="grid-content">
+                          <input type="file" name="file" style="display:none;" ref="tableFile" @change="loadExcel" />
+                          <el-button class="downBtn" @click="uploadTable">上传表格</el-button>
+                       </div></el-col>
+                    </el-row>
+
+                </div> <!--//end formBox2-->
+              </div>
+            
+            <div class="submitBtnBox">
               <el-button class="tiJiaoBtn" @click="submit">提交</el-button>
+            </div>  
+              
 
           </div><!-- //end  lilv-content-->
 
@@ -271,7 +280,7 @@
                 content:'';@extend .block;wh(9px,24px);bgColor(#ED1C24);position:absolute;left:0px;top:23px;
         
     .lilv-content
-        wh(100%,575px);border-radius:10px;border:1px solid #DEDEDE;position:relative
+        width:100%;min-height:575px;border-radius:10px;border:1px solid #DEDEDE;position:relative
         .formBox
             width:320px;min-height:300px;float:left;
             .fb-title
@@ -291,9 +300,29 @@
             .downBtn
               width:100%;
         .resetBtn
-            width:100%  
-        .tiJiaoBtn
-            wh(280px,50px);color:#fff;font-size:20px;bgColor(#ED1C24);ab(622px,462px);
-            &:hover
-                opacity:0.8;                                 
+            width:100%
+        .submitBtnBox
+          wh(100%,50px);clear:both;padding-top:50px; padding-bottom:50px;      
+          .tiJiaoBtn
+              wh(280px,50px);display:block;color:#fff;font-size:20px;bgColor(#ED1C24);margin:0 auto;
+              &:hover
+                  opacity:0.8; 
+    
+
+                                          
+</style>
+
+<style scoped type="text/css">
+      @media screen and (max-width:1650px){
+        .forWrap{
+              width: 100%;min-height: 330px;position: relative;
+        }
+        .forWrap:nth-of-type(2){
+              min-height: 410px;
+        }
+        .forWrap .formBox{
+          margin:0 auto;position: absolute;left:50%;-webkit-transform: translateX(-50%);
+          -moz-transform: translateX(-50%);-ms-transform: translateX(-50%);-o-transform: translateX(-50%);transform: translateX(-50%);
+        }
+      } 
 </style>

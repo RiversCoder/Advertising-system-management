@@ -499,7 +499,7 @@ var tool = {
 
         for(var key in data){
            for(var i=0;i<data[key].length;i++){
-                p[key].innerHTML += `<span class="cwb" style="display:block;width:100%;position:absolute;left:0;top:${data[key][i][0]}px;height:${data[key][i][1]}px;background-color:red;z-index:10;"></span>`;
+                p[key].innerHTML += `<span class="cwb cwb-repeat" style="display:block;width:100%;position:absolute;left:0;top:${data[key][i][0]}px;height:${data[key][i][1]}px;background-color:red;z-index:10;"></span>`;
            }
         }
 
@@ -543,6 +543,78 @@ var tool = {
 
             return [ns,ne-ns];  
         }
+    },
+    //检测时间是否重复
+    checkTimeRepeat: function(){
+        var boxs = document.getElementsByClassName('cwb-repeat');
+        if(boxs.length > 1){
+            return true;
+        } else{
+            return false;
+        }  
+    },
+    //通过素材选择情况来判断是否有时间添加
+    checkTimeByFolder(){
+        var times = ['time_list_on','time_list_off','time_list_full'];
+        var files = ['file_list_on','file_list_off','file_list_full'];
+        var messages = ['工作时间还未添加节目播放时间！','非工作时间还未添加节目播放时间！','全屏时间还未添加节目播放时间！'];
+
+        var attr = {
+            code: 0,
+            message: '',
+            onoff: true
+        };
+        var onoff = true;
+
+        for(var i=0;i<files.length;i++){
+            if(this.lget(files[i])&&this.lget(files[i]).length>=1){
+
+                //检测是否有素材添加
+                if(!this.lget(times[i]) || this.lget(times[i]).length==0){
+                    attr.code = 400;
+                    attr.message = messages[i];
+                    onoff = true;
+                    return attr;
+                }else{
+                    onoff = false;
+                }
+            }else{
+                onoff = false;
+            }
+        }
+
+        return false;
+    },
+    checkFolderByTimeLine(){
+        var times = ['time_list_on','time_list_off','time_list_full'];
+        var files = ['file_list_on','file_list_off','file_list_full'];
+        var messages = ['工作时间还未添加节目播放素材！','非工作时间还未添加节目播放素材！','全屏时间还未添加节目播放素材！'];
+
+        var attr = {
+            code: 0,
+            message: '',
+            onoff: true
+        };
+        var onoff = true;
+
+        for(var i=0;i<times.length;i++){
+            if(this.lget(times[i])&&this.lget(times[i]).length>=1){
+
+                //检测是否有素材添加
+                if(!this.lget(files[i]) || this.lget(files[i]).length==0){
+                    attr.code = 400;
+                    attr.message = messages[i];
+                    onoff = true;
+                    return attr;
+                }else{
+                    onoff = false;
+                }
+            }else{
+                onoff = false;
+            }
+        }
+
+        return false;
     }
 };
 

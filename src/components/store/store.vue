@@ -12,7 +12,10 @@
                     <span class="etime">结束时间：2018.03.25</span>
                   </p>
               </div>
-              <div class="chartBoxPie" id="chartBoxPie"></div>
+              <div class="cbp_wrap">
+                <div id="chartBoxPie" class="chartBoxPie"></div>
+              </div>
+              
           </div>
 
           <h3 class="column-title">账号管理</h3>
@@ -216,9 +219,9 @@
                 content:'';@extend .block;wh(9px,24px);bgColor(#ED1C24);position:absolute;left:0px;top:23px;
         
         .chartPieBox
-            wh(100%,430px);flex();border-radius:6px;box-sizing:border-box;border:1px solid #DEDEDE;margin-bottom:0px;
+            width:100%;min-height:430px;border-radius:6px;box-sizing:border-box;border:1px solid #DEDEDE;margin-bottom:0px;
             .chartBoxContent
-                wh(50%,430px);letter-spacing:2px;padding-left:138px;box-sizing:border-box;color:#333;
+                wh(50%,430px);letter-spacing:2px;padding-left:138px;box-sizing:border-box;color:#333;float:left;
                 h3
                     font-size:45px;hh(63px);padding-top:99px;
                 h4
@@ -228,7 +231,7 @@
                    .etime
                        position:relative;left:116px;                   
             .chartBoxPie
-                wh(50%,430px);
+                wh(50%,430px);float:left;
         .user-manage
             width:100%;min-height:351px;box-sizing:border-box;border-radius:6px;border:1px solid #DEDEDE;padding-left:54px;padding-top:26px;       
             .el-button--danger
@@ -246,4 +249,28 @@
                 width:206px;float:left;margin-left:40px;
                 input
                     background:#F4F4F4;color:#999;border-radius:10px;          
+</style>
+
+
+<style scoped type="text/css">
+    @media screen and (max-width:1680px){
+      .Column .chartPieBox{
+        height:830px;
+      }
+      .Column .chartPieBox .chartBoxContent{
+        width:100%;clear:both;padding-left:0;text-align: center;height:320px;
+      }
+      .Column .chartPieBox .chartBoxContent p .stime{
+        position:relative;left:-20px;
+      }
+      .Column .chartPieBox .chartBoxContent p .etime{
+        left:10px;
+      }
+      .Column .chartPieBox .chartBoxPie{
+        width:677px;clear:both;position: relative;left:50%;transform: translateX(-50%);
+      }
+      .Column .cbp_wrap{
+        width:100%;height:430px;
+      }
+    }
 </style>

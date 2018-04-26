@@ -113,6 +113,11 @@
             //点击收藏
             goup(){
 
+                //1. 检测是否满足收藏的条件
+                if(!this.checkIsRequest()){
+                    return;
+                }
+
                 var config = {
                     showName: tool.randomString(),
                     deviceName: 'dbs01',
@@ -122,15 +127,64 @@
                 var url =  this.new_program_url;     
                 this.requestProgram(url,config);
             },
+            checkIsRequest(){
+                //1-1.是否有时间重复的地方 检测是否有红色块
+                
+                if(tool.checkTimeRepeat()){
+                    this.$message({
+                      showClose: true,
+                      message: '节目编排时间段有冲突(红色部分)，请仔细核对！',
+                      type: 'error'
+                    });
+                    return false;
+                }
+                
+                //1-2.是否添加时间线后没有添加素材
+                //通过时间线来检测是否添加素材
+                var info = tool.checkFolderByTimeLine();  
+                if(info){
+                    this.$message({
+                      showClose: true,
+                      message: info.message,
+                      type: 'error'
+                    });
+                    return false;
+                }
+
+                //1-3.是否添加素材后没有添加时间线
+                //通过素材来管理是否有添加时间
+                var info2 = tool.checkTimeByFolder();   
+                if(info2){
+                    this.$message({
+                      showClose: true,
+                      message: info2.message,
+                      type: 'error'
+                    });
+                    return false;
+                }
+
+                return true;
+            },
             //点击上线节目
             entry(){
 
                 //1. 检测是否满足上线的条件
+                if(!this.checkIsRequest()){
+                    return;
+                }
+                
                 //2. 上线
-                //3. 上线后清除当前重置所有本地数据
-
                 var url =  this.entry_program_url;
-                this.requestProgram(url);
+                this.requestProgram(url,false,()=>{
+                    //3. 上线后清除当前重置所有本地数据
+                    var timer = setTimeout(()=>{
+                        this.reset();
+                        clearTimeout(timer);
+                    },1000)
+                });
+
+                
+                
             },
             //点击重置节目
             reset(){
@@ -151,7 +205,7 @@
                 //3. 刷新页面 重新渲染数据
                 location.reload(); 
             },
-            requestProgram(url,config){
+            requestProgram(url,config,fn){
                 
                 //1.获取当前的用户名
                 var username = '';
@@ -195,6 +249,8 @@
                           message: res.data.message,
                           type: 'success'
                         });
+
+                        fn&&fn();
                     })
                 })  
             },
